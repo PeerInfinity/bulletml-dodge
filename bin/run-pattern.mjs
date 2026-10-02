@@ -26,6 +26,7 @@ const frames = Number(opt('frames', 1200));
 const horizons = opt('horizons', '2,4,8,16,32,64').split(',').map(Number);
 const beam = Number(opt('beam', 16));
 const tracePath = opt('trace', null);
+const jsonPath = opt('json', null);
 const kind = path.basename(path.dirname(file)); // zako | middle | boss
 
 const bml = parseBulletML(fs.readFileSync(file, 'utf8'), path.basename(file));
@@ -77,6 +78,13 @@ for (const rank of ranks) {
 }
 const worst = rows.some((r) => r.need === null) ? null : Math.max(...rows.map((r) => r.need));
 console.log(`\n${bml.name}: ${worst === null ? 'NOT DODGED at some seed/rank' : worst === 0 ? 'REFLEX is enough' : `needs look-ahead H=${worst}`}  [${((Date.now() - t0) / 1000).toFixed(1)} s]`);
+
+if (jsonPath) {
+    fs.writeFileSync(jsonPath, JSON.stringify({
+        pattern: bml.name, file, kind, verdict: worst === null ? 'not-dodged' : worst === 0 ? 'reflex' : `H${worst}`,
+        need: worst, seconds: (Date.now() - t0) / 1000, settings: { seeds, ranks, frames, horizons, beam }, rows,
+    }, null, 1));
+}
 
 if (tracePath) {
     const rank = ranks[ranks.length - 1];

@@ -14,12 +14,15 @@ simple reflexes and which need planning.
 - `bin/run-pattern.mjs <pattern.xml>` — per seed and rank: does the reflex bot
   survive, and if not, the smallest planner horizon H (2, 4, … 64) that does.
   `--trace out.json` writes a replay.
+- `bin/sweep.mjs <dir> [--jobs N] [--timeout-min M] [-- run-pattern options]` — every pattern under
+  `<dir>`, N at a time; writes `results/<name>.json` and `results/<name>.md`.
 - `viewer.html?trace=traces/<name>.json` — replay viewer (serve the directory over HTTP).
 - `patterns/noiz2sa/` — the 73 patterns from Noiz2sa 0.52 (BSD; licence text beside them).
 
 ```
 npm install
 node bin/run-pattern.mjs "patterns/noiz2sa/boss/[Progear]_round_1_boss_grow_bullets.xml" --seeds 2 --ranks 0.5,1
+node bin/sweep.mjs patterns/noiz2sa --jobs 4   # → results/noiz2sa.md
 python3 -m http.server 8765   # then open http://127.0.0.1:8765/viewer.html?trace=traces/…json
 ```
 
@@ -32,3 +35,7 @@ python3 -m http.server 8765   # then open http://127.0.0.1:8765/viewer.html?trac
 - "Reflex fails, H=2 succeeds" partly measures the reflex bot's heuristic.
 - Faithfulness to the original game is checked by eye (`viewer.html`), not yet by
   comparing against a build of Noiz2sa.
+
+## Licence
+
+MIT (`LICENSE`). The ported libBulletML and Noiz2sa parts keep their BSD notices (`NOTICE.md`).

@@ -1,5 +1,7 @@
 # Notices
 
+This project is MIT-licensed (`LICENSE`). Parts of it are ported from, or are, BSD-licensed works whose notices follow; those notices apply to those parts.
+
 `src/bulletml.js` is a JavaScript port of libBulletML 0.0.6:
 
     Copyright (c) 2003, shinichiro.h All rights reserved.

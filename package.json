@@ -6,7 +6,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "description": "Bots that dodge BulletML patterns",
   "dependencies": {
     "@xmldom/xmldom": "^0.9.12"
