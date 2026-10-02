@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>BulletML dodge — trace viewer</title>
+<style>
+  body { background: #111; color: #ddd; font: 13px system-ui, sans-serif; display: flex; gap: 16px; padding: 12px; }
+  canvas { background: #000; image-rendering: pixelated; border: 1px solid #333; }
+  #side { max-width: 360px; }
+  button, input { font: inherit; }
+  .dead { color: #f66; font-weight: bold; }
+</style>
+<canvas id="c" width="320" height="480" style="width:480px;height:720px"></canvas>
+<div id="side">
+  <p><input type="file" id="file" accept=".json"> or <code>?trace=traces/x.json</code></p>
+  <p id="info">No trace loaded.</p>
+  <p>
+    <button id="play">Play / pause</button>
+    <button id="back">−1</button><button id="fwd">+1</button>
+    speed <select id="speed"><option>0.25</option><option>0.5</option><option selected>1</option><option>2</option><option>4</option></select>
+  </p>
+  <p><input type="range" id="seek" min="0" value="0" style="width:340px"></p>
+  <p id="frame"></p>
+  <p>Ship: yellow (hit radius 2 px, ring = 8 px). Bullets: white; their swept hit segment: red. Enemy: green square.</p>
+</div>
+<script type="module">
+const c = document.getElementById('c'), g = c.getContext('2d');
+const $ = (id) => document.getElementById(id);
+let tr = null, i = 0, playing = false, acc = 0, last = 0;
+const DIRS = ['·', '↑', '↗', '→', '↘', '↓', '↙', '←', '↖'];
+
+function load(t) {
+  tr = t; i = 0;
+  $('seek').max = tr.frames.length - 1;
+  const end = tr.frames[tr.frames.length - 1];
+  $('info').innerHTML = `<b>${tr.pattern}</b><br>rank ${tr.rank}, seed ${tr.seed}, bot <b>${tr.bot}</b><br>${tr.frames.length} frames — ` +
+    (end.dead ? `<span class="dead">hit at frame ${end.t}</span>` : 'survived');
+  draw();
+}
+function draw() {
+  if (!tr) return;
+  const f = tr.frames[i];
+  g.fillStyle = '#000'; g.fillRect(0, 0, c.width, c.height);
+  for (const [x, y, px, py, spc] of f.b) {
+    if (spc === 0) { g.fillStyle = '#3c3'; g.fillRect(x - 6, y - 6, 12, 12); continue; }
+    g.strokeStyle = '#a33'; g.beginPath(); g.moveTo(px, py); g.lineTo(x, y); g.stroke();
+    g.fillStyle = '#fff'; g.fillRect(x - 1, y - 1, 3, 3);
+  }
+  const [sx, sy] = f.s;
+  g.strokeStyle = f.dead ? '#f44' : '#cc0'; g.beginPath(); g.arc(sx, sy, 8, 0, 7); g.stroke();
+  g.fillStyle = f.dead ? '#f44' : '#ff0'; g.beginPath(); g.arc(sx, sy, 2, 0, 7); g.fill();
+  $('seek').value = i;
+  $('frame').textContent = `frame ${f.t}  move ${DIRS[f.a % 9]}${f.a >= 9 ? ' (slow)' : ''}  bullets ${f.b.filter((b) => b[4] !== 0).length}`;
+}
+function tick(now) {
+  if (playing && tr) {
+    acc += (now - last) / (1000 / 60) * Number($('speed').value);
+    while (acc >= 1 && i < tr.frames.length - 1) { i++; acc--; }
+    if (i >= tr.frames.length - 1) playing = false;
+    draw();
+  }
+  last = now; requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+$('play').onclick = () => { playing = !playing; };
+$('back').onclick = () => { i = Math.max(0, i - 1); draw(); };
+$('fwd').onclick = () => { if (tr) { i = Math.min(tr.frames.length - 1, i + 1); draw(); } };
+$('seek').oninput = (e) => { i = Number(e.target.value); draw(); };
+$('file').onchange = async (e) => load(JSON.parse(await e.target.files[0].text()));
+const q = new URLSearchParams(location.search).get('trace');
+if (q) fetch(q).then((r) => r.json()).then(load);
+</script>
+</html>
