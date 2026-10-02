@@ -1,0 +1,5499 @@
+{
+ "name": "noiz2sa",
+ "settings": {
+  "seeds": 3,
+  "ranks": [
+   0.5,
+   1
+  ],
+  "frames": 1200,
+  "horizons": [
+   2,
+   4,
+   8,
+   16,
+   32,
+   64
+  ],
+  "beam": 16
+ },
+ "wallSeconds": 53.923,
+ "jobs": 4,
+ "results": [
+  {
+   "pattern": "[daiouzyou]_hibati_2_2_b.xml",
+   "file": "patterns/noiz2sa/boss/[daiouzyou]_hibati_2_2_b.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.744,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 94,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 94,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 94,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 141,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 141,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 141,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[daiouzyou]_hibati_2_2_r.xml",
+   "file": "patterns/noiz2sa/boss/[daiouzyou]_hibati_2_2_r.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.538,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 128,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 128,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 128,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 187,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 187,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 187,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[daiouzyou]_r1_boss_1.xml",
+   "file": "patterns/noiz2sa/boss/[daiouzyou]_r1_boss_1.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.559,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 66,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 67,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 64,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 102,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 100,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 101,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[daiouzyou]_r1_boss_4.xml",
+   "file": "patterns/noiz2sa/boss/[daiouzyou]_r1_boss_4.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 1.964,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 101,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 101,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 101,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 133,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 133,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 2,
+     "peak": 133,
+     "frames": 988,
+     "tried": "reflex:hit@987 H2:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[daiouzyou]_r1_boss_5.xml",
+   "file": "patterns/noiz2sa/boss/[daiouzyou]_r1_boss_5.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 5.494,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 2,
+     "peak": 44,
+     "frames": 116,
+     "tried": "reflex:hit@115 H2:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 2,
+     "peak": 44,
+     "frames": 116,
+     "tried": "reflex:hit@115 H2:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 2,
+     "peak": 44,
+     "frames": 116,
+     "tried": "reflex:hit@115 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 2,
+     "peak": 52,
+     "frames": 116,
+     "tried": "reflex:hit@115 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 2,
+     "peak": 52,
+     "frames": 116,
+     "tried": "reflex:hit@115 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 2,
+     "peak": 52,
+     "frames": 116,
+     "tried": "reflex:hit@115 H2:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[daiouzyou]_r1_boss_l.xml",
+   "file": "patterns/noiz2sa/boss/[daiouzyou]_r1_boss_l.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.48,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 47,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 47,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 47,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 68,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 68,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 68,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Guwange]_round_2_boss_circle_fire.xml",
+   "file": "patterns/noiz2sa/boss/[Guwange]_round_2_boss_circle_fire.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.45,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 51,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 53,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 52,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 56,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 56,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 56,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Guwange]_round_3_boss_fast_3way.xml",
+   "file": "patterns/noiz2sa/boss/[Guwange]_round_3_boss_fast_3way.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.328,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 46,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 46,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 46,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 46,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 46,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 46,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Guwange]_round_4_boss_eye_ball.xml",
+   "file": "patterns/noiz2sa/boss/[Guwange]_round_4_boss_eye_ball.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 4.08,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 90,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 85,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 91,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 250,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 249,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 2,
+     "peak": 223,
+     "frames": 624,
+     "tried": "reflex:hit@623 H2:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Ikaruga]_drc2.xml",
+   "file": "patterns/noiz2sa/boss/[Ikaruga]_drc2.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 1.796,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 27,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 29,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 28,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 2,
+     "peak": 42,
+     "frames": 585,
+     "tried": "reflex:hit@584 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 2,
+     "peak": 41,
+     "frames": 987,
+     "tried": "reflex:hit@986 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 42,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Ikaruga]_r1_mdl.xml",
+   "file": "patterns/noiz2sa/boss/[Ikaruga]_r1_mdl.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.314,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 48,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 48,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 48,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 70,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 70,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 70,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[ketsui]_r2_boss_rkt.xml",
+   "file": "patterns/noiz2sa/boss/[ketsui]_r2_boss_rkt.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.768,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 48,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 48,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 48,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 88,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 88,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 88,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[ketsui]_r3_boss_fastspread.xml",
+   "file": "patterns/noiz2sa/boss/[ketsui]_r3_boss_fastspread.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.432,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 107,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 107,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 107,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 122,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 122,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 122,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[ketsui]_r4_boss_rb_rockets.xml",
+   "file": "patterns/noiz2sa/boss/[ketsui]_r4_boss_rb_rockets.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.393,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 75,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 75,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 75,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 88,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 88,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 88,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[ketsui]_r5_accel_aim_13way.xml",
+   "file": "patterns/noiz2sa/boss/[ketsui]_r5_accel_aim_13way.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 9.989,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 2,
+     "peak": 102,
+     "frames": 229,
+     "tried": "reflex:hit@228 H2:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 2,
+     "peak": 102,
+     "frames": 229,
+     "tried": "reflex:hit@228 H2:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 2,
+     "peak": 102,
+     "frames": 229,
+     "tried": "reflex:hit@228 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 129,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 129,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 129,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[ketsui]_r5_middle_slow_spread.xml",
+   "file": "patterns/noiz2sa/boss/[ketsui]_r5_middle_slow_spread.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 25.588,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 127,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 128,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 127,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 2,
+     "peak": 147,
+     "frames": 939,
+     "tried": "reflex:hit@938 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 148,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 150,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Progear]_round_1_boss_grow_bullets.xml",
+   "file": "patterns/noiz2sa/boss/[Progear]_round_1_boss_grow_bullets.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 6.654,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 79,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 79,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 79,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 2,
+     "peak": 170,
+     "frames": 344,
+     "tried": "reflex:hit@343 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 2,
+     "peak": 170,
+     "frames": 344,
+     "tried": "reflex:hit@343 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 2,
+     "peak": 170,
+     "frames": 344,
+     "tried": "reflex:hit@343 H2:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Progear]_round_2_boss_struggling.xml",
+   "file": "patterns/noiz2sa/boss/[Progear]_round_2_boss_struggling.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 9.47,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 129,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 124,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 130,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 2,
+     "peak": 359,
+     "frames": 812,
+     "tried": "reflex:hit@811 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 357,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 351,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Progear]_round_3_boss_back_burst.xml",
+   "file": "patterns/noiz2sa/boss/[Progear]_round_3_boss_back_burst.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.586,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 77,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 76,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 75,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 98,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 99,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 98,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Progear]_round_3_boss_wave_bullets.xml",
+   "file": "patterns/noiz2sa/boss/[Progear]_round_3_boss_wave_bullets.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.811,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 44,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 44,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 44,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 80,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 80,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 80,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Progear]_round_5_boss_last_round_wave.xml",
+   "file": "patterns/noiz2sa/boss/[Progear]_round_5_boss_last_round_wave.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 2.446,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 105,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 2,
+     "peak": 107,
+     "frames": 918,
+     "tried": "reflex:hit@917 H2:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 109,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 206,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 196,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 206,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Progear]_round_5_middle_boss_rockets.xml",
+   "file": "patterns/noiz2sa/boss/[Progear]_round_5_middle_boss_rockets.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.397,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 29,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 29,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 29,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 59,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 59,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 59,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Psyvariar]_X-A_boss_opening.xml",
+   "file": "patterns/noiz2sa/boss/[Psyvariar]_X-A_boss_opening.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.449,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 60,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 62,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 59,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 89,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 88,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 87,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "57way.xml",
+   "file": "patterns/noiz2sa/boss/57way.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.579,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 81,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 81,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 81,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 133,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 133,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 133,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "88way.xml",
+   "file": "patterns/noiz2sa/boss/88way.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.516,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 165,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 152,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 174,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 270,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 216,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 242,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "beewinder.xml",
+   "file": "patterns/noiz2sa/boss/beewinder.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.326,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 46,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 46,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 46,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 44,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 44,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 44,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "bit.xml",
+   "file": "patterns/noiz2sa/boss/bit.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 1.203,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 173,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 148,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 151,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 207,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 193,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 259,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "double_roll_seeds.xml",
+   "file": "patterns/noiz2sa/boss/double_roll_seeds.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 37.542,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 120,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 120,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 120,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 2,
+     "peak": 149,
+     "frames": 571,
+     "tried": "reflex:hit@570 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 2,
+     "peak": 149,
+     "frames": 571,
+     "tried": "reflex:hit@570 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 2,
+     "peak": 149,
+     "frames": 571,
+     "tried": "reflex:hit@570 H2:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "forward_3way.xml",
+   "file": "patterns/noiz2sa/boss/forward_3way.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.355,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 68,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 66,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 68,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 106,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 106,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 104,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "roll3pos.xml",
+   "file": "patterns/noiz2sa/boss/roll3pos.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.427,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 97,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 101,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 100,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 166,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 165,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 168,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "rollbar.xml",
+   "file": "patterns/noiz2sa/boss/rollbar.xml",
+   "kind": "boss",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.602,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 130,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 130,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 130,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 302,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 302,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 302,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "side_cracker.xml",
+   "file": "patterns/noiz2sa/boss/side_cracker.xml",
+   "kind": "boss",
+   "verdict": "H2",
+   "need": 2,
+   "seconds": 6.36,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 87,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 82,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 2,
+     "peak": 79,
+     "frames": 562,
+     "tried": "reflex:hit@561 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 98,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 2,
+     "peak": 95,
+     "frames": 603,
+     "tried": "reflex:hit@602 H2:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 94,
+     "frames": 1200,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[daiouzyou]_r1_boss_2.xml",
+   "file": "patterns/noiz2sa/middle/[daiouzyou]_r1_boss_2.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.12,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 18,
+     "frames": 282,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 18,
+     "frames": 268,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 18,
+     "frames": 282,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 33,
+     "frames": 282,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 33,
+     "frames": 268,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 33,
+     "frames": 282,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[daiouzyou]_r1_boss_3.xml",
+   "file": "patterns/noiz2sa/middle/[daiouzyou]_r1_boss_3.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.119,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 45,
+     "frames": 261,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 45,
+     "frames": 269,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 45,
+     "frames": 271,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 75,
+     "frames": 275,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 75,
+     "frames": 262,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 75,
+     "frames": 273,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Ikaruga]_r3_mdl_3.xml",
+   "file": "patterns/noiz2sa/middle/[Ikaruga]_r3_mdl_3.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.159,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 17,
+     "frames": 458,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 15,
+     "frames": 396,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 17,
+     "frames": 387,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 25,
+     "frames": 417,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 22,
+     "frames": 486,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 25,
+     "frames": 388,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Ikaruga]_rf_l.xml",
+   "file": "patterns/noiz2sa/middle/[Ikaruga]_rf_l.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.145,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 16,
+     "frames": 234,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 19,
+     "frames": 416,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 16,
+     "frames": 250,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 24,
+     "frames": 315,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 26,
+     "frames": 426,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 25,
+     "frames": 314,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[ketsui]_r2_5way_round.xml",
+   "file": "patterns/noiz2sa/middle/[ketsui]_r2_5way_round.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.166,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 100,
+     "frames": 363,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 102,
+     "frames": 378,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 100,
+     "frames": 376,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 113,
+     "frames": 374,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 111,
+     "frames": 390,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 111,
+     "frames": 388,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[ketsui]_r4_boss_last_red_aim.xml",
+   "file": "patterns/noiz2sa/middle/[ketsui]_r4_boss_last_red_aim.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.13,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 10,
+     "frames": 227,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 17,
+     "frames": 309,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 10,
+     "frames": 282,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 251,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 9,
+     "frames": 242,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 231,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "1tonway.xml",
+   "file": "patterns/noiz2sa/middle/1tonway.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.128,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 28,
+     "frames": 205,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 28,
+     "frames": 202,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 28,
+     "frames": 209,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 42,
+     "frames": 239,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 42,
+     "frames": 236,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 42,
+     "frames": 242,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "22way.xml",
+   "file": "patterns/noiz2sa/middle/22way.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.29,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 60,
+     "frames": 274,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 60,
+     "frames": 272,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 60,
+     "frames": 279,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 108,
+     "frames": 286,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 108,
+     "frames": 284,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 108,
+     "frames": 291,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "23accel.xml",
+   "file": "patterns/noiz2sa/middle/23accel.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.209,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 55,
+     "frames": 489,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 55,
+     "frames": 510,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 55,
+     "frames": 507,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 79,
+     "frames": 489,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 79,
+     "frames": 510,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 79,
+     "frames": 507,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "2round.xml",
+   "file": "patterns/noiz2sa/middle/2round.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.168,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 62,
+     "frames": 315,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 61,
+     "frames": 312,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 61,
+     "frames": 317,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 91,
+     "frames": 363,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 91,
+     "frames": 360,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 88,
+     "frames": 365,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "4waccel.xml",
+   "file": "patterns/noiz2sa/middle/4waccel.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.179,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 24,
+     "frames": 365,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 23,
+     "frames": 352,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 23,
+     "frames": 356,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 52,
+     "frames": 304,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 50,
+     "frames": 338,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 49,
+     "frames": 310,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "4way.xml",
+   "file": "patterns/noiz2sa/middle/4way.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.16,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 18,
+     "frames": 245,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 24,
+     "frames": 459,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 18,
+     "frames": 243,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 56,
+     "frames": 315,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 77,
+     "frames": 432,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 58,
+     "frames": 319,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "accel16way.xml",
+   "file": "patterns/noiz2sa/middle/accel16way.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.17,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 48,
+     "frames": 270,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 48,
+     "frames": 266,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 48,
+     "frames": 268,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 77,
+     "frames": 280,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 80,
+     "frames": 276,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 77,
+     "frames": 279,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "grow.xml",
+   "file": "patterns/noiz2sa/middle/grow.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.227,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 25,
+     "frames": 351,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 25,
+     "frames": 342,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 25,
+     "frames": 353,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 41,
+     "frames": 351,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 41,
+     "frames": 342,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 41,
+     "frames": 353,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "growround.xml",
+   "file": "patterns/noiz2sa/middle/growround.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.123,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 40,
+     "frames": 261,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 40,
+     "frames": 254,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 40,
+     "frames": 264,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 78,
+     "frames": 277,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 76,
+     "frames": 275,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 78,
+     "frames": 278,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "mnway.xml",
+   "file": "patterns/noiz2sa/middle/mnway.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.167,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 48,
+     "frames": 338,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 59,
+     "frames": 382,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 47,
+     "frames": 342,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 78,
+     "frames": 341,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 95,
+     "frames": 387,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 76,
+     "frames": 346,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "nwroll.xml",
+   "file": "patterns/noiz2sa/middle/nwroll.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.128,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 44,
+     "frames": 257,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 40,
+     "frames": 296,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 45,
+     "frames": 270,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 77,
+     "frames": 257,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 69,
+     "frames": 296,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 78,
+     "frames": 270,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "shotgun.xml",
+   "file": "patterns/noiz2sa/middle/shotgun.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.116,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 159,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 177,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 154,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 159,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 177,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 154,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "spread_bf.xml",
+   "file": "patterns/noiz2sa/middle/spread_bf.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.169,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 28,
+     "frames": 392,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 35,
+     "frames": 518,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 29,
+     "frames": 414,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 45,
+     "frames": 404,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 57,
+     "frames": 512,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 48,
+     "frames": 412,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "spread2blt.xml",
+   "file": "patterns/noiz2sa/middle/spread2blt.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.152,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 44,
+     "frames": 211,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 44,
+     "frames": 377,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 44,
+     "frames": 450,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 74,
+     "frames": 285,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 74,
+     "frames": 377,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 74,
+     "frames": 453,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "spreadnn.xml",
+   "file": "patterns/noiz2sa/middle/spreadnn.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.162,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 16,
+     "frames": 209,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 16,
+     "frames": 194,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 16,
+     "frames": 203,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 36,
+     "frames": 210,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 36,
+     "frames": 198,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 36,
+     "frames": 201,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "vrtlas.xml",
+   "file": "patterns/noiz2sa/middle/vrtlas.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.185,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 44,
+     "frames": 264,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 33,
+     "frames": 256,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 43,
+     "frames": 263,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 84,
+     "frames": 268,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 58,
+     "frames": 260,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 82,
+     "frames": 267,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "xfire.xml",
+   "file": "patterns/noiz2sa/middle/xfire.xml",
+   "kind": "middle",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.177,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 24,
+     "frames": 264,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 24,
+     "frames": 256,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 24,
+     "frames": 266,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 48,
+     "frames": 282,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 48,
+     "frames": 274,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 48,
+     "frames": 283,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[Ikaruga]_r5_vrp.xml",
+   "file": "patterns/noiz2sa/zako/[Ikaruga]_r5_vrp.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.12,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 7,
+     "frames": 305,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 7,
+     "frames": 292,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 7,
+     "frames": 304,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 10,
+     "frames": 293,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 11,
+     "frames": 301,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 10,
+     "frames": 291,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "[ketsui]_r1_boss_bit.xml",
+   "file": "patterns/noiz2sa/zako/[ketsui]_r1_boss_bit.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.127,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 5,
+     "frames": 204,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 5,
+     "frames": 196,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 5,
+     "frames": 203,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 208,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 8,
+     "frames": 201,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 208,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "248shot.xml",
+   "file": "patterns/noiz2sa/zako/248shot.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.142,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 270,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 8,
+     "frames": 254,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 272,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 270,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 254,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 12,
+     "frames": 272,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "3waychase.xml",
+   "file": "patterns/noiz2sa/zako/3waychase.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.15,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 289,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 280,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 12,
+     "frames": 285,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 18,
+     "frames": 265,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 18,
+     "frames": 258,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 18,
+     "frames": 265,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "6gt.xml",
+   "file": "patterns/noiz2sa/zako/6gt.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.156,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 303,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 296,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 12,
+     "frames": 305,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 301,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 295,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 12,
+     "frames": 304,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "accel.xml",
+   "file": "patterns/noiz2sa/zako/accel.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.144,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 13,
+     "frames": 330,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 13,
+     "frames": 310,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 13,
+     "frames": 324,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 16,
+     "frames": 335,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 16,
+     "frames": 319,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 16,
+     "frames": 335,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "accum.xml",
+   "file": "patterns/noiz2sa/zako/accum.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.201,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 21,
+     "frames": 217,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 21,
+     "frames": 212,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 21,
+     "frames": 222,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 35,
+     "frames": 224,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 35,
+     "frames": 222,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 35,
+     "frames": 233,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "bar.xml",
+   "file": "patterns/noiz2sa/zako/bar.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.226,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 13,
+     "frames": 266,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 13,
+     "frames": 250,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 13,
+     "frames": 269,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 25,
+     "frames": 263,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 23,
+     "frames": 249,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 25,
+     "frames": 262,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "bee.xml",
+   "file": "patterns/noiz2sa/zako/bee.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.122,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 5,
+     "frames": 312,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 10,
+     "frames": 377,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 5,
+     "frames": 313,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 336,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 16,
+     "frames": 408,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 337,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "bit_move.xml",
+   "file": "patterns/noiz2sa/zako/bit_move.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.156,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 6,
+     "frames": 439,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 6,
+     "frames": 480,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 6,
+     "frames": 344,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 381,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 475,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 12,
+     "frames": 355,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "nway.xml",
+   "file": "patterns/noiz2sa/zako/nway.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.183,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 494,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 8,
+     "frames": 481,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 497,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 15,
+     "frames": 494,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 15,
+     "frames": 481,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 15,
+     "frames": 497,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "rndway.xml",
+   "file": "patterns/noiz2sa/zako/rndway.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.146,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 247,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 231,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 12,
+     "frames": 242,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 35,
+     "frames": 261,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 35,
+     "frames": 242,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 35,
+     "frames": 258,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "slowdown.xml",
+   "file": "patterns/noiz2sa/zako/slowdown.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.18,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 314,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 8,
+     "frames": 533,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 9,
+     "frames": 321,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 334,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 533,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 13,
+     "frames": 322,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "spread.xml",
+   "file": "patterns/noiz2sa/zako/spread.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.106,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 235,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 8,
+     "frames": 224,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 236,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 235,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 224,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 12,
+     "frames": 236,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "stay.xml",
+   "file": "patterns/noiz2sa/zako/stay.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.156,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 346,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 8,
+     "frames": 333,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 346,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 410,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 397,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 12,
+     "frames": 410,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "thrust.xml",
+   "file": "patterns/noiz2sa/zako/thrust.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.124,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 4,
+     "frames": 282,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 4,
+     "frames": 268,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 4,
+     "frames": 282,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 282,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 8,
+     "frames": 290,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 282,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "twin_extend.xml",
+   "file": "patterns/noiz2sa/zako/twin_extend.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.108,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 8,
+     "frames": 147,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 8,
+     "frames": 140,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 8,
+     "frames": 147,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 12,
+     "frames": 147,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 12,
+     "frames": 140,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 12,
+     "frames": 147,
+     "tried": "reflex:ok"
+    }
+   ]
+  },
+  {
+   "pattern": "twin.xml",
+   "file": "patterns/noiz2sa/zako/twin.xml",
+   "kind": "zako",
+   "verdict": "reflex",
+   "need": 0,
+   "seconds": 0.142,
+   "settings": {
+    "seeds": 3,
+    "ranks": [
+     0.5,
+     1
+    ],
+    "frames": 1200,
+    "horizons": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "beam": 16
+   },
+   "rows": [
+    {
+     "rank": 0.5,
+     "seed": 1,
+     "need": 0,
+     "peak": 13,
+     "frames": 248,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 2,
+     "need": 0,
+     "peak": 13,
+     "frames": 249,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 0.5,
+     "seed": 3,
+     "need": 0,
+     "peak": 13,
+     "frames": 249,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 1,
+     "need": 0,
+     "peak": 21,
+     "frames": 256,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 2,
+     "need": 0,
+     "peak": 21,
+     "frames": 257,
+     "tried": "reflex:ok"
+    },
+    {
+     "rank": 1,
+     "seed": 3,
+     "need": 0,
+     "peak": 21,
+     "frames": 257,
+     "tried": "reflex:ok"
+    }
+   ]
+  }
+ ]
+}
