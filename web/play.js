@@ -35,6 +35,7 @@ const app = {
     horizon: store.get('horizon', DEFAULT_HORIZON), budgetX: store.get('budgetX', 1),
     worker: null, g4: null, // g4: {id, from, queue, stalls, ms: [recent bot CPU ms per frame], wait}
     replay: null, // {tape, name, inputs}
+    workerLead: 0, // how far ahead the worker may play (its LEAD)
     speed: 1, lastTape: null, effects: [], banner: '', endReported: false,
 };
 if (!ALL_POLICIES.includes(app.policyName)) app.policyName = 'bot: attack';
@@ -63,6 +64,7 @@ addEventListener('keydown', (e) => {
     held.add(e.code);
     if (e.code === 'KeyM') setMuted(!sound.muted);
     else if (e.code === 'KeyB') setBot(!app.bot);
+    else if (e.code === 'KeyF') setPerfOverlay(!perf.overlay);
     else if (app.mode === 'select') selectKey(e);
     else if (e.code === 'KeyP') togglePause();
     else if (e.code === 'Escape') backToSelect();
@@ -157,7 +159,7 @@ function onWorker(e) {
     if (m.type !== 'inputs' || !r || m.id !== r.id) return;
     if (m.from !== r.from + r.queue.length) { console.error(`bot worker: inputs from ${m.from}, expected ${r.from + r.queue.length}`); return; }
     r.queue.push(...m.inputs);
-    for (const t of m.ms) { r.ms.push(t); if (t > r.maxMs) r.maxMs = t; }
+    for (const t of m.ms) { r.ms.push(t); if (t > r.maxMs) r.maxMs = t; perf.wSum += t; perf.wN++; if (t > perf.wMax) perf.wMax = t; }
     for (const u of m.units) r.units.push(u);
     if (r.units.length > 600) r.units.splice(0, r.units.length - 600);
     if (r.ms.length > 600) r.ms.splice(0, r.ms.length - 600);
@@ -205,7 +207,7 @@ function tick() {
         let b;
         if (app.bot && g.status === STATUS.IN_GAME && (app.pol || app.g4)) {
             b = app.pol ? app.pol(g) : g4Input(g.frame);
-            if (b === null) { app.g4.stalls++; return; } // the worker is late: wait for it, never guess
+            if (b === null) { app.g4.stalls++; perfWait(g.frame); return; } // the worker is late: wait for it, never guess
         } else b = keyboardInput();
         app.played.push(b);
         const prev = liveFoes(g);
@@ -226,16 +228,80 @@ function tick() {
     app.effects = app.effects.filter((e) => e.age < e.life);
 }
 
+// ── the frame-time overlay (F) and its numbers (window.noiz.perf) ──
+const perf = {
+    overlay: store.get('perfOverlay', false), el: null, shownAt: 0,
+    // since the last reset: display frames, their gaps (> 33 ms and > 50 ms, the longest), game frames played
+    t0: 0, frames: 0, gaps33: 0, gaps50: 0, maxGap: 0, gameFrames: 0, waits0: 0,
+    wSum: 0, wN: 0, wMax: 0, // the worker's ms per frame it played
+    waitRuns: [], // [game frame, ticks waited there]
+    recent: [], // [time, game frame] of the last ~second, for the game's frames/s
+};
+function perfReset() {
+    Object.assign(perf, { t0: performance.now(), frames: 0, gaps33: 0, gaps50: 0, maxGap: 0, gameFrames: 0, waits0: app.g4 ? app.g4.stalls : 0, wSum: 0, wN: 0, wMax: 0, waitRuns: [] });
+}
+function perfWait(frame) {
+    const w = perf.waitRuns, last = w[w.length - 1];
+    if (last && last[0] === frame) last[1]++; else if (w.length < 500) w.push([frame, 1]);
+}
+function perfDisplayFrame(now, gap, played) {
+    perf.frames++; perf.gameFrames += played;
+    if (gap > 33) perf.gaps33++;
+    if (gap > 50) perf.gaps50++;
+    if (gap > perf.maxGap) perf.maxGap = gap;
+    perf.recent.push(now, app.g ? app.g.frame : 0);
+    while (perf.recent.length > 2 && now - perf.recent[0] > 1000) perf.recent.splice(0, 2);
+}
+function perfNumbers() {
+    const r = perf.recent, n = r.length;
+    const fps = n >= 4 && r[n - 2] > r[0] ? ((r[n - 1] - r[1]) * 1000) / (r[n - 2] - r[0]) : 0;
+    const w = app.g4;
+    const secs = (performance.now() - perf.t0) / 1000;
+    return {
+        secs, displayFrames: perf.frames, displayFps: perf.frames / Math.max(secs, 1e-3), gaps33: perf.gaps33, gaps50: perf.gaps50, maxGap: perf.maxGap,
+        gameFps: fps, gameFrames: perf.gameFrames,
+        bot: w && { waits: w.stalls - perf.waits0, waitRuns: perf.waitRuns, lead: w.queue.length, frames: perf.wN, meanMs: perf.wSum / Math.max(1, perf.wN), maxMs: perf.wMax,
+            p99Ms: w.ms.length ? [...w.ms].sort((a, b) => a - b)[Math.floor(w.ms.length * 0.99)] : 0 }, // p99: the last 600 frames
+    };
+}
+function setPerfOverlay(on) {
+    perf.overlay = on; store.set('perfOverlay', on);
+    if (!perf.el) {
+        perf.el = document.createElement('pre');
+        perf.el.id = 'perf';
+        perf.el.style.cssText = 'position:absolute;right:0;bottom:0;margin:0;padding:4px 6px;font:11px/1.35 monospace;color:#cfe;background:rgba(0,0,0,.7);pointer-events:none;white-space:pre';
+        $('wrap').appendChild(perf.el);
+    }
+    perf.el.hidden = !on;
+    if (on) perfReset();
+}
+function perfShow(now) {
+    if (!perf.overlay || now - perf.shownAt < 250) return;
+    perf.shownAt = now;
+    const p = perfNumbers(), b = p.bot;
+    perf.el.textContent = [
+        `display ${p.displayFps.toFixed(1)}/s  gaps>33ms ${p.gaps33}  >50ms ${p.gaps50}  max ${p.maxGap.toFixed(0)} ms`,
+        `game ${p.gameFps.toFixed(1)} frames/s (62.5)`,
+        b ? `bot waits ${b.waits}  lead ${b.lead}/${app.workerLead} frames` : 'bot: not in the worker',
+        b ? `worker ${b.meanMs.toFixed(1)} ms/frame mean  p99 ${b.p99Ms.toFixed(0)}  max ${b.maxMs.toFixed(0)}` : '',
+        `since ${p.secs.toFixed(0)} s (F hides; resets on show)`,
+    ].filter(Boolean).join('\n');
+}
+
 let acc = 0, last = performance.now();
 function loop(now) {
-    acc += Math.min(now - last, 250); last = now;
+    const gap = now - last;
+    acc += Math.min(gap, 250); last = now;
     let steps = 0;
+    const f0 = app.g ? app.g.frame : 0;
     while (acc >= INTERVAL_BASE && steps < 8) {
         acc -= INTERVAL_BASE; steps++;
         if (!app.paused) for (let k = 0; k < (app.mode === 'replay' ? app.speed : 1); k++) tick();
     }
     if (acc > INTERVAL_BASE * 8) acc = 0; // too slow to keep up: slow down rather than spiral
     render();
+    perfDisplayFrame(now, gap, app.g ? Math.max(0, app.g.frame - f0) : 0);
+    perfShow(now);
     requestAnimationFrame(loop);
 }
 
@@ -312,6 +378,7 @@ function initControls() {
 
 async function main() {
     initControls();
+    if (perf.overlay) setPerfOverlay(true);
     render();
     requestAnimationFrame(loop);
     const [patterns, tapes] = await Promise.all([
@@ -322,7 +389,7 @@ async function main() {
     app.worker = new Worker(new URL('./bot-worker.js', import.meta.url), { type: 'module' });
     app.worker.onmessage = onWorker;
     app.worker.onerror = (e) => console.error('bot worker failed:', e.message);
-    const ready = new Promise((r) => { app.worker.addEventListener('message', (e) => { if (e.data.type === 'ready') r(); }); });
+    const ready = new Promise((r) => { app.worker.addEventListener('message', (e) => { if (e.data.type === 'ready') { app.workerLead = e.data.lead; r(); } }); });
     app.worker.postMessage({ type: 'init', patterns: Object.fromEntries(Object.entries(patterns).map(([k, l]) => [k, l.map(packBulletML)])) });
     await ready;
     const sel = $('tapes');
@@ -364,6 +431,11 @@ window.noiz = {
     setPolicy: (name) => { app.policyName = name; updateControls(); },
     startReplay: (tape, name) => startReplay(tape, name),
     setSpeed: (s) => { app.speed = s; },
+    /** the overlay's numbers since the last perfReset (display gaps, game frames/s, bot waits, worker ms) */
+    perf: () => perfNumbers(),
+    perfReset: () => perfReset(),
+    /** (checks only) the worker spins so each of its bot frames takes factor× as long: a slower machine */
+    setWorkerSlowdown: (factor) => app.worker.postMessage({ type: 'slow', factor }),
     fieldX: FIELD_X,
 };
 window.noiz.ready = main().then(() => true, (e) => { console.error(e); app.banner = String(e); throw e; });

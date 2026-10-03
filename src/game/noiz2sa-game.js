@@ -315,42 +315,47 @@ function removeFoeSlot(g, i) {
  * that very slot, and from then on the still-running command reads and writes the new occupant. Until
  * then the vanished foe's fields are still there to read (fe0). Found by the G2 comparison.
  */
+// one host object for every run (runs are synchronous and never nested), pointed at the foe before each run:
+// allocating the 15 callbacks per foe per frame was a large part of a frame's cost (slice P1)
+const H = { g: null, fe0: null, slot: 0 };
+const F = () => H.g.foes[H.slot] || H.fe0;
+const HOST = {
+    getBulletDirection: () => (F().d * 360) / DIV,
+    getAimDirection: () => { const g = H.g, fe = F(); g.aimed = true; return (getDeg(g.ship.x - fe.x, g.ship.y - fe.y) * 360) / DIV; },
+    getBulletSpeed: () => F().spd / SPD_RATE,
+    getDefaultSpeed: () => 1,
+    getRank: () => F().rank,
+    getRand: () => crand(H.g.rand) / RAND_MAX,
+    getTurn: () => H.g.tick,
+    getBulletSpeedX: () => F().vx / VEL_RATE,
+    getBulletSpeedY: () => F().vy / VEL_RATE,
+    createSimpleBullet: (dir, spd) => {
+        const g = H.g, fe = F();
+        const d = Math.trunc((dir * DIV) / 360) & (DIV - 1);
+        const i = freeFoeSlot(g);
+        if (i >= 0) placeFoe(g, i, newFoe(fe.x, fe.y, fe.rank, d, Math.trunc(spd * SPD_RATE), SPC.BULLET, 0, 0, null));
+    },
+    createBullet: (state, dir, spd) => {
+        const g = H.g, fe = F();
+        const d = Math.trunc((dir * DIV) / 360) & (DIV - 1);
+        const i = freeFoeSlot(g);
+        if (i >= 0) placeFoe(g, i, newFoe(fe.x, fe.y, fe.rank, d, Math.trunc(spd * SPD_RATE), SPC.ACTIVE_BULLET, 0, 0, makeRunner(state.bml, state)));
+    },
+    doVanish: () => {
+        const g = H.g, fe = F();
+        if (fe.type === BOSS_TYPE) return;
+        if (fe.spc === SPC.FOE) g.enNum[fe.type]--;
+        fe.spc = SPC.NOT_EXIST;
+        if (g.foes[H.slot] === fe) g.foes[H.slot] = null; // the slot is free from now on
+    },
+    doChangeDirection: (d) => { F().d = Math.trunc((d * DIV) / 360); },
+    doChangeSpeed: (s) => { F().spd = Math.trunc(s * SPD_RATE); },
+    doAccelX: (ax) => { F().vx = Math.trunc(ax * VEL_RATE); },
+    doAccelY: (ay) => { F().vy = Math.trunc(ay * VEL_RATE); },
+};
 function hostFor(g, fe0, slot) {
-    const F = () => g.foes[slot] || fe0;
-    return {
-        getBulletDirection: () => (F().d * 360) / DIV,
-        getAimDirection: () => { const fe = F(); g.aimed = true; return (getDeg(g.ship.x - fe.x, g.ship.y - fe.y) * 360) / DIV; },
-        getBulletSpeed: () => F().spd / SPD_RATE,
-        getDefaultSpeed: () => 1,
-        getRank: () => F().rank,
-        getRand: () => crand(g.rand) / RAND_MAX,
-        getTurn: () => g.tick,
-        getBulletSpeedX: () => F().vx / VEL_RATE,
-        getBulletSpeedY: () => F().vy / VEL_RATE,
-        createSimpleBullet: (dir, spd) => {
-            const fe = F();
-            const d = Math.trunc((dir * DIV) / 360) & (DIV - 1);
-            const i = freeFoeSlot(g);
-            if (i >= 0) placeFoe(g, i, newFoe(fe.x, fe.y, fe.rank, d, Math.trunc(spd * SPD_RATE), SPC.BULLET, 0, 0, null));
-        },
-        createBullet: (state, dir, spd) => {
-            const fe = F();
-            const d = Math.trunc((dir * DIV) / 360) & (DIV - 1);
-            const i = freeFoeSlot(g);
-            if (i >= 0) placeFoe(g, i, newFoe(fe.x, fe.y, fe.rank, d, Math.trunc(spd * SPD_RATE), SPC.ACTIVE_BULLET, 0, 0, makeRunner(state.bml, state)));
-        },
-        doVanish: () => {
-            const fe = F();
-            if (fe.type === BOSS_TYPE) return;
-            if (fe.spc === SPC.FOE) g.enNum[fe.type]--;
-            fe.spc = SPC.NOT_EXIST;
-            if (g.foes[slot] === fe) g.foes[slot] = null; // the slot is free from now on
-        },
-        doChangeDirection: (d) => { F().d = Math.trunc((d * DIV) / 360); },
-        doChangeSpeed: (s) => { F().spd = Math.trunc(s * SPD_RATE); },
-        doAccelX: (ax) => { F().vx = Math.trunc(ax * VEL_RATE); },
-        doAccelY: (ay) => { F().vy = Math.trunc(ay * VEL_RATE); },
-    };
+    H.g = g; H.fe0 = fe0; H.slot = slot;
+    return HOST;
 }
 
 function wipeBullets(g, x, y, width) {
@@ -427,7 +432,11 @@ function moveFoes(g) {
                 }
             }
         } else if (fe.spc !== SPC.NOT_EXIST) {
-            if (segmentHitsShip(fe.px, fe.py, fe.x, fe.y, ship.x, ship.y)) destroyShip(g);
+            // the float test only for a ship near the swept segment's box (exact: see NEAR_SEGMENT)
+            const sx = ship.x, sy = ship.y;
+            if (sx > (fe.px < fe.x ? fe.px : fe.x) - NEAR_SEGMENT && sx < (fe.px < fe.x ? fe.x : fe.px) + NEAR_SEGMENT
+                && sy > (fe.py < fe.y ? fe.py : fe.y) - NEAR_SEGMENT && sy < (fe.py < fe.y ? fe.y : fe.py) + NEAR_SEGMENT
+                && segmentHitsShip(fe.px, fe.py, fe.x, fe.y, sx, sy)) destroyShip(g);
         }
         if (g.foes[i] === fe && (fe.px < 0 || fe.px >= SCAN_WIDTH_8 || fe.py < 0 || fe.py >= SCAN_HEIGHT_8)) {
             removeFoeSlot(g, i);
@@ -435,6 +444,15 @@ function moveFoes(g) {
     }
 }
 
+/**
+ * A ship more than NEAR_SEGMENT (16 px) outside the box of a bullet's swept segment is never hit, so moveFoes skips
+ * the float test then (slice P1: it was a third of a busy frame). Exact, not a tolerance: the test hits only when the
+ * ship's projection falls inside the segment (0 < ht < 1) and its squared distance to the line is under 2 px²
+ * (SHIP_HIT_WIDTH = 512²). Outside the box by 16 px, the true distance to the segment is ≥ 4096, so hd ≥ 4096²
+ * ≈ 1.7e7 — 64× the threshold; the float32 rounding of these screen-sized terms (|o|² < 2^35, relative error
+ * ~1e-7 per operation) is a few 10⁴ at most.
+ */
+const NEAR_SEGMENT = 16 * 256;
 /** vector.c vctInnerProduct: (float)a.x*b.x + (float)a.y*b.y, in float. */
 const ip = (ax, ay, bx, by) => f32(f32(f32(ax) * f32(bx)) + f32(f32(ay) * f32(by)));
 /** The ship-vs-bullet test of moveFoes, in the C's float arithmetic: the swept segment (px,py)→(x,y) within 2 px. */

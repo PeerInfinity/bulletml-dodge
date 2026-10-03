@@ -101,7 +101,10 @@ export function unpackBulletML(bml) {
     return bml;
 }
 
-const child = (node, name) => node.children.find((c) => c.name === name) || null;
+function child(node, name) {
+    for (const c of node.children) if (c.name === name) return c;
+    return null;
+}
 function next(node) {
     const p = node.parent;
     if (!p) return null;
@@ -165,8 +168,13 @@ export function runRunner(r, host) {
 const lin = (fx, lx, fy, ly) => ({ fx, lx, fy, ly, g: (ly - fy) / (lx - fx) });
 const linValue = (f, x) => f.fy + f.g * (x - f.fx);
 
+// a formula's $n reads the params of the impl being evaluated (formulas never nest), so one function serves them all
+// instead of two new closures per evaluation (slice P1); hosts' getRand takes no `this`
+let numParams = null;
+const paramOf = (i) => (numParams && i < numParams.length ? numParams[i] : 1);
 function num(m, host, node) {
-    return node.fn(() => host.getRand(), host.getRank(), (i) => (m.params && i < m.params.length ? m.params[i] : 1));
+    numParams = m.params;
+    return node.fn(host.getRand, host.getRank(), paramOf);
 }
 
 function getDirection(m, host, dirNode, prevChange = true) {
@@ -212,9 +220,10 @@ function setDirection(m, host) {
 
 const isTurnEnd = (m) => m.end || m.actTurn > m.endTurn;
 
+const CHANGES = [['changeDir', 'doChangeDirection'], ['changeSpeed', 'doChangeSpeed'], ['accelX', 'doAccelX'], ['accelY', 'doAccelY']];
 function changes(m, host) {
     const now = host.getTurn();
-    for (const [key, apply] of [['changeDir', 'doChangeDirection'], ['changeSpeed', 'doChangeSpeed'], ['accelX', 'doAccelX'], ['accelY', 'doAccelY']]) {
+    for (const [key, apply] of CHANGES) {
         const f = m[key];
         if (!f) continue;
         if (now >= f.lx) { host[apply](f.ly); m[key] = null; } else host[apply](linValue(f, now));

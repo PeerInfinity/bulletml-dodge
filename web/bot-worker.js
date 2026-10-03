@@ -10,8 +10,9 @@
  *               {type: 'start', id, stage, seed, endlessSeed, inputs, variant, horizon, budget}
  *                 — `inputs` are the frames played so far (replayed here), the bot takes over after them
  *               {type: 'ack', id, frame}  the page's current frame;  {type: 'stop', id}
+ *               {type: 'slow', factor}  (checks only) make each bot frame take factor× its CPU time: a slower machine
  * Messages out: {type: 'inputs', id, from, inputs, ms, units}  inputs for frames from, from+1, …, and the
- *               bot's CPU time and budget units spent for each;  {type: 'ready'};  {type: 'error', message}
+ *               bot's CPU time and budget units spent for each;  {type: 'ready', lead};  {type: 'error', message}
  */
 import { unpackBulletML } from '../src/bulletml.js';
 import { newGame, stepGame, STATUS } from '../src/game/noiz2sa-game.js';
@@ -19,6 +20,7 @@ import { makeBot } from '../src/game/bot.js';
 
 const LEAD = 60; // frames the worker may run ahead of the page (~1 s): covers the bot's costliest searches
 let patterns = null, run = null, pumping = false;
+let slow = 1; // for the frame-time checks only (window.noiz.setWorkerSlowdown): spin so each bot frame takes slow× its time
 
 function start(m) {
     const g = newGame(patterns, m.stage, { seed: m.seed, endlessSeed: m.endlessSeed });
@@ -41,6 +43,7 @@ function pump() {
     while (run && run.g.status === STATUS.IN_GAME && run.g.frame - run.pageFrame < LEAD) {
         const t = performance.now();
         const b = run.bot(run.g);
+        if (slow > 1) { const until = t + (performance.now() - t) * slow; while (performance.now() < until); }
         run.ms.push(+(performance.now() - t).toFixed(2));
         run.units.push(Math.round(run.bot.stats.lastCost));
         stepGame(run.g, b);
@@ -59,10 +62,11 @@ onmessage = (e) => {
         if (m.type === 'init') {
             patterns = {};
             for (const k of Object.keys(m.patterns)) patterns[k] = m.patterns[k].map(unpackBulletML);
-            postMessage({ type: 'ready' });
+            postMessage({ type: 'ready', lead: LEAD });
         } else if (m.type === 'start') start(m);
         else if (m.type === 'ack') { if (run && run.id === m.id) { run.pageFrame = m.frame; pump(); } }
         else if (m.type === 'stop') { if (run && run.id === m.id) run = null; }
+        else if (m.type === 'slow') slow = m.factor;
     } catch (err) {
         postMessage({ type: 'error', message: String(err && err.stack || err) });
     }

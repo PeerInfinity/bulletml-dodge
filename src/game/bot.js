@@ -127,7 +127,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     if (!TAILS.includes(tailKind)) throw new Error(`unknown tail "${tailKind}" (have: ${TAILS.join(', ')})`);
     const fire = variant === 'attack';
     const H = Math.max(0, horizon | 0), K = snapEvery, cap = budget * bankFrames;
-    const stats = { frames: 0, cost: 0, steps: 0, lastSteps: 0, lastLive: 0, lastCost: 0, maxFrameCost: 0, repairs: 0, repairFails: 0, beams: 0, improves: 0, doomed: 0 };
+    const stats = { frames: 0, cost: 0, steps: 0, clones: 0, lastSteps: 0, lastLive: 0, lastCost: 0, maxFrameCost: 0, repairs: 0, repairFails: 0, beams: 0, improves: 0, doomed: 0 };
 
     // the plan: plan[i] is the input for frame f0 + i; snaps.get(f) is the game at frame f (before its input);
     // end is the game after the whole plan; hits are the frames whose input runs into a hit
@@ -137,6 +137,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     // from the live foe slots then (enemies + bullets), so that a unit of budget is about the same CPU time
     let unit = 1, steps = 0;
     const charge = (n) => { spent += n * unit; steps += n; };
+    const clone = (s) => { stats.clones++; return cloneGame(s); };
     const left = () => bank - spent;
 
     function target(c) {
@@ -166,7 +167,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     /** extend the plan by one frame at its far end (with the tail controller) */
     function extendOne() {
         if (end.status !== STATUS.IN_GAME) { plan.push(fire ? input(0, true, false) : 0); return; }
-        if (end.frame % K === 0) { snaps.set(end.frame, cloneGame(end)); charge(1); }
+        if (end.frame % K === 0) { snaps.set(end.frame, clone(end)); charge(1); }
         const b = tail(end);
         const f = end.frame;
         if (step(end, b, null)) hits.push(f);
@@ -180,7 +181,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
      */
     function rollout(s, first, hold, E, fixed = null) {
         if (left() < E - s.frame + 1) return null;
-        const c = cloneGame(s); charge(1);
+        const c = clone(s); charge(1);
         const inputs = [], acc = { value: 0 };
         let firstHit = Infinity;
         while (c.frame < E && c.status === STATUS.IN_GAME) {
@@ -210,10 +211,10 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         hits = hits.filter((f) => f < r.from);
         for (const f of [...snaps.keys()]) if (f > r.from) snaps.delete(f);
         const s = r.from === f0 ? rootState : snaps.get(r.from);
-        end = cloneGame(s); charge(1);
+        end = clone(s); charge(1);
         for (const b of r.inputs) {
             if (end.status !== STATUS.IN_GAME) { plan.push(b); continue; }
-            if (end.frame % K === 0 && end.frame !== r.from) { snaps.set(end.frame, cloneGame(end)); charge(1); }
+            if (end.frame % K === 0 && end.frame !== r.from) { snaps.set(end.frame, clone(end)); charge(1); }
             const f = end.frame;
             if (step(end, b, null)) hits.push(f);
             plan.push(b);
@@ -273,7 +274,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
             for (const n of front) {
                 for (const b of INPUTS) {
                     if (left() < C + 1) return bestDead;
-                    const c = cloneGame(n.state); charge(1);
+                    const c = clone(n.state); charge(1);
                     const acc = { value: n.value };
                     const inputs = n.inputs.slice();
                     let hitAt = Infinity;
@@ -324,7 +325,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
 
     function reset(g) {
         f0 = g.frame; plan = []; snaps = new Map(); hits = []; lastFail = -1e9;
-        end = cloneGame(g); charge(1);
+        end = clone(g); charge(1);
     }
 
     function bot(g) {
