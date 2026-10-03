@@ -8,7 +8,7 @@
  *   node bin/perf-page.mjs [--scenes 9:1,10:1] [--secs 40] [--variant attack] [--budget 1] [--bot-off]
  *        [--profile out-prefix]   (a CPU profile of the worker, over CDP: <prefix>-<stage>-<seed>.cpuprofile)
  *        [--throttle R]   (CDP CPU throttling ×R on the page and its worker: a slower machine)
- *        [--cost-cap N]   (the bot's per-frame cost cap, budget units)
+ *        [--cost-cap N]   (the bot's per-frame cost cap, budget units)  [--budget-units N] [--bank F]   (budget, bank frames)
  *        [--slow K]   (the worker spins so each bot frame takes K× its time: a K× slower machine for the bot)
  *        [--load N]   (N busy processes beside the browser: a slower / busier machine)  [--json out.json]
  * A scene is stage:seed (stage 0–13, 10 = ENDLESS); endlessSeed is 7919 × seed, as the page's fixed-seed field gives.
@@ -94,7 +94,8 @@ try {
     page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
     await page.goto(url);
     await page.evaluate(() => window.noiz.ready);
-    if (opt('cost-cap', null)) await page.evaluate((n) => window.noiz.setCostCap(n), Number(opt('cost-cap')));
+    const botOpts = { costCap: Number(opt('cost-cap', Infinity)), budget: opt('budget-units', null) === null ? null : Number(opt('budget-units')), bankFrames: Number(opt('bank', 32)) };
+    await page.evaluate((o) => window.noiz.setBotOptions(o), botOpts);
     if (opt('slow', null)) await page.evaluate((k) => window.noiz.setWorkerSlowdown(k), Number(opt('slow')));
     const prof = cdpPort ? await workerProfiler() : null;
     for (const [stage, seed] of scenes) {
@@ -119,7 +120,7 @@ try {
         if (check) {
             const inputs = tapeInputs(tape);
             const g = newGame(P, stage, { seed, endlessSeed });
-            const bot = makeBot({ variant, horizon: DEFAULT_HORIZON, budget: budgetX * BROWSER_BUDGET, costCap: Number(opt('cost-cap', Infinity)) });
+            const bot = makeBot({ variant, horizon: DEFAULT_HORIZON, budget: botOpts.budget ?? budgetX * BROWSER_BUDGET, costCap: botOpts.costCap, bankFrames: botOpts.bankFrames });
             same = true;
             for (let f = 0; f < inputs.length && g.status === STATUS.IN_GAME; f++) {
                 const b = bot(g);
@@ -130,7 +131,7 @@ try {
         const r = { stage, seed, botOn, variant, budgetX, secs, frames: st.game?.frame ?? tape?.frames, foes: st.game?.foes, ...p, sameAsNode: same };
         results.push(r);
         const b = p.bot;
-        console.log(`stage ${stage} seed ${seed} (${botOn ? `bot ${variant} ${budgetX}×` : 'bot off'}): ${p.displayFrames} display frames in ${p.secs.toFixed(1)} s, gaps > 33 ms ${p.gaps33}, > 50 ms ${p.gaps50}, max ${p.maxGap.toFixed(0)} ms; draw ${p.renderMs.toFixed(2)} ms/frame (max ${p.renderMaxMs.toFixed(1)}); ${p.gameFrames} game frames (${(p.gameFrames / p.secs).toFixed(1)}/s)`
+        console.log(`stage ${stage} seed ${seed} (${botOn ? `bot ${variant}, ${botOpts.budget ?? budgetX * BROWSER_BUDGET} units, bank ${botOpts.bankFrames}${botOpts.costCap !== Infinity ? `, cap ${botOpts.costCap}` : ''}` : 'bot off'}): ${p.displayFrames} display frames in ${p.secs.toFixed(1)} s, gaps > 33 ms ${p.gaps33}, > 50 ms ${p.gaps50}, max ${p.maxGap.toFixed(0)} ms; draw ${p.renderMs.toFixed(2)} ms/frame (max ${p.renderMaxMs.toFixed(1)}); ${p.gameFrames} game frames (${(p.gameFrames / p.secs).toFixed(1)}/s)`
             + (b ? `; waits ${b.waits} (${b.startWaits} at the bot's start); worker ${b.meanMs.toFixed(2)} ms/frame mean, p99 ${b.p99Ms.toFixed(1)}, max ${b.maxMs.toFixed(0)} (last ${b.frames} frames)` : '')
             + (same === null ? '' : `; page = Node: ${same}`));
         if (b && b.waitRuns.length) console.log(`  waits at game frames (frame×ticks): ${b.waitRuns.slice(0, 40).map(([f, n]) => `${f}×${n}`).join(" ")}`);

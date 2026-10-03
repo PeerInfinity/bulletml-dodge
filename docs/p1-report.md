@@ -34,6 +34,15 @@ The bot is attack, horizon 48, budget 1× (600 units/frame), unless a row says o
     units lose **0 lives with 0 failed repairs**, the same as without a cap.
   - Score: attack scores drop 2–30% at cap 2400 and up to 13% at cap 4800.
   - At 5×, cap 2400 removes the mid-game waits (22 / 7 waits, all at the bot's start).
+- **Budget calibration** (the coordinator's addendum). The coordinator measured 26.1 µs per unit in Node on their
+  machine; here it is 4.5–5.2. So 600 units ≈ 15.7 ms there, not the "≈ 3 ms" in the G4 report, which this box
+  matches. The settings below were tried on the same 16-run set, with the worker 5× slowed in the page:
+  - Every setting, budget ½ or ¼, bank 8, or both, keeps **0 lives lost** and removes **every mid-game wait**. Only
+    the hold at the bot's first frame is left.
+  - The best trade is **budget 300 (½), bank unchanged**: attack score +2% / −20% / −7% / −12% on stages 1 / 6 / 10 /
+    ENDLESS. It had 1 failed repair, though still no life lost. Budget 150 thins the margin: 14 failed repairs on
+    stage 10 no-attack, still 0 lives lost.
+  - See section 4b. If moves may change, this is the setting to take.
 - **Wasm.** The native C engine compiled to wasm replays every tape to the JS port's state line on every frame: 137
   tapes + 12 G4 tapes, 718,038 frames.
   - In the Chromium worker, a busy 48-frame rollout takes **539 µs (wasm) vs 985 µs (JS after P1)**. Before P1 the JS
@@ -215,7 +224,84 @@ In the page with the worker 5× slower (the bot still plays Node's moves input f
 | cap 4800 | 39 (29) | 20 (10) | 10.0 / 11.9 |
 | cap 2400 | **22 (22)** | **7 (7)** | 3.2 / 4.6 |
 
+## 4b. Budget calibration (the coordinator's addendum)
+
+The coordinator's Node measurement (seed 42, 2,400 frames, attack, budget 600):
+- 26.1 µs per unit;
+- stage 10: 15.7 ms/frame mean, p99 223, max 408;
+- ENDLESS: 14.9 ms/frame mean.
+
+That is 5–6× this box's 4.5–5.2 µs per unit, which is why `--slow 5` reproduces their page.
+
+These change moves, like the cap. `makeBot`/`runBot` already took `budget` and `bankFrames`; `runBot` now passes
+`bankFrames` through. The page's checks set both with `window.noiz.setBotOptions({budget, bankFrames, costCap})`, and
+`bin/perf-page.mjs` takes `--budget-units N --bank F`. The safety set is `node bin/cap-safety.mjs --settings
+300:32,150:32,600:8,300:8`: stages 1, 6, 10 and ENDLESS × seeds 1, 2 × attack / no-attack, 16 runs per setting, run to
+the G4 ends. The 600:32 row is G4's own runs.
+
+| Setting (budget units : bank frames [: cap]) | Lives lost (16 runs) | Failed repairs | Attack score vs G4 (stages 1 / 6 / 10 / ENDLESS, seeds 1+2) | Units/frame spent, stage 10 attack / no-attack |
+|---|---:|---:|---|---|
+| 600:32 (G4 today) | 0 | 0 | 5.00M / 7.53M / 9.93M / 17.67M | 580 / 464 |
+| **300:32** | 0 | 1 | +2% / −20% / −7% / −12% | 221 / 117 |
+| 150:32 | 0 | 14 | −11% / −25% / −11% / −21% | 44 / 74 |
+| 600:8 | 0 | 0 | −2% / −30% / −13% / −21% | 77 / 87 |
+| 300:8 | 0 | 0 | −24% / −38% / −17% / −22% | 15 / 73 |
+| 600:32, cap 4800 | 0 | 0 | +2% / −9% / −13% / −7% | 354 / 147 |
+| 600:32, cap 2400 | 0 | 0 | −2% / −30% / −13% / −21% | 77 / 88 |
+
+How to read the table:
+- **Failed repairs** are frames where a repair could not clear the plan's next hit at once. A later repair fixed it
+  before the hit, so no life was lost. They appear only on stage 10 no-attack, the run that must dodge the boss for 3
+  minutes. They mark the margin thinning.
+- **A bank of 8 frames behaves like a cap of 2,400.** `improve` keeps half the bank for repairs, so with a
+  4,800-unit bank it never spends more than about 2,400 at once. The 600:8 scores equal cap 2400's run for run.
+- **Units/frame are well below the budget** at a small bank or cap. The bank tops out and the rest is never spent. It
+  is the mean that a slow machine feels.
+
+Page, with the worker 5× slowed (≈ the coordinator's machine), 40 s per scene. Each run's moves equal Node's bot with
+the same settings:
+
+| Setting | Stage 10 waits (at the start) | ENDLESS waits (at the start) | Worker ms/frame mean (stage 10 / ENDLESS) | Worker max ms |
+|---|---:|---:|---|---|
+| 600:32 (P1, today's budget) | 52 (30) | 22 (14) | 12.9 / 13.2 | 478 / 255 |
+| **300:32** | **28 (28)** | **12 (12)** | 6.1 / 6.9 | 455 / 204 |
+| 150:32 | 25 (25) | 7 (7) | 2.0 / 3.4 | 378 / 105 |
+| 600:8 | 20 (20) | 6 (6) | 3.1 / 4.6 | 327 / 110 |
+| 300:8 | 16 (16) | 5 (5) | 0.8 / 0.9 | 231 / 70 |
+| 600:32, cap 2400 | 22 (22) | 7 (7) | 3.2 / 4.6 | 325 / 136 |
+
+Every setting removes the mid-game waits. What is left is the hold at the bot's first frame: the first decision with a
+cold JIT and, at bank 32, a full bank. **Budget 300 with the bank unchanged costs the least score.** Its mean, ~6–7 ms
+on a 5× slower worker (≈ 7.8 ms per 300 units at 26 µs), leaves room for the bursts; the 3-second lead absorbs them.
+
+If the browser budget changes:
+- the page no longer plays the 1× sweep tapes' moves (those were made at 600);
+- `BROWSER_BUDGET` and the G4 report's calibration line should change with it;
+- the 1× rows of the sweep would need re-running at 300 to keep "the page plays what the sweep measured". The
+  coordinator would shard that.
+
 ## 5. Wasm feasibility (task 5)
+
+⚖ The coordinator's addendum said not to install emsdk, because the user builds wasm locally with emcc 5.0.0. It
+arrived after the build below was done. The build is kept as asked. `native/wasm/build.sh` uses only standard emcc
+flags, so it should run under 5.0.0 unchanged; that has not been tried.
+
+**Inputs for a local wasm measurement.** From the worker profile (section 2; Node, after P1, horizon 48, budget 600):
+
+| | `cloneGame` calls | `stepGame` calls (simulated frames) |
+|---|---:|---:|
+| per frame, mean (stage 10 / ENDLESS, 2,500 frames from the start) | 7.0 / 9.4 | 250 / 377 |
+| per `improve` decision, mean (plan replaced / kept) | 58–76 / 41–62 | 2,080–3,040 / 1,780–2,880 |
+| at the spikes (the top decisions) | 67–152 | 2,300–6,200 |
+| per repair | 37 | 60–110 |
+| per extend-only frame (87% of frames) | 0.3 | 1 |
+
+Share of the bot's worker time: `stepGame` 77.6%, `cloneGame` 5.0%, the bot's own logic 11.7%, GC 3.0%, other 2.7%.
+
+In a wasm engine, `cloneGame` becomes a snapshot (a stored state) or a restore (a rollout's start). So a local
+estimate is:
+
+    ms/frame ≈ steps × step_µs + copies × restore_µs + 0.117 × (today's ms/frame)
 
 **The build** (`native/wasm/`, vendored. The `.wasm` is not shipped and `native/wasm/build/` is ignored.)
 
@@ -307,8 +393,11 @@ alone would plausibly gain 1.1–1.3×, below wasm's 1.6× and with no second-en
    worth), and its first few `improve`s spend it while the worker has no lead yet.
    - Cheap, and no move changes: when the bot starts, hold the game until the worker is, say, 60 frames ahead. That
      is one short "ready" pause, up to ~1–2 s on a slow machine, instead of a stutter.
-   - With moves changing: start the bank empty, or ship `costCap`. Cap 2400 removed every mid-game wait at 5× with no
-     life lost on 16 runs, but it costs up to 30% of the attack score.
+   - With moves changing: **lower the browser budget to 300 units** (section 4b). On a 5× slower worker it removes
+     every mid-game wait. It lost no life on 16 runs, and the attack score moves +2% to −20%. Of all the settings
+     tried, it costs the least score.
+     - A smaller bank, a cap or budget 150 also work, but they cost more score.
+     - Budget 150 also thins the safety margin (14 failed repairs).
 3. **Wasm: not now.** It is feasible and exact (every frame of 149 tapes) and ~1.6× for the bot. It is the right next
    step only if the page should run larger budgets (4×/16×) or horizons smoothly on slow machines. In that case, port
    the bot's target and event helpers to C at the same time (~1.8×), and pool snapshot buffers.
@@ -316,8 +405,8 @@ alone would plausibly gain 1.1–1.3×, below wasm's 1.6× and with no second-en
 
 ## Files
 
-- `web/play.js`: the overlay (F), `window.noiz.perf / perfReset / setWorkerSlowdown / setCostCap`, and the `costCap`
-  pass-through. `web/bot-worker.js`: LEAD 180, the `MessageChannel` yield, and `slow` (checks only). `web/draw.js`:
+- `web/play.js`: the overlay (F), `window.noiz.perf / perfReset / setWorkerSlowdown / setCostCap / setBotOptions`, and
+  the `costCap` / budget / `bankFrames` pass-through to the worker. `web/bot-worker.js`: LEAD 180, the `MessageChannel` yield, and `slow` (checks only). `web/draw.js`:
   panels redrawn on change.
 - `src/game/noiz2sa-game.js` and `src/bulletml.js`: the engine changes in section 3. `src/game/bot.js`: `costCap`
   (off by default), plus `stats.clones` and `stats.improveTries`, which are counters only. `src/game/bot-run.js`:

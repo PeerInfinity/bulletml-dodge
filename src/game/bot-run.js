@@ -19,13 +19,13 @@ import { makeTape } from './tape.js';
 export const BOSS_CAP = 11250;
 const BOSS_SCENE = 9; // the scene number while the boss is up (setBarrages counts the scene up as it starts it)
 
-export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, variant = 'attack', horizon, budget, tail = 'straight', costCap = Infinity, endlessCap = 30000, hardCap = 60000 } = {}) {
+export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, variant = 'attack', horizon, budget, tail = 'straight', costCap = Infinity, bankFrames = 32, endlessCap = 30000, hardCap = 60000 } = {}) {
     const g = newGame(patterns, stage, { seed, endlessSeed });
-    const bot = makeBot({ variant, horizon, budget, tail, costCap });
+    const bot = makeBot({ variant, horizon, budget, tail, costCap, bankFrames });
     const endless = stage >= STAGE_NUM;
     const played = [];
     const r = {
-        stage, seed, endlessSeed, variant, horizon: bot.config.horizon, budget, tail, ...(costCap !== Infinity ? { costCap } : {}),
+        stage, seed, endlessSeed, variant, horizon: bot.config.horizon, budget, tail, ...(costCap !== Infinity ? { costCap } : {}), ...(bankFrames !== 32 ? { bankFrames } : {}),
         outcome: null, frames: 0, clearFrame: null, gameoverFrame: null, bossStart: null, bossFrames: 0,
         livesLost: 0, hitFrames: [], score: 0, kills: [0, 0, 0, 0], stars: 0, starScore: 0, lostStars: 0, extends: 0,
         sceneReached: 0, cpuSec: 0, bot: null,
@@ -66,6 +66,6 @@ export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, v
     const st = bot.stats;
     r.bot = { cost: Math.round(st.cost), steps: st.steps, costPerFrame: +(st.cost / Math.max(1, st.frames)).toFixed(1), maxFrameCost: Math.round(st.maxFrameCost),
         repairs: st.repairs, repairFails: st.repairFails, beams: st.beams, improves: st.improves };
-    const tape = makeTape({ stage, seed, endlessSeed, played, extra: { player: `bot-${variant}`, bot: { variant, horizon: r.horizon, budget, ...(tail !== 'straight' ? { tail } : {}), ...(costCap !== Infinity ? { costCap } : {}) } } });
+    const tape = makeTape({ stage, seed, endlessSeed, played, extra: { player: `bot-${variant}`, bot: { variant, horizon: r.horizon, budget, ...(tail !== 'straight' ? { tail } : {}), ...(costCap !== Infinity ? { costCap } : {}), ...(bankFrames !== 32 ? { bankFrames } : {}) } } });
     return { result: r, tape, game: g };
 }

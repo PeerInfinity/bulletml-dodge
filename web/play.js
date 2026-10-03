@@ -36,7 +36,9 @@ const app = {
     worker: null, g4: null, // g4: {id, from, queue, stalls, ms: [recent bot CPU ms per frame], wait}
     replay: null, // {tape, name, inputs}
     workerLead: 0, // how far ahead the worker may play (its LEAD)
-    costCap: Infinity, // the bot's per-frame cost cap in budget units (slice P1; checks only, window.noiz.setCostCap)
+    // slice P1, checks only (window.noiz.setBotOptions): the bot's per-frame cost cap, its budget in units per frame
+    // (null: the budget menu × BROWSER_BUDGET) and its bank (frames of budget)
+    costCap: Infinity, budgetUnits: null, bankFrames: 32,
     speed: 1, lastTape: null, effects: [], banner: '', endReported: false,
 };
 if (!ALL_POLICIES.includes(app.policyName)) app.policyName = 'bot: attack';
@@ -120,7 +122,7 @@ function finishRecording() {
     app.lastTape = makeTape({
         stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, played: app.played,
         extra: { player: app.botUsed ? `human+${app.policyName.replace('bot: ', 'bot-')}` : 'human',
-            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName], horizon: app.horizon, budget: app.budgetX * BROWSER_BUDGET, ...(app.costCap !== Infinity ? { costCap: app.costCap } : {}) } } : {}) },
+            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName], horizon: app.horizon, budget: botBudget(), ...(app.costCap !== Infinity ? { costCap: app.costCap } : {}), ...(app.bankFrames !== 32 ? { bankFrames: app.bankFrames } : {}) } } : {}) },
     });
     app.played = [];
     updateControls();
@@ -147,8 +149,9 @@ function armBot() {
     const id = ++g4Id;
     app.g4 = { id, from: app.g.frame, queue: [], stalls: 0, ms: [], units: [], maxMs: 0, startedAt: app.g.frame };
     app.worker.postMessage({ type: 'start', id, stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed,
-        inputs: app.played.slice(), variant: G4[app.policyName], horizon: app.horizon, budget: app.budgetX * BROWSER_BUDGET, costCap: app.costCap });
+        inputs: app.played.slice(), variant: G4[app.policyName], horizon: app.horizon, budget: botBudget(), costCap: app.costCap, bankFrames: app.bankFrames });
 }
+function botBudget() { return app.budgetUnits ?? app.budgetX * BROWSER_BUDGET; }
 function stopG4() {
     if (app.g4 && app.worker) app.worker.postMessage({ type: 'stop', id: app.g4.id });
     app.g4 = null;
@@ -444,6 +447,8 @@ window.noiz = {
     setWorkerSlowdown: (factor) => app.worker.postMessage({ type: 'slow', factor }),
     /** (checks only) the G4 bot's per-frame cost cap in budget units (Infinity: none, the default) for the next start */
     setCostCap: (n) => { app.costCap = n; },
+    /** (checks only) {costCap, budget (units/frame, null = the menu's), bankFrames} for the next bot start */
+    setBotOptions: (o) => { if ('costCap' in o) app.costCap = o.costCap; if ('budget' in o) app.budgetUnits = o.budget; if ('bankFrames' in o) app.bankFrames = o.bankFrames; },
     fieldX: FIELD_X,
 };
 window.noiz.ready = main().then(() => true, (e) => { console.error(e); app.banner = String(e); throw e; });

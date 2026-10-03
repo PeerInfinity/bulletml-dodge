@@ -97,8 +97,10 @@ stays reproducible.
   (setTimeout clamp), LEAD 60 → 180, panels redrawn on change. Worker 5× slowed: waits per 40 s 234 → 52 (stage 10),
   497 → 22 (ENDLESS), all left in the first ~2 s. Overlay: key F. `costCap` (off by default): 0 lives lost on 32 runs,
   −2…−30% attack score. Wasm build of the native engine (`native/wasm/`): every frame of 149 tapes equal, ~1.8× per
-  step, snapshot/restore 18–19 µs; bot estimate ~1.6×. ⚖ Recommended: neither wasm nor a data-layout rewrite now; a
-  start-up hold for the remaining waits.
+  step, snapshot/restore 18–19 µs; bot estimate ~1.6×. Budget calibration (coordinator: 26 µs/unit there, so 600 ≈
+  16 ms): budgets 300/150 and bank 8 all lose 0 lives on 16 runs and remove the mid-game waits at 5×; 300 costs the
+  least score (+2…−20%). ⚖ Recommended: neither wasm nor a data-layout rewrite now; a start-up hold for the remaining
+  waits; if moves may change, browser budget 300 (then re-run the 1× sweep rows).
 
 ### Where G2 may find differences (known places the port is not literally the C)
 
