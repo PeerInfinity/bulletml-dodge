@@ -48,6 +48,8 @@
     <fieldset><legend>Bot</legend>
       <label><input type="checkbox" id="bot"> bot plays (B)</label>
       <select id="policy" aria-label="policy"></select>
+      <label>look-ahead <select id="horizon"></select></label>
+      <label>budget <select id="budget"></select></label>
     </fieldset>
     <fieldset><legend>Replay</legend>
       <select id="tapes" aria-label="tape"></select>
@@ -61,7 +63,8 @@
     </fieldset>
     <button id="mute">Sound: on (M)</button>
   </div>
-  <p class="note">The bot policies are the G2 test policies (<code>lookahead</code> is the useful one), not the G4 bot.
+  <p class="note">"bot: attack" and "bot: no-attack" are the G4 bot (<code>src/game/bot.js</code>), thinking in a Web Worker
+    within a fixed budget per frame (1× fits the 16 ms frame; 4× and 16× may slow the game); the others are the G2 test policies.
     Every game you play is recorded as a tape (the format <code>bin/play-game.mjs</code> writes) when it ends or on Esc.
     Noiz2sa © 2002 Kenta Cho (BSD); sounds and music from the 0.52 distribution.</p>
 </main>

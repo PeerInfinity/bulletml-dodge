@@ -9,7 +9,12 @@
  *  - Formulas compile once per node to a JS function over ($rand, $rank, $n).
  */
 
-import { DOMParser } from '@xmldom/xmldom';
+// The XML parser: the browser's own DOMParser in a page, @xmldom/xmldom in Node. A Web Worker has neither; it
+// takes patterns parsed elsewhere (packBulletML → postMessage → unpackBulletML).
+let DOMParser = globalThis.DOMParser;
+if (!DOMParser) {
+    try { ({ DOMParser } = await import('@xmldom/xmldom')); } catch { DOMParser = null; }
+}
 
 const NAMES = new Set([
     'bullet', 'action', 'fire', 'changeDirection', 'changeSpeed', 'accel', 'wait',
@@ -32,6 +37,7 @@ function compileFormula(text) {
 }
 
 export function parseBulletML(xmlText, name = '?') {
+    if (!DOMParser) throw new Error(`${name}: no XML parser here (a worker takes packed patterns)`);
     const doc = new DOMParser({ onError: () => {} }).parseFromString(xmlText, 'text/xml');
     const rootEl = doc.documentElement;
     if (!rootEl || rootEl.localName !== 'bulletml') throw new Error(`${name}: no <bulletml> root`);
@@ -62,6 +68,37 @@ export function parseBulletML(xmlText, name = '?') {
     const root = build(rootEl, null);
     const horizontal = rootEl.getAttribute('type') === 'horizontal';
     return { name, root, refs, topActions, horizontal };
+}
+
+/**
+ * A parsed pattern as plain data that postMessage can copy (its compiled formulas are functions, which it
+ * cannot): the same tree, refs and top actions, with `fn` left out. unpackBulletML compiles them again from
+ * the same text, so the result runs exactly as the original.
+ */
+export function packBulletML(bml) {
+    const map = new Map();
+    const copy = (n) => {
+        if (!n) return n;
+        let c = map.get(n);
+        if (c) return c;
+        c = { ...n, fn: null, parent: null, children: [] };
+        map.set(n, c);
+        c.parent = copy(n.parent);
+        c.children = n.children.map(copy);
+        return c;
+    };
+    const root = copy(bml.root);
+    const refs = {};
+    for (const k of Object.keys(bml.refs)) refs[k] = new Map([...bml.refs[k]].map(([l, n]) => [l, copy(n)]));
+    return { name: bml.name, root, refs, topActions: bml.topActions.map(copy), horizontal: bml.horizontal };
+}
+export function unpackBulletML(bml) {
+    const walk = (n) => {
+        if (n.children.length === 0 && n.text.trim() !== '') n.fn = compileFormula(n.text);
+        n.children.forEach(walk);
+    };
+    walk(bml.root);
+    return bml;
 }
 
 const child = (node, name) => node.children.find((c) => c.name === name) || null;

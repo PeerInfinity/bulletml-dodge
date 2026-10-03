@@ -9,6 +9,8 @@ import { newGame, stepGame, stateLine, STATUS, SPC, STAGE_NAMES, input } from '.
 import { makePolicy, POLICY_NAMES } from '../src/game/policies.js';
 import { makeTape, tapeInputs, replayTape } from '../src/game/tape.js';
 import { loadNoiz2saPatternsWeb } from '../src/game/patterns-web.js';
+import { packBulletML } from '../src/bulletml.js';
+import { BOT_VARIANTS, BROWSER_BUDGET, DEFAULT_HORIZON } from '../src/game/bot.js';
 import { Sound, CHUNK } from './sound.js';
 import { draw, FIELD_X } from './draw.js';
 
@@ -21,13 +23,22 @@ const store = {
     set(k, v) { try { localStorage.setItem(`noiz2sa.${k}`, JSON.stringify(v)); } catch { /* storage unavailable */ } },
 };
 
+// the G4 bot ('bot: attack', 'bot: no-attack') runs in a Web Worker (web/bot-worker.js); the test policies run here
+const G4 = Object.fromEntries(BOT_VARIANTS.map((v) => [`bot: ${v}`, v]));
+const ALL_POLICIES = [...Object.keys(G4), ...POLICY_NAMES];
+const isG4 = (name) => name in G4;
+
 const app = {
     patterns: null, mode: 'loading', sel: store.get('stage', 0),
     g: null, stage: 0, seed: 1, endlessSeed: 1, played: [], paused: false,
-    bot: false, botUsed: false, policyName: store.get('policy', 'lookahead'), pol: null,
+    bot: false, botUsed: false, policyName: store.get('policy', 'bot: attack'), pol: null,
+    horizon: store.get('horizon', DEFAULT_HORIZON), budgetX: store.get('budgetX', 1),
+    worker: null, g4: null, // g4: {id, from, queue, stalls, ms: [recent bot CPU ms per frame], wait}
     replay: null, // {tape, name, inputs}
     speed: 1, lastTape: null, effects: [], banner: '', endReported: false,
 };
+if (!ALL_POLICIES.includes(app.policyName)) app.policyName = 'bot: attack';
+let g4Id = 0;
 const sound = new Sound(BASE);
 sound.setMuted(store.get('muted', false));
 
@@ -72,16 +83,18 @@ function selectKey(e) {
 
 // ── modes ──
 function randomSeed() { return (Math.floor(Math.random() * 0x7ffffffe) + 1) >>> 0; }
-function startStage(stage, { seed = null, endlessSeed = null } = {}) {
+function startStage(stage, { seed = null, endlessSeed = null, prefix = [] } = {}) {
     const fixed = $('seed').value.trim();
     app.stage = stage;
     app.seed = seed ?? (fixed !== '' ? Number(fixed) >>> 0 : randomSeed());
     app.endlessSeed = endlessSeed ?? (fixed !== '' ? (Math.imul(7919, app.seed) >>> 0) : randomSeed());
     app.g = newGame(app.patterns, stage, { seed: app.seed, endlessSeed: app.endlessSeed });
     app.played = []; app.paused = false; app.effects = []; app.replay = null; app.banner = '';
-    app.botUsed = app.bot; app.pol = app.bot ? makePolicy(app.policyName) : null;
+    for (const b of prefix) { if (app.g.status !== STATUS.IN_GAME) break; stepGame(app.g, b); app.played.push(b); }
+    app.botUsed = app.bot;
     app.sel = stage; store.set('stage', stage);
     setMode('play');
+    armBot();
     sound.playStageMusic(stage);
 }
 function startReplay(tape, name) {
@@ -94,6 +107,7 @@ function startReplay(tape, name) {
 }
 function backToSelect() {
     if (app.mode === 'play') finishRecording();
+    stopG4();
     app.g = null; app.paused = false; app.replay = null;
     sound.stopMusic();
     setMode('select');
@@ -102,7 +116,8 @@ function finishRecording() {
     if (!app.played.length) return;
     app.lastTape = makeTape({
         stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, played: app.played,
-        extra: { player: app.botUsed ? `human+${app.policyName}` : 'human' },
+        extra: { player: app.botUsed ? `human+${app.policyName.replace('bot: ', 'bot-')}` : 'human',
+            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName], horizon: app.horizon, budget: app.budgetX * BROWSER_BUDGET } } : {}) },
     });
     app.played = [];
     updateControls();
@@ -116,8 +131,45 @@ function togglePause() { if (app.mode === 'play' || app.mode === 'replay') app.p
 function setMuted(m) { sound.setMuted(m); store.set('muted', m); updateControls(); }
 function setBot(on) {
     app.bot = on;
-    if (on) { app.pol = makePolicy(app.policyName); if (app.mode === 'play') app.botUsed = true; } else app.pol = null;
+    if (on && app.mode === 'play') app.botUsed = true;
+    armBot();
     updateControls();
+}
+/** (re)start the chosen bot for the game in play: a test policy here, or the G4 bot in the worker */
+function armBot() {
+    stopG4();
+    app.pol = null;
+    if (!app.bot || app.mode !== 'play' || !app.g) return;
+    if (!isG4(app.policyName)) { app.pol = makePolicy(app.policyName); return; }
+    const id = ++g4Id;
+    app.g4 = { id, from: app.g.frame, queue: [], stalls: 0, ms: [], units: [], maxMs: 0, startedAt: app.g.frame };
+    app.worker.postMessage({ type: 'start', id, stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed,
+        inputs: app.played.slice(), variant: G4[app.policyName], horizon: app.horizon, budget: app.budgetX * BROWSER_BUDGET });
+}
+function stopG4() {
+    if (app.g4 && app.worker) app.worker.postMessage({ type: 'stop', id: app.g4.id });
+    app.g4 = null;
+}
+function onWorker(e) {
+    const m = e.data;
+    if (m.type === 'error') { console.error('bot worker:', m.message); return; }
+    const r = app.g4;
+    if (m.type !== 'inputs' || !r || m.id !== r.id) return;
+    if (m.from !== r.from + r.queue.length) { console.error(`bot worker: inputs from ${m.from}, expected ${r.from + r.queue.length}`); return; }
+    r.queue.push(...m.inputs);
+    for (const t of m.ms) { r.ms.push(t); if (t > r.maxMs) r.maxMs = t; }
+    for (const u of m.units) r.units.push(u);
+    if (r.units.length > 600) r.units.splice(0, r.units.length - 600);
+    if (r.ms.length > 600) r.ms.splice(0, r.ms.length - 600);
+}
+/** the worker's input for this frame, or null if it has not come yet (the game then waits) */
+function g4Input(frame) {
+    const r = app.g4;
+    if (!r || r.from !== frame || !r.queue.length) return null;
+    r.from++;
+    const b = r.queue.shift();
+    app.worker.postMessage({ type: 'ack', id: r.id, frame: frame + 1 });
+    return b;
 }
 
 // ── one frame ──
@@ -150,7 +202,11 @@ function tick() {
     if (!g) return;
     if (app.mode === 'play') {
         // the bot plays the game; the end screens (stage clear, game over) always take the keyboard
-        const b = app.bot && app.pol && g.status === STATUS.IN_GAME ? app.pol(g) : keyboardInput();
+        let b;
+        if (app.bot && g.status === STATUS.IN_GAME && (app.pol || app.g4)) {
+            b = app.pol ? app.pol(g) : g4Input(g.frame);
+            if (b === null) { app.g4.stalls++; return; } // the worker is late: wait for it, never guess
+        } else b = keyboardInput();
         app.played.push(b);
         const prev = liveFoes(g);
         const ev = stepGame(g, b);
@@ -215,8 +271,14 @@ function updateControls() {
 
 function initControls() {
     const pol = $('policy');
-    for (const n of POLICY_NAMES) { const o = document.createElement('option'); o.value = o.textContent = n; pol.appendChild(o); }
+    for (const n of ALL_POLICIES) { const o = document.createElement('option'); o.value = o.textContent = n; pol.appendChild(o); }
     pol.addEventListener('change', () => { app.policyName = pol.value; store.set('policy', pol.value); if (app.bot) setBot(true); });
+    for (const [id, key, values] of [['horizon', 'horizon', [8, 16, 32, 48, 64]], ['budget', 'budgetX', [1, 4, 16]]]) {
+        const sel = $(id);
+        for (const v of values) { const o = document.createElement('option'); o.value = v; o.textContent = id === 'budget' ? `${v}×` : `${v} frames`; sel.appendChild(o); }
+        sel.value = app[key];
+        sel.addEventListener('change', () => { app[key] = Number(sel.value); store.set(key, app[key]); if (app.bot) setBot(true); });
+    }
     $('bot').addEventListener('change', (e) => setBot(e.target.checked));
     $('mute').addEventListener('click', () => { sound.unlock(); setMuted(!sound.muted); });
     $('speed').addEventListener('change', (e) => { app.speed = Number(e.target.value); });
@@ -257,6 +319,12 @@ async function main() {
         fetch(new URL('web/index/tapes.json', BASE)).then((r) => r.json()),
     ]);
     app.patterns = patterns;
+    app.worker = new Worker(new URL('./bot-worker.js', import.meta.url), { type: 'module' });
+    app.worker.onmessage = onWorker;
+    app.worker.onerror = (e) => console.error('bot worker failed:', e.message);
+    const ready = new Promise((r) => { app.worker.addEventListener('message', (e) => { if (e.data.type === 'ready') r(); }); });
+    app.worker.postMessage({ type: 'init', patterns: Object.fromEntries(Object.entries(patterns).map(([k, l]) => [k, l.map(packBulletML)])) });
+    await ready;
     const sel = $('tapes');
     for (const t of tapes) {
         const o = document.createElement('option');
@@ -279,7 +347,10 @@ window.noiz = {
     state() {
         const g = app.g;
         return {
-            mode: app.mode, paused: app.paused, sel: app.sel, bot: app.bot,
+            mode: app.mode, paused: app.paused, sel: app.sel, bot: app.bot, policy: app.policyName,
+            g4: app.g4 && { lead: app.g4.queue.length, stalls: app.g4.stalls, frames: app.g4.ms.length,
+                meanMs: app.g4.ms.reduce((a, b) => a + b, 0) / Math.max(1, app.g4.ms.length), maxMs: app.g4.maxMs,
+                msPerUnit: app.g4.ms.reduce((a, b) => a + b, 0) / Math.max(1, app.g4.units.reduce((a, b) => a + b, 0)) },
             game: g && { frame: g.frame, status: g.status, score: g.score, left: g.left, bonusScore: g.bonusScore, scene: g.scene,
                 shipX: g.ship.x, shipY: g.ship.y, shots: g.shots.filter(Boolean).length,
                 foes: g.foes.filter((f) => f && f.spc === SPC.FOE).length, line: stateLine(g) },
@@ -290,6 +361,7 @@ window.noiz = {
     sound: () => ({ decoded: sound.buffers.filter(Boolean).length, context: sound.ctx?.state ?? null,
         music: sound.music.src.split('/').pop(), musicPaused: sound.music.paused, muted: sound.muted }),
     startStage: (i, o) => startStage(i, o),
+    setPolicy: (name) => { app.policyName = name; updateControls(); },
     startReplay: (tape, name) => startReplay(tape, name),
     setSpeed: (s) => { app.speed = s; },
     fieldX: FIELD_X,

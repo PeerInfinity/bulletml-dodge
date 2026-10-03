@@ -1,0 +1,354 @@
+/**
+ * The G4 bot: plays Noiz2sa with an exact look-ahead (shared by Node and the browser page's worker).
+ *
+ * Priorities, lexicographic (the user's ruling): survive; then attack (get under an enemy and fire — a kill
+ * also wipes the bullets near it into stars); then stars (a hook, weight 0 in v1).
+ *
+ * How it plays. The game is deterministic and depends only on the inputs, so a plan that was simulated on a
+ * copy of the game (`cloneGame` + `stepGame`, the engine itself — nothing approximated) happens exactly as
+ * simulated. The bot keeps ONE committed plan of `horizon` frames:
+ *  - Every frame it plays the plan's first input and extends the plan by one frame at its far end, with a
+ *    cheap reflex "tail" controller (head for the target, steer away from nearby bullets). That costs one
+ *    simulated frame per game frame: a verified-safe plan never needs re-checking.
+ *  - When the extension runs into a hit, it REPAIRS the plan: from the snapshot nearest the hit backwards to
+ *    the present, it tries each of the 18 inputs (9 directions × normal/slow) held, then the tail, to the end
+ *    of the horizon; the latest branch point with a surviving candidate wins, best value first. If none
+ *    survives, a beam search from the present over 8-frame chunks; if that fails too, the plan whose first
+ *    hit is latest.
+ *  - With budget to spare it tries to IMPROVE the plan the same way from the present (attack value, then the
+ *    distance to the target, then room around the ship), never trading survival.
+ *
+ * The budget is a count, not wall-clock, so a run is reproducible: every simulated frame and every game copy
+ * costs 1 unit; each game frame adds `budget` units to a bank capped at `budget × bankFrames`; searches stop
+ * when the bank is empty. `BROWSER_BUDGET` is calibrated to the browser's frame (docs/g4-report.md).
+ *
+ * ⚠ Like the pattern harness's planner, the look-ahead copies the seeded game, so it knows the future
+ * `$rand` draws: the horizon answers "is there a path that far ahead", not "could a player guess it".
+ */
+import { stepGame, cloneGame, STATUS, SPC, input, SCAN_WIDTH_8, SCAN_HEIGHT_8, FOE_SCAN_SIZE, SHIP_SPEED, SHIP_SLOW_SPEED } from './noiz2sa-game.js';
+
+export const BOT_VARIANTS = ['attack', 'no-attack'];
+/** the tail controller: `reflex` (steers off bullets) or `straight` (does not; for the look-ahead measurements) */
+export const TAILS = ['reflex', 'straight'];
+/** simulated frames (+ game copies) per game frame that fit the browser's 16 ms frame; see docs/g4-report.md */
+export const BROWSER_BUDGET = 600;
+export const DEFAULT_HORIZON = 48;
+
+const HOME_X = SCAN_WIDTH_8 / 2;
+const HOME_Y = Math.trunc((SCAN_HEIGHT_8 / 5) * 4);
+const EDGE = 1024 * 3;
+const SHIP_MV = [[0, -256], [181, -181], [256, 0], [181, 181], [0, 256], [-181, 181], [-256, 0], [-181, -181]];
+const NEAR = (72 * 256) ** 2;
+const REFLEX_WINDOW = 6;
+const IMPROVE_EVERY = 8;
+const HIT_R2 = (6 * 256) ** 2;
+const SIGMA2 = (14 * 256) ** 2;
+/** a simulated frame costs 1 + (live foe slots) / UNIT_FOES budget units */
+export const UNIT_FOES = 52;
+
+/** the enemy the attacker goes for: the lowest one above the ship (the boss in its scene, once it is alone) */
+export function attackTarget(g) {
+    let best = null, bestKey = -Infinity;
+    const sy = g.ship.y;
+    for (const f of g.foes) {
+        if (!f || f.spc !== SPC.FOE) continue;
+        if (f.y > sy - 24 * 256 || f.y < 0) continue;
+        const key = f.y - Math.abs(f.x - g.ship.x) * 0.5 + (f.type === 3 ? -64 * 256 : 0);
+        if (key > bestKey) { bestKey = key; best = f; }
+    }
+    return best;
+}
+
+/**
+ * The reflex tail controller: of the 9 directions at normal speed (and standing slow), the one whose next
+ * REFLEX_WINDOW frames, against the bullets' current motion extrapolated in straight lines, stay clearest,
+ * with a pull toward (tx, ty). Cheap; only ever a proposal — the plan is verified by the real simulation.
+ */
+function reflexInput(g, tx, ty, fire) {
+    const ship = g.ship, sx0 = ship.x, sy0 = ship.y;
+    const bx = [], by = [], bmx = [], bmy = [];
+    for (const f of g.foes) {
+        if (!f || f.spc === SPC.FOE) continue;
+        const dx = f.x - sx0, dy = f.y - sy0;
+        if (dx * dx + dy * dy < NEAR) { bx.push(f.x); by.push(f.y); bmx.push(f.mx); bmy.push(f.my); }
+    }
+    let best = 0, bestCost = Infinity;
+    for (let d = 0; d <= 8; d++) {
+        let sx = sx0, sy = sy0, speed = ship.speed, cost = 0;
+        for (let t = 1; t <= REFLEX_WINDOW; t++) {
+            if (speed < SHIP_SPEED) speed += 64;
+            if (d > 0) {
+                sx = Math.min(Math.max(sx + ((speed * SHIP_MV[d - 1][0]) >> 8), EDGE), SCAN_WIDTH_8 - EDGE);
+                sy = Math.min(Math.max(sy + ((speed * SHIP_MV[d - 1][1]) >> 8), EDGE), SCAN_HEIGHT_8 - EDGE);
+            }
+            for (let k = 0; k < bx.length; k++) {
+                const dx = bx[k] + bmx[k] * t - sx, dy = by[k] + bmy[k] * t - sy;
+                const d2 = dx * dx + dy * dy;
+                cost += d2 < HIT_R2 ? 1000 / t : Math.exp(-d2 / SIGMA2) * 4;
+            }
+        }
+        const ex = (sx - tx) / 256, ey = (sy - ty) / 256;
+        cost += 0.02 * Math.abs(ex) + 0.01 * Math.abs(ey);
+        if (cost < bestCost) { bestCost = cost; best = d; }
+    }
+    return input(best, fire, false);
+}
+
+/** the `straight` tail: head for (tx, ty) and ignore the bullets (all dodging is left to the exact search) */
+function straightInput(g, tx, ty, fire) {
+    const dx = tx - g.ship.x, dy = ty - g.ship.y, dead = 3 * 256;
+    const h = dx > dead ? 1 : dx < -dead ? -1 : 0, v = dy > dead ? 1 : dy < -dead ? -1 : 0;
+    return input(DIR[v + 1][h + 1], fire, false);
+}
+const DIR = [[8, 1, 2], [7, 0, 3], [6, 5, 4]]; // dir by [dy+1][dx+1]
+
+/** squared distance from the ship to the nearest bullet, capped */
+function clearance2(g) {
+    let best = (48 * 256) ** 2;
+    const sx = g.ship.x, sy = g.ship.y;
+    for (const f of g.foes) {
+        if (!f || f.spc === SPC.FOE) continue;
+        const dx = f.x - sx, dy = f.y - sy;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < best) best = d2;
+    }
+    return best;
+}
+
+/**
+ * makeBot({variant, horizon, budget, bankFrames}) → bot(g) → input byte, called once per frame in order
+ * (like the test policies). `bot.stats` counts what it did. A bot follows ONE game; if it is handed a game at
+ * another frame than it expects, it starts over from that game.
+ */
+export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'reflex' } = {}) {
+    if (!BOT_VARIANTS.includes(variant)) throw new Error(`unknown bot variant "${variant}" (have: ${BOT_VARIANTS.join(', ')})`);
+    if (!TAILS.includes(tailKind)) throw new Error(`unknown tail "${tailKind}" (have: ${TAILS.join(', ')})`);
+    const fire = variant === 'attack';
+    const H = Math.max(0, horizon | 0), K = snapEvery, cap = budget * bankFrames;
+    const stats = { frames: 0, cost: 0, steps: 0, lastSteps: 0, lastLive: 0, lastCost: 0, maxFrameCost: 0, repairs: 0, repairFails: 0, beams: 0, improves: 0, doomed: 0 };
+
+    // the plan: plan[i] is the input for frame f0 + i; snaps.get(f) is the game at frame f (before its input);
+    // end is the game after the whole plan; hits are the frames whose input runs into a hit
+    let f0 = -1, plan = [], snaps = new Map(), end = null, hits = [], bank = cap, spent = 0, lastFail = -1e9;
+
+    // a simulated frame (or a game copy) costs more with more objects alive: `unit` is set per game frame
+    // from the live foe slots then (enemies + bullets), so that a unit of budget is about the same CPU time
+    let unit = 1, steps = 0;
+    const charge = (n) => { spent += n * unit; steps += n; };
+    const left = () => bank - spent;
+
+    function target(c) {
+        if (!fire) return [HOME_X, HOME_Y];
+        const t = attackTarget(c);
+        return t ? [t.x, HOME_Y] : [HOME_X, HOME_Y];
+    }
+    const tail = tailKind === 'reflex'
+        ? (c) => { const [tx, ty] = target(c); return reflexInput(c, tx, ty, fire); }
+        : (c) => { const [tx, ty] = target(c); return straightInput(c, tx, ty, fire); };
+
+    /** step c with input b; true if the ship was hit */
+    function step(c, b, acc) {
+        charge(1);
+        let hit = false;
+        for (const e of stepGame(c, b)) {
+            if (e[0] === 'hit') hit = true;
+            else if (acc) {
+                if (e[0] === 'kill') acc.value += 4 + e[1] * 4;
+                else if (e[0] === 'damage') acc.value += 1;
+                else if (e[0] === 'star') acc.value += starWeight * e[1];
+            }
+        }
+        return hit;
+    }
+
+    /** extend the plan by one frame at its far end (with the tail controller) */
+    function extendOne() {
+        if (end.status !== STATUS.IN_GAME) { plan.push(fire ? input(0, true, false) : 0); return; }
+        if (end.frame % K === 0) { snaps.set(end.frame, cloneGame(end)); charge(1); }
+        const b = tail(end);
+        const f = end.frame;
+        if (step(end, b, null)) hits.push(f);
+        plan.push(b);
+    }
+
+    /**
+     * Roll out from state s (at frame s.frame) to frame E: the `fixed` inputs if given, else `first` held for
+     * `hold` frames; then the tail. Returns {inputs, firstHit (frame or Infinity), value, pos, room, from}, or
+     * null when the bank cannot pay for it.
+     */
+    function rollout(s, first, hold, E, fixed = null) {
+        if (left() < E - s.frame + 1) return null;
+        const c = cloneGame(s); charge(1);
+        const inputs = [], acc = { value: 0 };
+        let firstHit = Infinity;
+        while (c.frame < E && c.status === STATUS.IN_GAME) {
+            const i = c.frame - s.frame;
+            const b = fixed ? (i < fixed.length ? fixed[i] : tail(c)) : i < hold ? first : tail(c);
+            const f = c.frame;
+            inputs.push(b);
+            if (step(c, b, acc)) { firstHit = f; break; }
+        }
+        const [tx] = target(c);
+        const pos = -Math.abs(c.ship.x - tx) / 256 - Math.abs(c.ship.y - HOME_Y) / 512;
+        return { inputs, firstHit, value: acc.value, pos, room: Math.sqrt(clearance2(c)) / 256, from: s.frame };
+    }
+
+    const better = (a, b) => {
+        // lexicographic: survival (later first hit), then attack value, then position + room
+        if (!b) return true;
+        if (a.firstHit !== b.firstHit) return a.firstHit > b.firstHit;
+        if (a.value !== b.value) return a.value > b.value;
+        return a.pos + a.room > b.pos + b.room;
+    };
+
+    /** replace the plan from frame r.from with r.inputs, then re-simulate it to rebuild the snapshots */
+    function commit(r) {
+        const i0 = r.from - f0;
+        plan.length = i0;
+        hits = hits.filter((f) => f < r.from);
+        for (const f of [...snaps.keys()]) if (f > r.from) snaps.delete(f);
+        const s = r.from === f0 ? rootState : snaps.get(r.from);
+        end = cloneGame(s); charge(1);
+        for (const b of r.inputs) {
+            if (end.status !== STATUS.IN_GAME) { plan.push(b); continue; }
+            if (end.frame % K === 0 && end.frame !== r.from) { snaps.set(end.frame, cloneGame(end)); charge(1); }
+            const f = end.frame;
+            if (step(end, b, null)) hits.push(f);
+            plan.push(b);
+        }
+        while (plan.length < H && left() > 0) extendOne();
+    }
+
+    const INPUTS = [];
+    for (const slow of [false, true]) for (let d = 0; d <= 8; d++) INPUTS.push(input(d, fire, slow));
+
+    let rootState = null;
+
+    /** try the 18 held inputs (whole way, and 8 frames then the tail) from state s; the best result */
+    function tryFrom(s, E, best) {
+        for (const hold of [E, 8]) {
+            for (const b of INPUTS) {
+                const r = rollout(s, b, hold, E);
+                if (!r) return { best, out: true };
+                if (better(r, best)) best = r;
+            }
+        }
+        return { best, out: false };
+    }
+
+    function repair() {
+        stats.repairs++;
+        const E = f0 + plan.length;
+        const firstHit = hits[0];
+        const current = { firstHit, value: -Infinity, pos: -Infinity, room: 0 };
+        // branch points: snapshots before the hit, latest first, then the present
+        const points = [...snaps.keys()].filter((f) => f <= firstHit && f > f0).sort((a, b) => b - a);
+        points.push(f0);
+        let best = null;
+        for (const p of points) {
+            const s = p === f0 ? rootState : snaps.get(p);
+            const res = tryFrom(s, E, best);
+            best = res.best;
+            if (best && best.firstHit === Infinity) break;
+            if (res.out) break;
+        }
+        if ((!best || best.firstHit !== Infinity) && left() > 0) {
+            const b = beam(E);
+            if (b && better(b, best)) best = b;
+        }
+        if (best && best.firstHit > current.firstHit) { commit(best); }
+        if (hits.length) { stats.repairFails++; lastFail = f0; }
+    }
+
+    /** beam search from the present over 8-frame chunks (18 inputs each), keeping the 6 best; null if out of bank */
+    function beam(E) {
+        stats.beams++;
+        const C = 8, W = 6;
+        let front = [{ state: rootState, inputs: [], value: 0 }];
+        let bestDead = null;
+        while (front.length && front[0].state.frame < E) {
+            const next = [];
+            for (const n of front) {
+                for (const b of INPUTS) {
+                    if (left() < C + 1) return bestDead;
+                    const c = cloneGame(n.state); charge(1);
+                    const acc = { value: n.value };
+                    const inputs = n.inputs.slice();
+                    let hitAt = Infinity;
+                    for (let k = 0; k < C && c.frame < E && c.status === STATUS.IN_GAME; k++) {
+                        const f = c.frame;
+                        inputs.push(b);
+                        if (step(c, b, acc)) { hitAt = f; break; }
+                    }
+                    const node = { state: c, inputs, value: acc.value, room: Math.sqrt(clearance2(c)) / 256 };
+                    if (hitAt !== Infinity) {
+                        const r = { inputs, firstHit: hitAt, value: acc.value, pos: 0, room: 0, from: f0 };
+                        if (better(r, bestDead)) bestDead = r;
+                    } else next.push(node);
+                }
+            }
+            next.sort((a, b) => (b.room + b.value) - (a.room + a.value));
+            front = next.slice(0, W);
+            if (front.length && (front[0].state.frame >= E || front[0].state.status !== STATUS.IN_GAME)) {
+                const n = front[0];
+                const [tx] = target(n.state);
+                return { inputs: n.inputs, firstHit: Infinity, value: n.value, pos: -Math.abs(n.state.ship.x - tx) / 256, room: n.room, from: f0 };
+            }
+        }
+        return bestDead;
+    }
+
+    /** with budget to spare, try to do better than the current safe plan from the present */
+    function improve() {
+        const E = f0 + plan.length;
+        // the current plan's own value, measured the same way as the candidates
+        const cur = rollout(rootState, 0, 0, E, plan);
+        if (!cur) return;
+        let best = cur;
+        // as many candidate sets as the spare budget pays for (a bigger budget looks at more plans), keeping
+        // half the bank for repairs: each set is the 18 inputs held for `hold` frames, then the tail
+        const setCost = INPUTS.length * (H + 1) * unit;
+        const holds = [...new Set([8, H, 16, 4, 32, 2, 24].map((h) => Math.min(h, H)))];
+        for (const hold of holds) {
+            if (left() - cap / 2 < setCost) break;
+            for (const b of INPUTS) {
+                const r = rollout(rootState, b, hold, E);
+                if (!r) break;
+                if (better(r, best)) best = r;
+            }
+        }
+        if (best !== cur) { stats.improves++; commit(best); }
+    }
+
+    function reset(g) {
+        f0 = g.frame; plan = []; snaps = new Map(); hits = []; lastFail = -1e9;
+        end = cloneGame(g); charge(1);
+    }
+
+    function bot(g) {
+        if (H === 0) { stats.frames++; return tail(g); } // no look-ahead at all: the tail controller alone
+        spent = 0; steps = 0;
+        let live = 0;
+        for (const f of g.foes) if (f) live++;
+        unit = 1 + live / UNIT_FOES;
+        bank = Math.min(bank + budget, cap);
+        if (g.frame !== f0 || !end) reset(g);
+        rootState = g;
+        while (plan.length < H) extendOne();
+        if (g.status === STATUS.IN_GAME) {
+            if (hits.length && (f0 - lastFail >= K || lastFail < 0)) repair();
+            else if (!hits.length && f0 % IMPROVE_EVERY === 0 && left() > cap / 2 + (INPUTS.length + 1) * (H + 1) * unit) improve();
+        }
+        const b = plan.shift();
+        f0++;
+        snaps.delete(f0 - 1);
+        if (hits.length && hits[0] < f0) { hits.shift(); stats.doomed++; }
+        bank -= spent;
+        stats.frames++; stats.cost += spent; stats.steps += steps; stats.lastSteps = steps; stats.lastLive = live; stats.lastCost = spent;
+        if (spent > stats.maxFrameCost) stats.maxFrameCost = spent;
+        return b;
+    }
+    bot.stats = stats;
+    bot.config = { variant, horizon: H, budget, bankFrames, snapEvery: K, starWeight, tail: tailKind };
+    return bot;
+}

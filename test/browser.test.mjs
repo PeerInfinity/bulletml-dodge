@@ -10,6 +10,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { chromium } from 'playwright';
+import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
+import { newGame, stepGame, STATUS } from '../src/game/noiz2sa-game.js';
+import { makeBot, BROWSER_BUDGET, DEFAULT_HORIZON } from '../src/game/bot.js';
+import { tapeInputs } from '../src/game/tape.js';
 
 const root = new URL('..', import.meta.url).pathname;
 const shots = path.join(root, 'docs/g3-screens');
@@ -96,8 +100,8 @@ try {
     console.log(`ok keyboard: ship moved ${x0} → ${x1}, shots fired, panel redrawn (frame ${s.game.frame})`);
     await page.keyboard.up('KeyZ');
 
-    // bot toggle: B hands control to the policy (lookahead), which moves the ship with no key held, survives,
-    // and kills something, so the score panel changes too
+    // bot toggle: B hands control to the default policy (the G4 bot, attack, in its worker), which moves the ship
+    // with no key held, survives, and kills something, so the score panel changes too
     const p0 = await panelPixels(0, 0, 160, 130);
     const score0 = s.game.score;
     await page.keyboard.press('KeyB');
@@ -114,7 +118,7 @@ try {
     await page.locator('#wrap').screenshot({ path: path.join(shots, 'play.png') });
     await page.keyboard.press('KeyB');
     assert.equal((await state()).bot, false);
-    console.log(`ok bot toggle: lookahead moved the ship (${bx},${by}) → (${s.game.shipX},${s.game.shipY}) with no key held; score ${score0} → ${s.game.score} at frame ${s.game.frame}; ${botRate.toFixed(0)} frames/s with the bot on (the game's rate is 62.5)`);
+    console.log(`ok bot toggle: ${s.policy} moved the ship (${bx},${by}) → (${s.game.shipX},${s.game.shipY}) with no key held; score ${score0} → ${s.game.score} at frame ${s.game.frame}; ${botRate.toFixed(0)} frames/s with the bot on (the game's rate is 62.5)`);
 
     // pause / unpause
     await page.keyboard.press('KeyP');
@@ -149,6 +153,44 @@ try {
     fs.unlinkSync(tmp); fs.unlinkSync(nodeDump);
     assert.equal(nodeLast, live, 'Node replays the downloaded tape to the same state');
     console.log(`ok Esc → stage select; tape (${tape.frames} frames, seed ${tape.seed}, ${dl.suggestedFilename()}) replays to the live state in the page and in Node`);
+
+    // ── 2b. the G4 bot in a busy scene: the game keeps full speed, and the page plays exactly Node's moves ──
+    {
+        const src = JSON.parse(fs.readFileSync(path.join(root, 'tapes/s10-lookahead-seed1.json'), 'utf8'));
+        const FROM = 8900; // stage 10's busiest stretch (~400 live bullets and enemies), in the boss scene
+        const prefix = tapeInputs(src).slice(0, FROM);
+        await page.keyboard.press('KeyB'); // the bot on from stage select, so it plays from the first frame after the prefix
+        await page.evaluate(([t, prefix]) => { window.noiz.setPolicy('bot: attack'); window.noiz.startStage(t.stage, { seed: t.seed, endlessSeed: t.endlessSeed, prefix }); }, [src, prefix]);
+        s = await state();
+        assert.equal(s.bot, true); assert.ok(s.game.frame >= FROM);
+        await page.waitForFunction((f) => window.noiz.state().game.frame >= f, FROM + 60, { timeout: 30000 }); // warm-up
+        const s1 = await state(), f1 = s1.game.frame, t1 = Date.now();
+        await page.waitForTimeout(6000);
+        s = await state();
+        const fps = (s.game.frame - f1) / ((Date.now() - t1) / 1000);
+        await page.keyboard.press('KeyP');
+        fs.mkdirSync(path.join(root, 'docs/g4-screens'), { recursive: true });
+        await page.locator('#wrap').screenshot({ path: path.join(root, 'docs/g4-screens/bot-busy.png') });
+        s = await state();
+        const g4 = s.g4;
+        console.log(`ok G4 bot (attack, horizon ${DEFAULT_HORIZON}, budget ${BROWSER_BUDGET}) from stage 10 frame ${FROM}: ${fps.toFixed(1)} frames/s (the game's rate is 62.5); worker CPU ${g4.meanMs.toFixed(1)} ms/frame mean (last 600 frames), ${g4.maxMs.toFixed(0)} ms max, ${(g4.msPerUnit * 1000).toFixed(1)} µs per budget unit; ${g4.stalls - s1.g4.stalls} waits in the measured 6 s (${s1.g4.stalls} while the worker caught up at the start); ${s.game.left} ships left`);
+        assert.ok(fps >= 58, `the game keeps ≥ 58 frames/s with the bot on in a busy scene (got ${fps.toFixed(1)})`);
+        await page.keyboard.press('Escape');
+        const tape = await page.evaluate(() => window.noiz.lastTape());
+        assert.deepEqual(tape.bot, { variant: 'attack', horizon: DEFAULT_HORIZON, budget: BROWSER_BUDGET });
+        // Node: the same prefix, then makeBot with the same settings, must choose the very same inputs
+        const inputs = tapeInputs(tape);
+        assert.deepEqual(inputs.slice(0, FROM), prefix);
+        const g = newGame(loadNoiz2saPatterns(), tape.stage, { seed: tape.seed, endlessSeed: tape.endlessSeed });
+        for (const b of prefix) stepGame(g, b);
+        const bot = makeBot({ variant: 'attack', horizon: DEFAULT_HORIZON, budget: BROWSER_BUDGET });
+        for (let f = FROM; f < inputs.length && g.status === STATUS.IN_GAME; f++) {
+            const b = bot(g);
+            assert.equal(b, inputs[f], `the page's bot and Node's differ at frame ${f}`);
+            stepGame(g, b);
+        }
+        console.log(`ok the page's bot played ${inputs.length - FROM} frames, input for input what Node's bot plays`);
+    }
 
     // ── 3. a busy mid-stage frame, then a stage clear, from replayed tapes ──
     const busy = JSON.parse(fs.readFileSync(path.join(root, 'tapes/s05-lookahead-seed1.json'), 'utf8'));
