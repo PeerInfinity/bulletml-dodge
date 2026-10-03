@@ -19,6 +19,8 @@
  *  - With budget to spare it tries to IMPROVE the plan the same way from the present (attack value, then the
  *    distance to the target, then room around the ship), never trading survival.
  *
+ * `costCap` (slice P1, off by default) caps one frame's spending too, in the same units.
+ *
  * The budget is a count, not wall-clock, so a run is reproducible: every simulated frame and every game copy
  * costs 1 unit; each game frame adds `budget` units to a bank capped at `budget × bankFrames`; searches stop
  * when the bank is empty. `BROWSER_BUDGET` is calibrated to the browser's frame (docs/g4-report.md).
@@ -122,12 +124,12 @@ function clearance2(g) {
  * (like the test policies). `bot.stats` counts what it did. A bot follows ONE game; if it is handed a game at
  * another frame than it expects, it starts over from that game.
  */
-export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'straight' } = {}) {
+export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'straight', costCap = Infinity } = {}) {
     if (!BOT_VARIANTS.includes(variant)) throw new Error(`unknown bot variant "${variant}" (have: ${BOT_VARIANTS.join(', ')})`);
     if (!TAILS.includes(tailKind)) throw new Error(`unknown tail "${tailKind}" (have: ${TAILS.join(', ')})`);
     const fire = variant === 'attack';
     const H = Math.max(0, horizon | 0), K = snapEvery, cap = budget * bankFrames;
-    const stats = { frames: 0, cost: 0, steps: 0, clones: 0, lastSteps: 0, lastLive: 0, lastCost: 0, maxFrameCost: 0, repairs: 0, repairFails: 0, beams: 0, improves: 0, doomed: 0 };
+    const stats = { frames: 0, cost: 0, steps: 0, clones: 0, lastSteps: 0, lastLive: 0, lastCost: 0, maxFrameCost: 0, repairs: 0, repairFails: 0, beams: 0, improves: 0, improveTries: 0, doomed: 0 };
 
     // the plan: plan[i] is the input for frame f0 + i; snaps.get(f) is the game at frame f (before its input);
     // end is the game after the whole plan; hits are the frames whose input runs into a hit
@@ -139,6 +141,9 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     const charge = (n) => { spent += n * unit; steps += n; };
     const clone = (s) => { stats.clones++; return cloneGame(s); };
     const left = () => bank - spent;
+    // what this frame's decision may still spend: the bank, and at most `costCap` units in one frame (slice P1:
+    // a per-decision cap, counted in units like everything else, so still reproducible; Infinity = no cap, G4's bot)
+    const room = () => Math.min(bank, costCap) - spent;
 
     function target(c) {
         if (!fire) return [HOME_X, HOME_Y];
@@ -180,7 +185,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
      * null when the bank cannot pay for it.
      */
     function rollout(s, first, hold, E, fixed = null) {
-        if (left() < E - s.frame + 1) return null;
+        if (room() < E - s.frame + 1) return null;
         const c = clone(s); charge(1);
         const inputs = [], acc = { value: 0 };
         let firstHit = Infinity;
@@ -255,7 +260,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
             if (best && best.firstHit === Infinity) break;
             if (res.out) break;
         }
-        if ((!best || best.firstHit !== Infinity) && left() > 0) {
+        if ((!best || best.firstHit !== Infinity) && room() > 0) {
             const b = beam(E);
             if (b && better(b, best)) best = b;
         }
@@ -273,7 +278,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
             const next = [];
             for (const n of front) {
                 for (const b of INPUTS) {
-                    if (left() < C + 1) return bestDead;
+                    if (room() < C + 1) return bestDead;
                     const c = clone(n.state); charge(1);
                     const acc = { value: n.value };
                     const inputs = n.inputs.slice();
@@ -303,6 +308,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
 
     /** with budget to spare, try to do better than the current safe plan from the present */
     function improve() {
+        stats.improveTries++;
         const E = f0 + plan.length;
         // the current plan's own value, measured the same way as the candidates
         const cur = rollout(rootState, 0, 0, E, plan);
@@ -313,7 +319,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         const setCost = INPUTS.length * (H + 1) * unit;
         const holds = [...new Set([8, H, 16, 4, 32, 2, 24].map((h) => Math.min(h, H)))];
         for (const hold of holds) {
-            if (left() - cap / 2 < setCost) break;
+            if (left() - cap / 2 < setCost || room() < setCost) break;
             for (const b of INPUTS) {
                 const r = rollout(rootState, b, hold, E);
                 if (!r) break;
@@ -340,7 +346,8 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         while (plan.length < H) extendOne();
         if (g.status === STATUS.IN_GAME) {
             if (hits.length && (f0 - lastFail >= K || lastFail < 0)) repair();
-            else if (!hits.length && f0 % IMPROVE_EVERY === 0 && left() > cap / 2 + (INPUTS.length + 1) * (H + 1) * unit) improve();
+            else if (!hits.length && f0 % IMPROVE_EVERY === 0 && left() > cap / 2 + (INPUTS.length + 1) * (H + 1) * unit
+                && room() > (INPUTS.length + 1) * (H + 1) * unit) improve();
         }
         const b = plan.shift();
         f0++;
@@ -352,6 +359,6 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         return b;
     }
     bot.stats = stats;
-    bot.config = { variant, horizon: H, budget, bankFrames, snapEvery: K, starWeight, tail: tailKind };
+    bot.config = { variant, horizon: H, budget, bankFrames, snapEvery: K, starWeight, tail: tailKind, ...(costCap !== Infinity ? { costCap } : {}) };
     return bot;
 }

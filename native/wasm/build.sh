@@ -11,7 +11,7 @@ cd "$(dirname "$0")"
 N=..
 OUT=build
 mkdir -p "$OUT/obj"
-OPT="${OPT:--O2}"
+OPT="${OPT:--O3}"
 CFLAGS="$OPT -ffp-contract=off -fno-fast-math -w"
 LIBFLAGS="-std=gnu++98 -include cstring -include cstdlib -I $N/bulletml"
 for f in $N/bulletml/*.cpp $N/bulletml/tinyxml/tinyxml.cpp $N/bulletml/tinyxml/tinyxmlparser.cpp $N/bulletml/tinyxml/tinyxmlerror.cpp; do

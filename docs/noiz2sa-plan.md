@@ -90,6 +90,16 @@ stays reproducible.
   ⚖ For the coordinator: the browser budget (kept 1×), the page's default policy (now "bot: attack"), a bot without
   future knowledge as the next measurement.
 
+- **P1 DONE 2026-10-03, branch `perf-p1`** (report: `docs/p1-report.md`). The page's lag with the bot on: the bot's
+  `improve` spends ~half its bank every 8th frame (4,300–5,000 units, 18–100 ms here), and on a ~5× slower worker the
+  mean passes 16 ms, so the page waits. Fixes that change no move (137/137 native-identical, 12 G4 tapes re-recorded
+  byte for byte, page = Node): a 1.3–1.4× faster engine per budget unit, the worker no longer idling between slices
+  (setTimeout clamp), LEAD 60 → 180, panels redrawn on change. Worker 5× slowed: waits per 40 s 234 → 52 (stage 10),
+  497 → 22 (ENDLESS), all left in the first ~2 s. Overlay: key F. `costCap` (off by default): 0 lives lost on 32 runs,
+  −2…−30% attack score. Wasm build of the native engine (`native/wasm/`): every frame of 149 tapes equal, ~1.8× per
+  step, snapshot/restore 18–19 µs; bot estimate ~1.6×. ⚖ Recommended: neither wasm nor a data-layout rewrite now; a
+  start-up hold for the remaining waits.
+
 ### Where G2 may find differences (known places the port is not literally the C)
 
 *(As written before G2. The outcome of each is in the G2 bullet above and in `docs/g2-report.md`.)*

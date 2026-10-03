@@ -28,13 +28,13 @@ const rows = [], inputs = [];
 const t0 = performance.now();
 let hits = 0;
 while (g.frame < frames && g.status === STATUS.IN_GAME) {
-    const before = { repairs: st.repairs, improves: st.improves, beams: st.beams, clones: st.clones, steps: st.steps };
+    const before = { repairs: st.repairs, improves: st.improves, improveTries: st.improveTries, beams: st.beams, clones: st.clones, steps: st.steps };
     const t = performance.now();
     const b = bot(g);
     const ms = performance.now() - t;
     let live = 0;
     for (const f of g.foes) if (f) live++;
-    const kind = st.beams > before.beams ? 'beam' : st.repairs > before.repairs ? 'repair' : st.improves > before.improves ? 'improve' : 'extend';
+    const kind = st.beams > before.beams ? 'beam' : st.repairs > before.repairs ? 'repair' : st.improves > before.improves ? 'improve' : st.improveTries > before.improveTries ? 'improve (kept the plan)' : 'extend';
     rows.push({ frame: g.frame, ms, units: st.lastCost, kind, clones: st.clones - before.clones, steps: st.steps - before.steps - (st.clones - before.clones), live });
     inputs.push(b);
     for (const e of stepGame(g, b)) if (e[0] === 'hit') hits++;

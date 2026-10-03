@@ -36,6 +36,7 @@ const app = {
     worker: null, g4: null, // g4: {id, from, queue, stalls, ms: [recent bot CPU ms per frame], wait}
     replay: null, // {tape, name, inputs}
     workerLead: 0, // how far ahead the worker may play (its LEAD)
+    costCap: Infinity, // the bot's per-frame cost cap in budget units (slice P1; checks only, window.noiz.setCostCap)
     speed: 1, lastTape: null, effects: [], banner: '', endReported: false,
 };
 if (!ALL_POLICIES.includes(app.policyName)) app.policyName = 'bot: attack';
@@ -119,7 +120,7 @@ function finishRecording() {
     app.lastTape = makeTape({
         stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, played: app.played,
         extra: { player: app.botUsed ? `human+${app.policyName.replace('bot: ', 'bot-')}` : 'human',
-            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName], horizon: app.horizon, budget: app.budgetX * BROWSER_BUDGET } } : {}) },
+            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName], horizon: app.horizon, budget: app.budgetX * BROWSER_BUDGET, ...(app.costCap !== Infinity ? { costCap: app.costCap } : {}) } } : {}) },
     });
     app.played = [];
     updateControls();
@@ -146,7 +147,7 @@ function armBot() {
     const id = ++g4Id;
     app.g4 = { id, from: app.g.frame, queue: [], stalls: 0, ms: [], units: [], maxMs: 0, startedAt: app.g.frame };
     app.worker.postMessage({ type: 'start', id, stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed,
-        inputs: app.played.slice(), variant: G4[app.policyName], horizon: app.horizon, budget: app.budgetX * BROWSER_BUDGET });
+        inputs: app.played.slice(), variant: G4[app.policyName], horizon: app.horizon, budget: app.budgetX * BROWSER_BUDGET, costCap: app.costCap });
 }
 function stopG4() {
     if (app.g4 && app.worker) app.worker.postMessage({ type: 'stop', id: app.g4.id });
@@ -235,10 +236,11 @@ const perf = {
     t0: 0, frames: 0, gaps33: 0, gaps50: 0, maxGap: 0, gameFrames: 0, waits0: 0,
     wSum: 0, wN: 0, wMax: 0, // the worker's ms per frame it played
     waitRuns: [], // [game frame, ticks waited there]
+    renderSum: 0, renderMax: 0, // the page's drawing, ms (the canvas calls; the browser's own raster comes later)
     recent: [], // [time, game frame] of the last ~second, for the game's frames/s
 };
 function perfReset() {
-    Object.assign(perf, { t0: performance.now(), frames: 0, gaps33: 0, gaps50: 0, maxGap: 0, gameFrames: 0, waits0: app.g4 ? app.g4.stalls : 0, wSum: 0, wN: 0, wMax: 0, waitRuns: [] });
+    Object.assign(perf, { t0: performance.now(), frames: 0, gaps33: 0, gaps50: 0, maxGap: 0, gameFrames: 0, waits0: app.g4 ? app.g4.stalls : 0, wSum: 0, wN: 0, wMax: 0, waitRuns: [], renderSum: 0, renderMax: 0 });
 }
 function perfWait(frame) {
     const w = perf.waitRuns, last = w[w.length - 1];
@@ -259,8 +261,9 @@ function perfNumbers() {
     const secs = (performance.now() - perf.t0) / 1000;
     return {
         secs, displayFrames: perf.frames, displayFps: perf.frames / Math.max(secs, 1e-3), gaps33: perf.gaps33, gaps50: perf.gaps50, maxGap: perf.maxGap,
-        gameFps: fps, gameFrames: perf.gameFrames,
-        bot: w && { waits: w.stalls - perf.waits0, waitRuns: perf.waitRuns, lead: w.queue.length, frames: perf.wN, meanMs: perf.wSum / Math.max(1, perf.wN), maxMs: perf.wMax,
+        gameFps: fps, gameFrames: perf.gameFrames, renderMs: perf.renderSum / Math.max(1, perf.frames), renderMaxMs: perf.renderMax,
+        // startWaits: the first bot frame, while the worker makes its first decision (the page holds the game still)
+        bot: w && { waits: w.stalls - perf.waits0, startWaits: perf.waitRuns.filter(([f]) => f === w.startedAt).reduce((a, [, n]) => a + n, 0), waitRuns: perf.waitRuns, lead: w.queue.length, frames: perf.wN, meanMs: perf.wSum / Math.max(1, perf.wN), maxMs: perf.wMax,
             p99Ms: w.ms.length ? [...w.ms].sort((a, b) => a - b)[Math.floor(w.ms.length * 0.99)] : 0 }, // p99: the last 600 frames
     };
 }
@@ -281,8 +284,8 @@ function perfShow(now) {
     const p = perfNumbers(), b = p.bot;
     perf.el.textContent = [
         `display ${p.displayFps.toFixed(1)}/s  gaps>33ms ${p.gaps33}  >50ms ${p.gaps50}  max ${p.maxGap.toFixed(0)} ms`,
-        `game ${p.gameFps.toFixed(1)} frames/s (62.5)`,
-        b ? `bot waits ${b.waits}  lead ${b.lead}/${app.workerLead} frames` : 'bot: not in the worker',
+        `game ${p.gameFps.toFixed(1)} frames/s (62.5)  draw ${p.renderMs.toFixed(2)} ms/frame, max ${p.renderMaxMs.toFixed(1)}`,
+        b ? `bot waits ${b.waits} (${b.startWaits} at its start)  lead ${b.lead}/${app.workerLead} frames` : 'bot: not in the worker',
         b ? `worker ${b.meanMs.toFixed(1)} ms/frame mean  p99 ${b.p99Ms.toFixed(0)}  max ${b.maxMs.toFixed(0)}` : '',
         `since ${p.secs.toFixed(0)} s (F hides; resets on show)`,
     ].filter(Boolean).join('\n');
@@ -299,7 +302,10 @@ function loop(now) {
         if (!app.paused) for (let k = 0; k < (app.mode === 'replay' ? app.speed : 1); k++) tick();
     }
     if (acc > INTERVAL_BASE * 8) acc = 0; // too slow to keep up: slow down rather than spiral
+    const r0 = performance.now();
     render();
+    const rms = performance.now() - r0;
+    perf.renderSum += rms; if (rms > perf.renderMax) perf.renderMax = rms;
     perfDisplayFrame(now, gap, app.g ? Math.max(0, app.g.frame - f0) : 0);
     perfShow(now);
     requestAnimationFrame(loop);
@@ -436,6 +442,8 @@ window.noiz = {
     perfReset: () => perfReset(),
     /** (checks only) the worker spins so each of its bot frames takes factor× as long: a slower machine */
     setWorkerSlowdown: (factor) => app.worker.postMessage({ type: 'slow', factor }),
+    /** (checks only) the G4 bot's per-frame cost cap in budget units (Infinity: none, the default) for the next start */
+    setCostCap: (n) => { app.costCap = n; },
     fieldX: FIELD_X,
 };
 window.noiz.ready = main().then(() => true, (e) => { console.error(e); app.banner = String(e); throw e; });
