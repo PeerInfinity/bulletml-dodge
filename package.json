@@ -2,7 +2,9 @@
   "name": "bulletml-dodge",
   "version": "1.0.0",
   "scripts": {
-    "test": "node test/game.test.mjs"
+    "test": "node test/game.test.mjs",
+    "native:build": "sh native/build.sh",
+    "compare-native": "node bin/compare-native.mjs"
   },
   "keywords": [],
   "author": "",
