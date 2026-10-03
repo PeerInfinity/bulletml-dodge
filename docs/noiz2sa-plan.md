@@ -49,3 +49,23 @@ Started 2026-10-03. Rulings by the user (verbatim where quoted):
 
 The single-pattern harness (`src/noiz2sa.js`, `bin/run-pattern.mjs`) stays as it is, so the first sweep
 stays reproducible.
+
+## Status
+
+- **G1 DONE 2026-10-03** (`4a6d4ec`). `npm test`: a mid-game copy continues identically; stepping a copy
+  leaves the original untouched; an invincible test chaser clears stage 1 (boss kill → stage clear → title).
+  Speed: a whole stage in ~0.3 s of CPU. Test policies in `bin/play-game.mjs` (`chase`, `random`,
+  `fire-stay`) are smoke tests, not the bot.
+
+### Where G2 may find differences (known places the port is not literally the C)
+
+1. **`<vanish>` then a new bullet in the same frame.** The C frees the vanishing foe's slot *during* its
+   run, so a bullet fired later in that run can take the slot (and the C then moves it in the same
+   iteration). The port frees the slot after the run.
+2. **`sctbl[d]` with an unmasked `d`.** After a `changeDirection` the C can index past the table
+   (undefined behaviour — it reads whatever follows); the port wraps `d`.
+3. **Float evaluation.** The port assumes SSE single precision (x86-64 gcc). The 2003 Windows binary
+   likely used x87 extended precision, so it is not the reference — the native Linux build is.
+4. **Formula operand order.** libBulletML leaves `a + b` evaluation order to the compiler; it matters only
+   with two `$rand`s in one formula, and no Noiz2sa pattern has one.
+5. **Pattern order.** Sorted by file name in both; the original `readdir` order is filesystem-dependent.
