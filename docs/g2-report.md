@@ -291,6 +291,7 @@ output is in the `.txt` files beside them):
 
 No handshake message reached this session (`bulletml-g2`): `ReadNotifications` was empty at the start,
 during and at the end of the slice, and no cross-session message arrived. The coordinator's memory
-names `archipelago-cc-94` as the sender. A reply was attempted there after this report was pushed; the
-result is recorded in the memory file `project_bulletml_dodge.md`. This report file is the report back.
+names `archipelago-cc-94` as the sender. A reply was attempted there after this report was pushed, and it **failed**:
+"No agent named 'archipelago-cc-94' is reachable" (the session list was too long to search completely).
+**This report file is the report back.**
 
