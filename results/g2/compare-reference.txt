@@ -1,0 +1,268 @@
+same  s01-chase-seed1: 9272 frames, end st=0 scene=9 score=806620 left=-1 (1.8 s)
+same  s01-chase-seed2: 5674 frames, end st=0 scene=5 score=437000 left=-1 (0.9 s)
+same  s01-chase-seed3: 5658 frames, end st=0 scene=5 score=421520 left=-1 (0.6 s)
+same  s01-fire-stay-seed1: 1639 frames, end st=0 scene=1 score=0 left=-1 (0.2 s)
+same  s01-fire-stay-seed2: 1639 frames, end st=0 scene=1 score=0 left=-1 (0.1 s)
+same  s01-fire-stay-seed3: 1647 frames, end st=0 scene=1 score=0 left=-1 (0.1 s)
+UB    s01-lookahead-seed1: 10494 / 10494 frames; first at frame 6481 in F, after an sctbl over-read at frame 6481 (slot 0, d=-15)
+      js     f=6481 st=1 sc=586190 l=4 bs=740 scene=6 ship=22084,107368,0 nf=19 F=1a3a0908 nb=2 B=50d71884 S=a957148d
+      native f=6481 st=1 sc=586190 l=4 bs=740 scene=6 ship=22084,107368,0 nf=19 F=802b4676 nb=2 B=50d71884 S=a957148d
+same  s01-random-seed1: 4725 frames, end st=0 scene=4 score=35430 left=-1 (0.6 s)
+same  s01-random-seed2: 3550 frames, end st=0 scene=3 score=14260 left=-1 (0.4 s)
+same  s01-random-seed3: 4725 frames, end st=0 scene=4 score=35180 left=-1 (0.4 s)
+UB    s02-chase-seed1: 10016 / 10016 frames; first at frame 7231 in F, after an sctbl over-read at frame 7231 (slot 21, d=1026)
+      js     f=7231 st=1 sc=1790490 l=3 bs=150 scene=7 ship=60672,98304,0 nf=33 F=eb08f8bf nb=9 B=b07ddf40 S=54c86716
+      native f=7231 st=1 sc=1790490 l=3 bs=150 scene=7 ship=60672,98304,0 nf=33 F=acc1a0cb nb=9 B=b07ddf40 S=54c86716
+UB    s02-chase-seed2: 8184 / 8184 frames; first at frame 7279 in F, after an sctbl over-read at frame 7273 (slot 26, d=-2)
+      js     f=7279 st=1 sc=1745320 l=0 bs=260 scene=7 ship=60672,98304,0 nf=39 F=5bc78f00 nb=12 B=30ec09b6 S=54c86716
+      native f=7279 st=1 sc=1745320 l=0 bs=260 scene=7 ship=60672,98304,0 nf=39 F=7644f099 nb=12 B=30ec09b6 S=54c86716
+same  s02-chase-seed3: 8232 frames, end st=0 scene=8 score=1705760 left=-1 (0.8 s)
+same  s02-fire-stay-seed1: 1798 frames, end st=0 scene=1 score=16310 left=-1 (0.2 s)
+same  s02-fire-stay-seed2: 1818 frames, end st=0 scene=1 score=5060 left=-1 (0.3 s)
+same  s02-fire-stay-seed3: 1807 frames, end st=0 scene=1 score=4060 left=-1 (0.2 s)
+UB    s02-lookahead-seed1: 10582 / 10582 frames; first at frame 7236 in nf, F, after an sctbl over-read at frame 7236 (slot 31, d=-5)
+      js     f=7236 st=1 sc=1428320 l=5 bs=10 scene=7 ship=61115,97296,0 nf=44 F=414f4751 nb=3 B=67abaa5b S=b27cb1b2
+      native f=7236 st=1 sc=1428320 l=5 bs=10 scene=7 ship=61115,97296,0 nf=43 F=9ba35139 nb=3 B=67abaa5b S=b27cb1b2
+same  s02-random-seed1: 1046 frames, end st=0 scene=1 score=35690 left=-1 (0.1 s)
+same  s02-random-seed2: 1046 frames, end st=0 scene=1 score=43400 left=-1 (0.1 s)
+same  s02-random-seed3: 1046 frames, end st=0 scene=1 score=23090 left=-1 (0.2 s)
+UB    s03-chase-seed1: 10235 / 10235 frames; first at frame 3145 in F, after an sctbl over-read at frame 3145 (slot 39, d=1041)
+      js     f=3145 st=1 sc=279060 l=2 bs=660 scene=3 ship=16640,98304,0 nf=44 F=9b365abf nb=50 B=8d063a51 S=98ca47f0
+      native f=3145 st=1 sc=279060 l=2 bs=660 scene=3 ship=16640,98304,0 nf=44 F=7b08e41a nb=50 B=8d063a51 S=98ca47f0
+same  s03-chase-seed2: 6524 frames, end st=0 scene=6 score=741520 left=-1 (0.8 s)
+same  s03-chase-seed3: 6524 frames, end st=0 scene=6 score=829140 left=-1 (0.7 s)
+same  s03-fire-stay-seed1: 1652 frames, end st=0 scene=1 score=6960 left=-1 (0.2 s)
+same  s03-fire-stay-seed2: 1898 frames, end st=0 scene=1 score=3140 left=-1 (0.2 s)
+same  s03-fire-stay-seed3: 1652 frames, end st=0 scene=1 score=7550 left=-1 (0.2 s)
+UB    s03-lookahead-seed1: 10633 / 10633 frames; first at frame 3141 in F, after an sctbl over-read at frame 3141 (slot 3, d=1031)
+      js     f=3141 st=1 sc=173710 l=2 bs=610 scene=3 ship=29874,98475,0 nf=67 F=158ab5cc nb=37 B=e206a840 S=9d3fcdde
+      native f=3141 st=1 sc=173710 l=2 bs=610 scene=3 ship=29874,98475,0 nf=67 F=4f52d7c2 nb=37 B=e206a840 S=9d3fcdde
+same  s03-random-seed1: 2012 frames, end st=0 scene=2 score=31930 left=-1 (0.2 s)
+same  s03-random-seed2: 1501 frames, end st=0 scene=1 score=13890 left=-1 (0.2 s)
+same  s03-random-seed3: 1774 frames, end st=0 scene=1 score=9970 left=-1 (0.2 s)
+UB    s04-chase-seed1: 2715 / 2715 frames; first at frame 1634 in F, after an sctbl over-read at frame 1634 (slot 8, d=1055)
+      js     f=1634 st=1 sc=95760 l=0 bs=260 scene=1 ship=12288,98304,97 nf=15 F=71c4dc47 nb=16 B=dbfd120f S=92ab63a3
+      native f=1634 st=1 sc=95760 l=0 bs=260 scene=1 ship=12288,98304,97 nf=15 F=8547b01 nb=16 B=dbfd120f S=92ab63a3
+UB    s04-chase-seed2: 3872 / 3872 frames; first at frame 1420 in F, after an sctbl over-read at frame 1420 (slot 6, d=-16)
+      js     f=1420 st=1 sc=119260 l=1 bs=360 scene=1 ship=29440,98304,0 nf=62 F=f4d9e2b3 nb=36 B=eafcd354 S=5506c1c6
+      native f=1420 st=1 sc=119260 l=1 bs=360 scene=1 ship=29440,98304,0 nf=62 F=9da82a05 nb=36 B=eafcd354 S=5506c1c6
+UB    s04-chase-seed3: 2420 / 2420 frames; first at frame 1281 in F, after an sctbl over-read at frame 1281 (slot 1, d=1054)
+      js     f=1281 st=1 sc=76850 l=0 bs=200 scene=1 ship=65280,98304,0 nf=24 F=93b05e3d nb=13 B=dcbf89a1 S=661a192e
+      native f=1281 st=1 sc=76850 l=0 bs=200 scene=1 ship=65280,98304,0 nf=24 F=4f98e1fc nb=13 B=dcbf89a1 S=661a192e
+UB    s04-fire-stay-seed1: 2268 / 2268 frames; first at frame 1205 in F, after an sctbl over-read at frame 1205 (slot 0, d=1044)
+      js     f=1205 st=1 sc=23990 l=0 bs=10 scene=1 ship=40960,98304,161 nf=4 F=53eda8c0 nb=3 B=1a9b9a5c S=567d8c3b
+      native f=1205 st=1 sc=23990 l=0 bs=10 scene=1 ship=40960,98304,161 nf=4 F=1dff4d47 nb=3 B=1a9b9a5c S=567d8c3b
+UB    s04-fire-stay-seed2: 2278 / 2278 frames; first at frame 1124 in F, after an sctbl over-read at frame 1124 (slot 3, d=1058)
+      js     f=1124 st=1 sc=16200 l=1 bs=20 scene=1 ship=40960,98304,0 nf=15 F=be3b2c72 nb=1 B=bcad29e2 S=646b6ee5
+      native f=1124 st=1 sc=16200 l=1 bs=20 scene=1 ship=40960,98304,0 nf=15 F=d2ac6a14 nb=1 B=bcad29e2 S=646b6ee5
+UB    s04-fire-stay-seed3: 2293 / 2278 frames; first at frame 1209 in F, after an sctbl over-read at frame 1209 (slot 0, d=1044)
+      js     f=1209 st=1 sc=13720 l=0 bs=10 scene=1 ship=40960,98304,159 nf=5 F=23660509 nb=1 B=bd1b70eb S=ec2741ab
+      native f=1209 st=1 sc=13720 l=0 bs=10 scene=1 ship=40960,98304,159 nf=5 F=d3df3c36 nb=1 B=bd1b70eb S=ec2741ab
+UB    s04-lookahead-seed1: 10594 / 8122 frames; first at frame 1177 in F, after an sctbl over-read at frame 1177 (slot 0, d=-45)
+      js     f=1177 st=1 sc=84780 l=2 bs=110 scene=1 ship=42561,99739,0 nf=7 F=bced788a nb=6 B=75b911a9 S=bd0d6d84
+      native f=1177 st=1 sc=84780 l=2 bs=110 scene=1 ship=42561,99739,0 nf=7 F=2db7f08e nb=6 B=75b911a9 S=bd0d6d84
+UB    s04-random-seed1: 1748 / 1748 frames; first at frame 1251 in F, after an sctbl over-read at frame 1251 (slot 8, d=1031)
+      js     f=1251 st=1 sc=19780 l=1 bs=30 scene=1 ship=66396,98117,0 nf=45 F=50f9a7bf nb=0 B=811c9dc5 S=74a6bd0d
+      native f=1251 st=1 sc=19780 l=1 bs=30 scene=1 ship=66396,98117,0 nf=45 F=aeb7cb78 nb=0 B=811c9dc5 S=74a6bd0d
+UB    s04-random-seed2: 1748 / 1748 frames; first at frame 1182 in nf, F, after an sctbl over-read at frame 1182 (slot 5, d=-28)
+      js     f=1182 st=1 sc=21640 l=1 bs=20 scene=1 ship=55401,101528,0 nf=16 F=2f0d4c23 nb=2 B=2ab94bb7 S=c4944103
+      native f=1182 st=1 sc=21640 l=1 bs=20 scene=1 ship=55401,101528,0 nf=15 F=769de975 nb=2 B=2ab94bb7 S=c4944103
+UB    s04-random-seed3: 1748 / 1748 frames; first at frame 1177 in F, after an sctbl over-read at frame 1177 (slot 8, d=1050)
+      js     f=1177 st=1 sc=45750 l=1 bs=30 scene=1 ship=56836,103713,0 nf=22 F=7bbe65ad nb=1 B=a7d153b1 S=e4c9d46
+      native f=1177 st=1 sc=45750 l=1 bs=30 scene=1 ship=56836,103713,0 nf=22 F=ad48c55c nb=1 B=a7d153b1 S=e4c9d46
+same  s05-chase-seed1: 2593 frames, end st=0 scene=2 score=177540 left=-1 (0.3 s)
+UB    s05-chase-seed2: 5787 / 5787 frames; first at frame 3863 in F, after an sctbl over-read at frame 3863 (slot 41, d=1028)
+      js     f=3863 st=1 sc=393290 l=1 bs=340 scene=3 ship=20480,98304,0 nf=75 F=187563c nb=30 B=8aa1f87 S=6a5b53ed
+      native f=3863 st=1 sc=393290 l=1 bs=340 scene=3 ship=20480,98304,0 nf=75 F=f4dfcb61 nb=30 B=8aa1f87 S=6a5b53ed
+same  s05-chase-seed3: 5030 frames, end st=0 scene=5 score=403910 left=-1 (0.5 s)
+same  s05-fire-stay-seed1: 1653 frames, end st=0 scene=1 score=7660 left=-1 (0.1 s)
+same  s05-fire-stay-seed2: 1653 frames, end st=0 scene=1 score=7270 left=-1 (0.1 s)
+same  s05-fire-stay-seed3: 1653 frames, end st=0 scene=1 score=3570 left=-1 (0.2 s)
+UB    s05-lookahead-seed1: 10610 / 10588 frames; first at frame 3201 in F, after an sctbl over-read at frame 3201 (slot 41, d=1026)
+      js     f=3201 st=1 sc=118090 l=2 bs=930 scene=3 ship=37031,98708,0 nf=112 F=9733d509 nb=20 B=ad965ce1 S=2f22c558
+      native f=3201 st=1 sc=118090 l=2 bs=930 scene=3 ship=37031,98708,0 nf=112 F=60697361 nb=20 B=ad965ce1 S=2f22c558
+same  s05-random-seed1: 1570 frames, end st=0 scene=1 score=22500 left=-1 (0.1 s)
+same  s05-random-seed2: 1817 frames, end st=0 scene=1 score=27780 left=-1 (0.2 s)
+same  s05-random-seed3: 1964 frames, end st=0 scene=1 score=29450 left=-1 (0.2 s)
+UB    s06-chase-seed1: 1804 / 1804 frames; first at frame 505 in F, after an sctbl over-read at frame 505 (slot 5, d=-16)
+      js     f=505 st=1 sc=9160 l=1 bs=40 scene=0 ship=24320,98304,48 nf=36 F=c49c6d2d nb=8 B=5a2b1081 S=db256da
+      native f=505 st=1 sc=9160 l=1 bs=40 scene=0 ship=24320,98304,48 nf=36 F=1fee9d47 nb=8 B=5a2b1081 S=db256da
+UB    s06-chase-seed2: 2308 / 2308 frames; first at frame 672 in F, after an sctbl over-read at frame 672 (slot 49, d=-15)
+      js     f=672 st=1 sc=13490 l=1 bs=80 scene=0 ship=74752,98304,13 nf=66 F=9bb43671 nb=8 B=8398c433 S=8c10170d
+      native f=672 st=1 sc=13490 l=1 bs=80 scene=0 ship=74752,98304,13 nf=66 F=481f929a nb=8 B=8398c433 S=8c10170d
+UB    s06-chase-seed3: 1866 / 1866 frames; first at frame 184 in F, after an sctbl over-read at frame 184 (slot 0, d=1056)
+      js     f=184 st=1 sc=4530 l=2 bs=30 scene=0 ship=61440,98304,56 nf=13 F=27a4a837 nb=7 B=d0f3cc1f S=58f25a03
+      native f=184 st=1 sc=4530 l=2 bs=30 scene=0 ship=61440,98304,56 nf=13 F=c0731023 nb=7 B=d0f3cc1f S=58f25a03
+UB    s06-fire-stay-seed1: 1648 / 1634 frames; first at frame 110 in F, after an sctbl over-read at frame 110 (slot 0, d=-29)
+      js     f=110 st=1 sc=500 l=2 bs=10 scene=0 ship=40960,98304,130 nf=10 F=15f53557 nb=0 B=811c9dc5 S=35c40b30
+      native f=110 st=1 sc=500 l=2 bs=10 scene=0 ship=40960,98304,130 nf=10 F=11c215da nb=0 B=811c9dc5 S=35c40b30
+UB    s06-fire-stay-seed2: 1648 / 1648 frames; first at frame 176 in F, after an sctbl over-read at frame 176 (slot 9, d=1027)
+      js     f=176 st=1 sc=2010 l=2 bs=20 scene=0 ship=40960,98304,64 nf=18 F=295b81f6 nb=1 B=9ea1c5e1 S=49cd34f3
+      native f=176 st=1 sc=2010 l=2 bs=20 scene=0 ship=40960,98304,64 nf=18 F=ed93ca62 nb=1 B=9ea1c5e1 S=49cd34f3
+UB    s06-fire-stay-seed3: 1633 / 1633 frames; first at frame 640 in nf, F, after an sctbl over-read at frame 640 (slot 0, d=-9)
+      js     f=640 st=1 sc=11300 l=0 bs=30 scene=0 ship=40960,98304,89 nf=40 F=96499344 nb=7 B=7cf5788 S=65d58636
+      native f=640 st=1 sc=11300 l=0 bs=30 scene=0 ship=40960,98304,89 nf=39 F=aa0c65b nb=7 B=7cf5788 S=65d58636
+UB    s06-lookahead-seed1: 10653 / 3905 frames; first at frame 399 in nf, F, after an sctbl over-read at frame 399 (slot 3, d=-10)
+      js     f=399 st=1 sc=6450 l=2 bs=100 scene=0 ship=56901,99368,0 nf=10 F=d9cf5f4e nb=2 B=6c3228e3 S=d2465c0
+      native f=399 st=1 sc=6450 l=2 bs=100 scene=0 ship=56901,99368,0 nf=9 F=814f98b5 nb=2 B=6c3228e3 S=d2465c0
+UB    s06-random-seed1: 1085 / 1085 frames; first at frame 111 in F, after an sctbl over-read at frame 111 (slot 0, d=-29)
+      js     f=111 st=1 sc=500 l=2 bs=10 scene=0 ship=36006,86128,129 nf=10 F=e63a65ba nb=0 B=811c9dc5 S=23a1094e
+      native f=111 st=1 sc=500 l=2 bs=10 scene=0 ship=36006,86128,129 nf=10 F=d3032447 nb=0 B=811c9dc5 S=23a1094e
+UB    s06-random-seed2: 1345 / 1345 frames; first at frame 162 in F, after an sctbl over-read at frame 162 (slot 9, d=1029)
+      js     f=162 st=1 sc=1010 l=2 bs=20 scene=0 ship=35603,79077,78 nf=24 F=34d4c9c4 nb=0 B=811c9dc5 S=546108b7
+      native f=162 st=1 sc=1010 l=2 bs=20 scene=0 ship=35603,79077,78 nf=24 F=ac20d1a4 nb=0 B=811c9dc5 S=546108b7
+UB    s06-random-seed3: 1345 / 1295 frames; first at frame 155 in F, after an sctbl over-read at frame 155 (slot 6, d=1029)
+      js     f=155 st=1 sc=510 l=2 bs=20 scene=0 ship=34168,76892,85 nf=20 F=e430217f nb=0 B=811c9dc5 S=412a48e7
+      native f=155 st=1 sc=510 l=2 bs=20 scene=0 ship=34168,76892,85 nf=20 F=1df5dda6 nb=0 B=811c9dc5 S=412a48e7
+UB    s07-chase-seed1: 3096 / 3096 frames; first at frame 2096 in F, after an sctbl over-read at frame 2096 (slot 4, d=1035)
+      js     f=2096 st=1 sc=252340 l=0 bs=330 scene=2 ship=63232,98304,0 nf=33 F=a4589fb1 nb=21 B=10337748 S=58947879
+      native f=2096 st=1 sc=252340 l=0 bs=330 scene=2 ship=63232,98304,0 nf=33 F=963f13a4 nb=21 B=10337748 S=58947879
+UB    s07-chase-seed2: 5690 / 5686 frames; first at frame 2133 in F, after an sctbl over-read at frame 2133 (slot 4, d=1034)
+      js     f=2133 st=1 sc=237830 l=2 bs=1000 scene=2 ship=28160,98304,0 nf=66 F=b840f77c nb=7 B=939fe6ad S=c22d9aab
+      native f=2133 st=1 sc=237830 l=2 bs=1000 scene=2 ship=28160,98304,0 nf=66 F=6b6729c9 nb=7 B=939fe6ad S=c22d9aab
+UB    s07-chase-seed3: 2275 / 2275 frames; first at frame 2135 in nf, F, after an sctbl over-read at frame 2135 (slot 26, d=-32)
+      js     f=2135 st=2 sc=112050 l=-1 bs=10 scene=2 ship=51712,98304,0 nf=99 F=2808ae nb=22 B=8c06abf7 S=811c9dc5
+      native f=2135 st=2 sc=112050 l=-1 bs=10 scene=2 ship=51712,98304,0 nf=98 F=7be2652d nb=22 B=8c06abf7 S=811c9dc5
+UB    s07-fire-stay-seed1: 2314 / 2314 frames; first at frame 2221 in nf, F, after an sctbl over-read at frame 2221 (slot 104, d=-39)
+      js     f=2221 st=2 sc=22140 l=-1 bs=10 scene=2 ship=40960,98304,0 nf=164 F=d2658f2e nb=25 B=98f46e77 S=811c9dc5
+      native f=2221 st=2 sc=22140 l=-1 bs=10 scene=2 ship=40960,98304,0 nf=163 F=ea8cf6d6 nb=25 B=98f46e77 S=811c9dc5
+same  s07-fire-stay-seed2: 2140 frames, end st=0 scene=2 score=23670 left=-1 (0.3 s)
+UB    s07-fire-stay-seed3: 2322 / 2322 frames; first at frame 2179 in F, after an sctbl over-read at frame 2179 (slot 27, d=1031)
+      js     f=2179 st=2 sc=41920 l=-1 bs=10 scene=2 ship=40960,98304,0 nf=142 F=1d4fda98 nb=6 B=8f723835 S=811c9dc5
+      native f=2179 st=2 sc=41920 l=-1 bs=10 scene=2 ship=40960,98304,0 nf=142 F=9e1b3ee1 nb=6 B=8f723835 S=811c9dc5
+UB    s07-lookahead-seed1: 10662 / 5689 frames; first at frame 2063 in F, after an sctbl over-read at frame 2063 (slot 2, d=1073)
+      js     f=2063 st=1 sc=90610 l=2 bs=390 scene=2 ship=62853,99995,0 nf=25 F=64a902ec nb=18 B=8e14aea8 S=71df36a4
+      native f=2063 st=1 sc=90610 l=2 bs=390 scene=2 ship=62853,99995,0 nf=25 F=14aac346 nb=18 B=8e14aea8 S=71df36a4
+same  s07-random-seed1: 1678 frames, end st=0 scene=1 score=35960 left=-1 (0.2 s)
+same  s07-random-seed2: 1648 frames, end st=0 scene=1 score=34950 left=-1 (0.4 s)
+same  s07-random-seed3: 1752 frames, end st=0 scene=1 score=45930 left=-1 (0.3 s)
+UB    s08-chase-seed1: 2432 / 2432 frames; first at frame 1361 in F, after an sctbl over-read at frame 1361 (slot 5, d=-20)
+      js     f=1361 st=1 sc=223340 l=0 bs=90 scene=1 ship=41472,98304,110 nf=31 F=3234c734 nb=30 B=ea1b2065 S=c4512db5
+      native f=1361 st=1 sc=223340 l=0 bs=90 scene=1 ship=41472,98304,110 nf=31 F=6ed8081e nb=30 B=ea1b2065 S=c4512db5
+UB    s08-chase-seed2: 4682 / 4682 frames; first at frame 1749 in F, after an sctbl over-read at frame 1749 (slot 11, d=-20)
+      js     f=1749 st=1 sc=237020 l=2 bs=750 scene=1 ship=42240,98304,0 nf=46 F=ade48a84 nb=25 B=c17b518b S=aa890e9c
+      native f=1749 st=1 sc=237020 l=2 bs=750 scene=1 ship=42240,98304,0 nf=46 F=6c12bca4 nb=25 B=c17b518b S=aa890e9c
+UB    s08-chase-seed3: 2128 / 2128 frames; first at frame 1107 in F, after an sctbl over-read at frame 1107 (slot 0, d=1028)
+      js     f=1107 st=1 sc=156030 l=0 bs=200 scene=1 ship=38400,98304,0 nf=71 F=8c3082e nb=12 B=8cdbf119 S=2ba139f4
+      native f=1107 st=1 sc=156030 l=0 bs=200 scene=1 ship=38400,98304,0 nf=71 F=33345bde nb=12 B=8cdbf119 S=2ba139f4
+UB    s08-fire-stay-seed1: 1638 / 1638 frames; first at frame 1239 in F, after an sctbl over-read at frame 1239 (slot 2, d=-35)
+      js     f=1239 st=2 sc=41040 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=96 F=c1a38e2a nb=14 B=5488bdc S=811c9dc5
+      native f=1239 st=2 sc=41040 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=96 F=df1e8efa nb=14 B=5488bdc S=811c9dc5
+UB    s08-fire-stay-seed2: 1631 / 1631 frames; first at frame 1114 in F, after an sctbl over-read at frame 1114 (slot 14, d=1042)
+      js     f=1114 st=2 sc=47990 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=86 F=3a58247f nb=19 B=38439786 S=811c9dc5
+      native f=1114 st=2 sc=47990 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=86 F=3c1f621c nb=19 B=38439786 S=811c9dc5
+UB    s08-fire-stay-seed3: 1626 / 1626 frames; first at frame 1206 in nf, F, after an sctbl over-read at frame 1206 (slot 11, d=-40)
+      js     f=1206 st=2 sc=36430 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=101 F=fd5dbeff nb=15 B=b613192a S=811c9dc5
+      native f=1206 st=2 sc=36430 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=100 F=8543eb32 nb=15 B=b613192a S=811c9dc5
+UB    s08-lookahead-seed1: 10529 / 3798 frames; first at frame 1313 in F, after an sctbl over-read at frame 1313 (slot 4, d=-25)
+      js     f=1313 st=1 sc=78630 l=2 bs=90 scene=1 ship=49355,104654,0 nf=46 F=81b092a7 nb=9 B=3e5fabfc S=e99869c6
+      native f=1313 st=1 sc=78630 l=2 bs=90 scene=1 ship=49355,104654,0 nf=46 F=90f59177 nb=9 B=3e5fabfc S=e99869c6
+UB    s08-random-seed1: 1597 / 1583 frames; first at frame 1144 in F, after an sctbl over-read at frame 1144 (slot 11, d=1033)
+      js     f=1144 st=1 sc=63240 l=0 bs=10 scene=1 ship=65623,102234,48 nf=129 F=256a449e nb=12 B=46a3643 S=c69beb29
+      native f=1144 st=1 sc=63240 l=0 bs=10 scene=1 ship=65623,102234,48 nf=129 F=f0bda11f nb=12 B=46a3643 S=c69beb29
+UB    s08-random-seed2: 1594 / 1594 frames; first at frame 1220 in F, after an sctbl over-read at frame 1220 (slot 17, d=1024)
+      js     f=1220 st=1 sc=87860 l=0 bs=30 scene=1 ship=64102,102222,0 nf=81 F=582adbd5 nb=11 B=db1740fe S=2c5885a2
+      native f=1220 st=1 sc=87860 l=0 bs=30 scene=1 ship=64102,102222,0 nf=81 F=fc29ccac nb=11 B=db1740fe S=2c5885a2
+same  s08-random-seed3: 1071 frames, end st=0 scene=1 score=46750 left=-1 (0.2 s)
+UB    s09-chase-seed1: 2203 / 2203 frames; first at frame 1278 in F, after an sctbl over-read at frame 1278 (slot 130, d=1032)
+      js     f=1278 st=1 sc=104890 l=0 bs=110 scene=1 ship=16128,98304,0 nf=121 F=22cc2346 nb=61 B=17a962ef S=fe51b275
+      native f=1278 st=1 sc=104890 l=0 bs=110 scene=1 ship=16128,98304,0 nf=121 F=9a00211a nb=61 B=17a962ef S=fe51b275
+UB    s09-chase-seed2: 1804 / 1804 frames; first at frame 1121 in F, after an sctbl over-read at frame 1121 (slot 0, d=-26)
+      js     f=1121 st=2 sc=79970 l=-1 bs=10 scene=1 ship=54528,98304,0 nf=62 F=e21bd9ae nb=33 B=f8b7796e S=811c9dc5
+      native f=1121 st=2 sc=79970 l=-1 bs=10 scene=1 ship=54528,98304,0 nf=62 F=7b5a0d09 nb=33 B=f8b7796e S=811c9dc5
+UB    s09-chase-seed3: 2101 / 2101 frames; first at frame 1288 in F, after an sctbl over-read at frame 1288 (slot 21, d=1052)
+      js     f=1288 st=2 sc=148850 l=-1 bs=10 scene=1 ship=58880,98304,0 nf=166 F=9770d76 nb=18 B=b4ca1ad2 S=811c9dc5
+      native f=1288 st=2 sc=148850 l=-1 bs=10 scene=1 ship=58880,98304,0 nf=166 F=8c4ebba9 nb=18 B=b4ca1ad2 S=811c9dc5
+UB    s09-fire-stay-seed1: 1734 / 1734 frames; first at frame 1108 in F, after an sctbl over-read at frame 1108 (slot 9, d=-22)
+      js     f=1108 st=2 sc=21660 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=50 F=5b47016e nb=19 B=465be996 S=811c9dc5
+      native f=1108 st=2 sc=21660 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=50 F=7c718eb4 nb=19 B=465be996 S=811c9dc5
+UB    s09-fire-stay-seed2: 1707 / 1707 frames; first at frame 1070 in F, after an sctbl over-read at frame 1070 (slot 0, d=1027)
+      js     f=1070 st=2 sc=22460 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=14 F=244a276a nb=26 B=ffd3b133 S=811c9dc5
+      native f=1070 st=2 sc=22460 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=14 F=bdb3709 nb=26 B=ffd3b133 S=811c9dc5
+UB    s09-fire-stay-seed3: 1832 / 1832 frames; first at frame 1147 in nf, F, after an sctbl over-read at frame 1147 (slot 32, d=-48)
+      js     f=1147 st=2 sc=24810 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=112 F=8a8e9470 nb=15 B=a4b365e9 S=811c9dc5
+      native f=1147 st=2 sc=24810 l=-1 bs=10 scene=1 ship=40960,98304,0 nf=111 F=f5a589b nb=15 B=a4b365e9 S=811c9dc5
+UB    s09-lookahead-seed1: 10506 / 4129 frames; first at frame 1234 in nf, F, after an sctbl over-read at frame 1234 (slot 109, d=-8)
+      js     f=1234 st=1 sc=94490 l=2 bs=390 scene=1 ship=23890,105648,0 nf=193 F=4c2adee nb=20 B=4f0cd281 S=c95e2127
+      native f=1234 st=1 sc=94490 l=2 bs=390 scene=1 ship=23890,105648,0 nf=192 F=96c476ed nb=20 B=4f0cd281 S=c95e2127
+same  s09-random-seed1: 1055 frames, end st=0 scene=1 score=33440 left=-1 (0.3 s)
+same  s09-random-seed2: 1055 frames, end st=0 scene=1 score=38900 left=-1 (0.2 s)
+same  s09-random-seed3: 1055 frames, end st=0 scene=1 score=26610 left=-1 (0.2 s)
+same  s10-chase-seed1: 2117 frames, end st=0 scene=2 score=72630 left=-1 (0.5 s)
+same  s10-chase-seed2: 2302 frames, end st=0 scene=2 score=152610 left=-1 (0.4 s)
+same  s10-chase-seed3: 2176 frames, end st=0 scene=2 score=103660 left=-1 (0.6 s)
+same  s10-fire-stay-seed1: 1634 frames, end st=0 scene=1 score=79500 left=-1 (0.3 s)
+same  s10-fire-stay-seed2: 1679 frames, end st=0 scene=1 score=112760 left=-1 (0.3 s)
+same  s10-fire-stay-seed3: 1650 frames, end st=0 scene=1 score=108960 left=-1 (0.3 s)
+UB    s10-lookahead-seed1: 10477 / 5772 frames; first at frame 3134 in nf, F, after an sctbl over-read at frame 3134 (slot 12, d=-17)
+      js     f=3134 st=1 sc=747930 l=4 bs=520 scene=3 ship=29792,98334,0 nf=27 F=42584a9b nb=16 B=74a74aaa S=db9ffe5
+      native f=3134 st=1 sc=747930 l=4 bs=520 scene=3 ship=29792,98334,0 nf=26 F=6c273445 nb=16 B=74a74aaa S=db9ffe5
+same  s10-random-seed1: 1655 frames, end st=0 scene=1 score=177640 left=-1 (0.5 s)
+same  s10-random-seed2: 1655 frames, end st=0 scene=1 score=157980 left=-1 (0.3 s)
+same  s10-random-seed3: 1056 frames, end st=0 scene=1 score=101740 left=-1 (0.2 s)
+UB    s11-chase-seed1: 4251 / 4251 frames; first at frame 3091 in F, after an sctbl over-read at frame 3091 (slot 5, d=1024)
+      js     f=3091 st=1 sc=295680 l=0 bs=950 scene=3 ship=34048,98304,0 nf=18 F=c034e2ad nb=3 B=70ca10e1 S=21b404d8
+      native f=3091 st=1 sc=295680 l=0 bs=950 scene=3 ship=34048,98304,0 nf=18 F=9634a6b1 nb=3 B=70ca10e1 S=21b404d8
+UB    s11-chase-seed2: 8712 / 8712 frames; first at frame 3519 in F, after an sctbl over-read at frame 3519 (slot 16, d=1026)
+      js     f=3519 st=1 sc=372310 l=3 bs=510 scene=3 ship=7168,98304,0 nf=105 F=1909839 nb=42 B=5732b587 S=68d50551
+      native f=3519 st=1 sc=372310 l=3 bs=510 scene=3 ship=7168,98304,0 nf=105 F=3d0a1dc7 nb=42 B=5732b587 S=68d50551
+UB    s11-chase-seed3: 3871 / 3871 frames; first at frame 3613 in F, after an sctbl over-read at frame 3613 (slot 7, d=-4)
+      js     f=3613 st=2 sc=260040 l=-1 bs=10 scene=3 ship=13312,98304,0 nf=193 F=f8b5065a nb=42 B=b19126c8 S=811c9dc5
+      native f=3613 st=2 sc=260040 l=-1 bs=10 scene=3 ship=13312,98304,0 nf=193 F=df1e06a2 nb=42 B=b19126c8 S=811c9dc5
+same  s11-fire-stay-seed1: 1641 frames, end st=0 scene=1 score=5050 left=-1 (0.3 s)
+same  s11-fire-stay-seed2: 1779 frames, end st=0 scene=1 score=10900 left=-1 (0.2 s)
+same  s11-fire-stay-seed3: 1680 frames, end st=0 scene=1 score=1210 left=-1 (0.2 s)
+UB    s11-lookahead-seed1: 30000 / 21638 frames; first at frame 3122 in F, after an sctbl over-read at frame 3122 (slot 22, d=-1)
+      js     f=3122 st=1 sc=157500 l=2 bs=350 scene=3 ship=22312,96804,0 nf=42 F=a1342502 nb=5 B=db5310f7 S=c7c3ded5
+      native f=3122 st=1 sc=157500 l=2 bs=350 scene=3 ship=22312,96804,0 nf=42 F=acea7fe8 nb=5 B=db5310f7 S=c7c3ded5
+same  s11-random-seed1: 1615 frames, end st=0 scene=1 score=18840 left=-1 (0.2 s)
+same  s11-random-seed2: 2016 frames, end st=0 scene=2 score=17260 left=-1 (0.1 s)
+same  s11-random-seed3: 2345 frames, end st=0 scene=2 score=25070 left=-1 (0.2 s)
+same  s12-chase-seed1: 2530 frames, end st=0 scene=2 score=153940 left=-1 (0.4 s)
+same  s12-chase-seed2: 5024 frames, end st=0 scene=5 score=398750 left=-1 (0.9 s)
+same  s12-chase-seed3: 3376 frames, end st=0 scene=3 score=154130 left=-1 (0.4 s)
+UB    s12-fire-stay-seed1: 1629 / 1629 frames; first at frame 780 in F, after an sctbl over-read at frame 780 (slot 81, d=1025)
+      js     f=780 st=2 sc=7660 l=-1 bs=10 scene=0 ship=40960,98304,0 nf=182 F=ae00df97 nb=17 B=c7f0d176 S=811c9dc5
+      native f=780 st=2 sc=7660 l=-1 bs=10 scene=0 ship=40960,98304,0 nf=182 F=b0141b4f nb=17 B=c7f0d176 S=811c9dc5
+same  s12-fire-stay-seed2: 1779 frames, end st=0 scene=1 score=10900 left=-1 (0.3 s)
+same  s12-fire-stay-seed3: 1666 frames, end st=0 scene=1 score=11310 left=-1 (0.3 s)
+UB    s12-random-seed1: 1348 / 1348 frames; first at frame 780 in F, after an sctbl over-read at frame 780 (slot 49, d=1025)
+      js     f=780 st=1 sc=12470 l=0 bs=140 scene=0 ship=63478,85059,83 nf=165 F=d6a5e2a8 nb=6 B=79ae347 S=706ec8be
+      native f=780 st=1 sc=12470 l=0 bs=140 scene=0 ship=63478,85059,83 nf=165 F=28c907f0 nb=6 B=79ae347 S=706ec8be
+same  s12-random-seed2: 1849 frames, end st=0 scene=1 score=20980 left=-1 (0.2 s)
+same  s12-random-seed3: 1934 frames, end st=0 scene=1 score=43260 left=-1 (0.3 s)
+UB    s13-chase-seed1: 3129 / 3129 frames; first at frame 362 in F, after an sctbl over-read at frame 362 (slot 176, d=1025)
+      js     f=362 st=1 sc=34780 l=2 bs=680 scene=0 ship=24320,98304,0 nf=185 F=4a496a17 nb=77 B=d9d3e5cd S=d8e29baf
+      native f=362 st=1 sc=34780 l=2 bs=680 scene=0 ship=24320,98304,0 nf=185 F=59e6c38e nb=77 B=d9d3e5cd S=d8e29baf
+same  s13-chase-seed2: 2166 frames, end st=0 scene=2 score=94420 left=-1 (0.3 s)
+same  s13-chase-seed3: 1879 frames, end st=0 scene=1 score=57220 left=-1 (0.5 s)
+UB    s13-fire-stay-seed1: 1629 / 1629 frames; first at frame 468 in F, after an sctbl over-read at frame 468 (slot 104, d=1025)
+      js     f=468 st=1 sc=32360 l=1 bs=510 scene=0 ship=40960,98304,15 nf=207 F=230e0b63 nb=62 B=b154a017 S=32ec16d2
+      native f=468 st=1 sc=32360 l=1 bs=510 scene=0 ship=40960,98304,15 nf=207 F=b60cf008 nb=62 B=b154a017 S=32ec16d2
+same  s13-fire-stay-seed2: 1665 frames, end st=0 scene=1 score=20850 left=-1 (0.2 s)
+same  s13-fire-stay-seed3: 1630 frames, end st=0 scene=1 score=15400 left=-1 (0.3 s)
+UB    s13-random-seed1: 1078 / 1078 frames; first at frame 362 in F, after an sctbl over-read at frame 362 (slot 62, d=1025)
+      js     f=362 st=1 sc=14990 l=1 bs=30 scene=0 ship=29648,91976,144 nf=140 F=bd5b4435 nb=34 B=8d7b7a2e S=d776fc31
+      native f=362 st=1 sc=14990 l=1 bs=30 scene=0 ship=29648,91976,144 nf=140 F=2a3cf9b8 nb=34 B=8d7b7a2e S=d776fc31
+UB    s13-random-seed2: 2266 / 2266 frames; first at frame 2169 in F, after an sctbl over-read at frame 2169 (slot 2, d=1027)
+      js     f=2169 st=2 sc=77020 l=-1 bs=10 scene=2 ship=42255,116624,0 nf=53 F=9af367c1 nb=46 B=cf78038f S=811c9dc5
+      native f=2169 st=2 sc=77020 l=-1 bs=10 scene=2 ship=42255,116624,0 nf=53 F=57caa81a nb=46 B=cf78038f S=811c9dc5
+same  s13-random-seed3: 1021 frames, end st=0 scene=1 score=26000 left=-1 (0.3 s)
+UB    s14-chase-seed1: 2764 / 2764 frames; first at frame 362 in F, after an sctbl over-read at frame 362 (slot 176, d=1025)
+      js     f=362 st=1 sc=34780 l=2 bs=680 scene=0 ship=24320,98304,0 nf=185 F=4a496a17 nb=77 B=d9d3e5cd S=d8e29baf
+      native f=362 st=1 sc=34780 l=2 bs=680 scene=0 ship=24320,98304,0 nf=185 F=59e6c38e nb=77 B=d9d3e5cd S=d8e29baf
+same  s14-chase-seed2: 2166 frames, end st=0 scene=2 score=90840 left=-1 (0.4 s)
+same  s14-chase-seed3: 1879 frames, end st=0 scene=1 score=57220 left=-1 (0.4 s)
+UB    s14-fire-stay-seed1: 1629 / 1629 frames; first at frame 468 in F, after an sctbl over-read at frame 468 (slot 104, d=1025)
+      js     f=468 st=1 sc=32360 l=1 bs=510 scene=0 ship=40960,98304,15 nf=207 F=230e0b63 nb=62 B=b154a017 S=32ec16d2
+      native f=468 st=1 sc=32360 l=1 bs=510 scene=0 ship=40960,98304,15 nf=207 F=b60cf008 nb=62 B=b154a017 S=32ec16d2
+same  s14-fire-stay-seed2: 1665 frames, end st=0 scene=1 score=20850 left=-1 (0.3 s)
+same  s14-fire-stay-seed3: 1630 frames, end st=0 scene=1 score=15400 left=-1 (0.3 s)
+UB    s14-random-seed1: 1078 / 1078 frames; first at frame 362 in F, after an sctbl over-read at frame 362 (slot 62, d=1025)
+      js     f=362 st=1 sc=14990 l=1 bs=30 scene=0 ship=29648,91976,144 nf=140 F=bd5b4435 nb=34 B=8d7b7a2e S=d776fc31
+      native f=362 st=1 sc=14990 l=1 bs=30 scene=0 ship=29648,91976,144 nf=140 F=2a3cf9b8 nb=34 B=8d7b7a2e S=d776fc31
+UB    s14-random-seed2: 2266 / 2266 frames; first at frame 2127 in F, after an sctbl over-read at frame 2127 (slot 28, d=1028)
+      js     f=2127 st=1 sc=72020 l=0 bs=550 scene=2 ship=44111,117950,0 nf=104 F=5da4a5a8 nb=4 B=2e0dedb3 S=c74e0409
+      native f=2127 st=1 sc=72020 l=0 bs=550 scene=2 ship=44111,117950,0 nf=104 F=cc60e7f0 nb=4 B=2e0dedb3 S=c74e0409
+same  s14-random-seed3: 1021 frames, end st=0 scene=1 score=26000 left=-1 (0.2 s)
+72/137 tapes identical, 65 differ only after an sctbl over-read (undefined behaviour), 0 unexplained

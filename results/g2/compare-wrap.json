@@ -1,0 +1,2468 @@
+[
+ {
+  "tape": "s01-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9272,
+  "nativeFrames": 9272,
+  "end": {
+   "st": "0",
+   "sc": "806620",
+   "l": "-1",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s01-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 5674,
+  "nativeFrames": 5674,
+  "end": {
+   "st": "0",
+   "sc": "437000",
+   "l": "-1",
+   "scene": "5"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s01-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 5658,
+  "nativeFrames": 5658,
+  "end": {
+   "st": "0",
+   "sc": "421520",
+   "l": "-1",
+   "scene": "5"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s01-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1639,
+  "nativeFrames": 1639,
+  "end": {
+   "st": "0",
+   "sc": "0",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s01-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1639,
+  "nativeFrames": 1639,
+  "end": {
+   "st": "0",
+   "sc": "0",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s01-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1647,
+  "nativeFrames": 1647,
+  "end": {
+   "st": "0",
+   "sc": "0",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s01-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10494,
+  "nativeFrames": 10494,
+  "end": {
+   "st": "0",
+   "sc": "1711710",
+   "l": "5",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s01-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 4725,
+  "nativeFrames": 4725,
+  "end": {
+   "st": "0",
+   "sc": "35430",
+   "l": "-1",
+   "scene": "4"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s01-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 3550,
+  "nativeFrames": 3550,
+  "end": {
+   "st": "0",
+   "sc": "14260",
+   "l": "-1",
+   "scene": "3"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s01-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 4725,
+  "nativeFrames": 4725,
+  "end": {
+   "st": "0",
+   "sc": "35180",
+   "l": "-1",
+   "scene": "4"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10016,
+  "nativeFrames": 10016,
+  "end": {
+   "st": "0",
+   "sc": "1863140",
+   "l": "-1",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 8184,
+  "nativeFrames": 8184,
+  "end": {
+   "st": "0",
+   "sc": "1746320",
+   "l": "-1",
+   "scene": "8"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 8232,
+  "nativeFrames": 8232,
+  "end": {
+   "st": "0",
+   "sc": "1705760",
+   "l": "-1",
+   "scene": "8"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1798,
+  "nativeFrames": 1798,
+  "end": {
+   "st": "0",
+   "sc": "16310",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1818,
+  "nativeFrames": 1818,
+  "end": {
+   "st": "0",
+   "sc": "5060",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1807,
+  "nativeFrames": 1807,
+  "end": {
+   "st": "0",
+   "sc": "4060",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10582,
+  "nativeFrames": 10582,
+  "end": {
+   "st": "0",
+   "sc": "2153110",
+   "l": "6",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1046,
+  "nativeFrames": 1046,
+  "end": {
+   "st": "0",
+   "sc": "35690",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1046,
+  "nativeFrames": 1046,
+  "end": {
+   "st": "0",
+   "sc": "43400",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s02-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1046,
+  "nativeFrames": 1046,
+  "end": {
+   "st": "0",
+   "sc": "23090",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10235,
+  "nativeFrames": 10235,
+  "end": {
+   "st": "0",
+   "sc": "1194620",
+   "l": "-1",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 6524,
+  "nativeFrames": 6524,
+  "end": {
+   "st": "0",
+   "sc": "741520",
+   "l": "-1",
+   "scene": "6"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 6524,
+  "nativeFrames": 6524,
+  "end": {
+   "st": "0",
+   "sc": "829140",
+   "l": "-1",
+   "scene": "6"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1652,
+  "nativeFrames": 1652,
+  "end": {
+   "st": "0",
+   "sc": "6960",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1898,
+  "nativeFrames": 1898,
+  "end": {
+   "st": "0",
+   "sc": "3140",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1652,
+  "nativeFrames": 1652,
+  "end": {
+   "st": "0",
+   "sc": "7550",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10633,
+  "nativeFrames": 10633,
+  "end": {
+   "st": "0",
+   "sc": "1663770",
+   "l": "5",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2012,
+  "nativeFrames": 2012,
+  "end": {
+   "st": "0",
+   "sc": "31930",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1501,
+  "nativeFrames": 1501,
+  "end": {
+   "st": "0",
+   "sc": "13890",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s03-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1774,
+  "nativeFrames": 1774,
+  "end": {
+   "st": "0",
+   "sc": "9970",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2715,
+  "nativeFrames": 2715,
+  "end": {
+   "st": "0",
+   "sc": "107490",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 3872,
+  "nativeFrames": 3872,
+  "end": {
+   "st": "0",
+   "sc": "303760",
+   "l": "-1",
+   "scene": "3"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2420,
+  "nativeFrames": 2420,
+  "end": {
+   "st": "0",
+   "sc": "95800",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2268,
+  "nativeFrames": 2268,
+  "end": {
+   "st": "0",
+   "sc": "26700",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2278,
+  "nativeFrames": 2278,
+  "end": {
+   "st": "0",
+   "sc": "20910",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2293,
+  "nativeFrames": 2293,
+  "end": {
+   "st": "0",
+   "sc": "17500",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10594,
+  "nativeFrames": 10594,
+  "end": {
+   "st": "0",
+   "sc": "1022090",
+   "l": "4",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1748,
+  "nativeFrames": 1748,
+  "end": {
+   "st": "0",
+   "sc": "25540",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1748,
+  "nativeFrames": 1748,
+  "end": {
+   "st": "0",
+   "sc": "28540",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s04-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1748,
+  "nativeFrames": 1748,
+  "end": {
+   "st": "0",
+   "sc": "52780",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2593,
+  "nativeFrames": 2593,
+  "end": {
+   "st": "0",
+   "sc": "177540",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 5787,
+  "nativeFrames": 5787,
+  "end": {
+   "st": "0",
+   "sc": "587660",
+   "l": "-1",
+   "scene": "5"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 5030,
+  "nativeFrames": 5030,
+  "end": {
+   "st": "0",
+   "sc": "403910",
+   "l": "-1",
+   "scene": "5"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1653,
+  "nativeFrames": 1653,
+  "end": {
+   "st": "0",
+   "sc": "7660",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1653,
+  "nativeFrames": 1653,
+  "end": {
+   "st": "0",
+   "sc": "7270",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1653,
+  "nativeFrames": 1653,
+  "end": {
+   "st": "0",
+   "sc": "3570",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10610,
+  "nativeFrames": 10610,
+  "end": {
+   "st": "0",
+   "sc": "1695080",
+   "l": "5",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1570,
+  "nativeFrames": 1570,
+  "end": {
+   "st": "0",
+   "sc": "22500",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1817,
+  "nativeFrames": 1817,
+  "end": {
+   "st": "0",
+   "sc": "27780",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s05-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1964,
+  "nativeFrames": 1964,
+  "end": {
+   "st": "0",
+   "sc": "29450",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1804,
+  "nativeFrames": 1804,
+  "end": {
+   "st": "0",
+   "sc": "20600",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2308,
+  "nativeFrames": 2308,
+  "end": {
+   "st": "0",
+   "sc": "61590",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1866,
+  "nativeFrames": 1866,
+  "end": {
+   "st": "0",
+   "sc": "31040",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1648,
+  "nativeFrames": 1648,
+  "end": {
+   "st": "0",
+   "sc": "16770",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1648,
+  "nativeFrames": 1648,
+  "end": {
+   "st": "0",
+   "sc": "17160",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1633,
+  "nativeFrames": 1633,
+  "end": {
+   "st": "0",
+   "sc": "11800",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10653,
+  "nativeFrames": 10653,
+  "end": {
+   "st": "0",
+   "sc": "1641080",
+   "l": "5",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1085,
+  "nativeFrames": 1085,
+  "end": {
+   "st": "0",
+   "sc": "23970",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1345,
+  "nativeFrames": 1345,
+  "end": {
+   "st": "0",
+   "sc": "25160",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s06-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1345,
+  "nativeFrames": 1345,
+  "end": {
+   "st": "0",
+   "sc": "21730",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 3096,
+  "nativeFrames": 3096,
+  "end": {
+   "st": "0",
+   "sc": "263320",
+   "l": "-1",
+   "scene": "3"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 5690,
+  "nativeFrames": 5690,
+  "end": {
+   "st": "0",
+   "sc": "694750",
+   "l": "-1",
+   "scene": "5"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2275,
+  "nativeFrames": 2275,
+  "end": {
+   "st": "0",
+   "sc": "112050",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2314,
+  "nativeFrames": 2314,
+  "end": {
+   "st": "0",
+   "sc": "22140",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2140,
+  "nativeFrames": 2140,
+  "end": {
+   "st": "0",
+   "sc": "23670",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2322,
+  "nativeFrames": 2322,
+  "end": {
+   "st": "0",
+   "sc": "41920",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10662,
+  "nativeFrames": 10662,
+  "end": {
+   "st": "0",
+   "sc": "1606480",
+   "l": "5",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1678,
+  "nativeFrames": 1678,
+  "end": {
+   "st": "0",
+   "sc": "35960",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1648,
+  "nativeFrames": 1648,
+  "end": {
+   "st": "0",
+   "sc": "34950",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s07-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1752,
+  "nativeFrames": 1752,
+  "end": {
+   "st": "0",
+   "sc": "45930",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2432,
+  "nativeFrames": 2432,
+  "end": {
+   "st": "0",
+   "sc": "229230",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 4682,
+  "nativeFrames": 4682,
+  "end": {
+   "st": "0",
+   "sc": "440620",
+   "l": "-1",
+   "scene": "4"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2128,
+  "nativeFrames": 2128,
+  "end": {
+   "st": "0",
+   "sc": "159890",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1638,
+  "nativeFrames": 1638,
+  "end": {
+   "st": "0",
+   "sc": "41040",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1631,
+  "nativeFrames": 1631,
+  "end": {
+   "st": "0",
+   "sc": "47990",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1626,
+  "nativeFrames": 1626,
+  "end": {
+   "st": "0",
+   "sc": "36430",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10529,
+  "nativeFrames": 10529,
+  "end": {
+   "st": "0",
+   "sc": "1418220",
+   "l": "4",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1597,
+  "nativeFrames": 1597,
+  "end": {
+   "st": "0",
+   "sc": "66220",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1594,
+  "nativeFrames": 1594,
+  "end": {
+   "st": "0",
+   "sc": "89430",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s08-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1071,
+  "nativeFrames": 1071,
+  "end": {
+   "st": "0",
+   "sc": "46750",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2203,
+  "nativeFrames": 2203,
+  "end": {
+   "st": "0",
+   "sc": "106200",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1804,
+  "nativeFrames": 1804,
+  "end": {
+   "st": "0",
+   "sc": "79970",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2101,
+  "nativeFrames": 2101,
+  "end": {
+   "st": "0",
+   "sc": "148850",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1734,
+  "nativeFrames": 1734,
+  "end": {
+   "st": "0",
+   "sc": "21660",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1707,
+  "nativeFrames": 1707,
+  "end": {
+   "st": "0",
+   "sc": "22460",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1832,
+  "nativeFrames": 1832,
+  "end": {
+   "st": "0",
+   "sc": "24810",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10506,
+  "nativeFrames": 10506,
+  "end": {
+   "st": "0",
+   "sc": "1984120",
+   "l": "5",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1055,
+  "nativeFrames": 1055,
+  "end": {
+   "st": "0",
+   "sc": "33440",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1055,
+  "nativeFrames": 1055,
+  "end": {
+   "st": "0",
+   "sc": "38900",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s09-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1055,
+  "nativeFrames": 1055,
+  "end": {
+   "st": "0",
+   "sc": "26610",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2117,
+  "nativeFrames": 2117,
+  "end": {
+   "st": "0",
+   "sc": "72630",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2302,
+  "nativeFrames": 2302,
+  "end": {
+   "st": "0",
+   "sc": "152610",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2176,
+  "nativeFrames": 2176,
+  "end": {
+   "st": "0",
+   "sc": "103660",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1634,
+  "nativeFrames": 1634,
+  "end": {
+   "st": "0",
+   "sc": "79500",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1679,
+  "nativeFrames": 1679,
+  "end": {
+   "st": "0",
+   "sc": "112760",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1650,
+  "nativeFrames": 1650,
+  "end": {
+   "st": "0",
+   "sc": "108960",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10477,
+  "nativeFrames": 10477,
+  "end": {
+   "st": "0",
+   "sc": "3022000",
+   "l": "7",
+   "scene": "9"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1655,
+  "nativeFrames": 1655,
+  "end": {
+   "st": "0",
+   "sc": "177640",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1655,
+  "nativeFrames": 1655,
+  "end": {
+   "st": "0",
+   "sc": "157980",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s10-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1056,
+  "nativeFrames": 1056,
+  "end": {
+   "st": "0",
+   "sc": "101740",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 4251,
+  "nativeFrames": 4251,
+  "end": {
+   "st": "0",
+   "sc": "308170",
+   "l": "-1",
+   "scene": "4"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 8712,
+  "nativeFrames": 8712,
+  "end": {
+   "st": "0",
+   "sc": "1276420",
+   "l": "-1",
+   "scene": "8"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 3871,
+  "nativeFrames": 3871,
+  "end": {
+   "st": "0",
+   "sc": "260040",
+   "l": "-1",
+   "scene": "3"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1641,
+  "nativeFrames": 1641,
+  "end": {
+   "st": "0",
+   "sc": "5050",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1779,
+  "nativeFrames": 1779,
+  "end": {
+   "st": "0",
+   "sc": "10900",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1680,
+  "nativeFrames": 1680,
+  "end": {
+   "st": "0",
+   "sc": "1210",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-lookahead-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000,
+  "nativeFrames": 30000,
+  "end": {
+   "st": "1",
+   "sc": "3909250",
+   "l": "9",
+   "scene": "29"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1615,
+  "nativeFrames": 1615,
+  "end": {
+   "st": "0",
+   "sc": "18840",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2016,
+  "nativeFrames": 2016,
+  "end": {
+   "st": "0",
+   "sc": "17260",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s11-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2345,
+  "nativeFrames": 2345,
+  "end": {
+   "st": "0",
+   "sc": "25070",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s12-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2530,
+  "nativeFrames": 2530,
+  "end": {
+   "st": "0",
+   "sc": "153940",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s12-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 5024,
+  "nativeFrames": 5024,
+  "end": {
+   "st": "0",
+   "sc": "398750",
+   "l": "-1",
+   "scene": "5"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s12-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 3376,
+  "nativeFrames": 3376,
+  "end": {
+   "st": "0",
+   "sc": "154130",
+   "l": "-1",
+   "scene": "3"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s12-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1629,
+  "nativeFrames": 1629,
+  "end": {
+   "st": "0",
+   "sc": "7660",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s12-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1779,
+  "nativeFrames": 1779,
+  "end": {
+   "st": "0",
+   "sc": "10900",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s12-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1666,
+  "nativeFrames": 1666,
+  "end": {
+   "st": "0",
+   "sc": "11310",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s12-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1348,
+  "nativeFrames": 1348,
+  "end": {
+   "st": "0",
+   "sc": "19640",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s12-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1849,
+  "nativeFrames": 1849,
+  "end": {
+   "st": "0",
+   "sc": "20980",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s12-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1934,
+  "nativeFrames": 1934,
+  "end": {
+   "st": "0",
+   "sc": "43260",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s13-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 3129,
+  "nativeFrames": 3129,
+  "end": {
+   "st": "0",
+   "sc": "425470",
+   "l": "-1",
+   "scene": "3"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s13-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2166,
+  "nativeFrames": 2166,
+  "end": {
+   "st": "0",
+   "sc": "94420",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s13-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1879,
+  "nativeFrames": 1879,
+  "end": {
+   "st": "0",
+   "sc": "57220",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s13-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1629,
+  "nativeFrames": 1629,
+  "end": {
+   "st": "0",
+   "sc": "51750",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s13-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1665,
+  "nativeFrames": 1665,
+  "end": {
+   "st": "0",
+   "sc": "20850",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s13-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1630,
+  "nativeFrames": 1630,
+  "end": {
+   "st": "0",
+   "sc": "15400",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s13-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1078,
+  "nativeFrames": 1078,
+  "end": {
+   "st": "0",
+   "sc": "63770",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s13-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2266,
+  "nativeFrames": 2266,
+  "end": {
+   "st": "0",
+   "sc": "77020",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s13-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1021,
+  "nativeFrames": 1021,
+  "end": {
+   "st": "0",
+   "sc": "26000",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s14-chase-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2764,
+  "nativeFrames": 2764,
+  "end": {
+   "st": "0",
+   "sc": "346420",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s14-chase-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2166,
+  "nativeFrames": 2166,
+  "end": {
+   "st": "0",
+   "sc": "90840",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s14-chase-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1879,
+  "nativeFrames": 1879,
+  "end": {
+   "st": "0",
+   "sc": "57220",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s14-fire-stay-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1629,
+  "nativeFrames": 1629,
+  "end": {
+   "st": "0",
+   "sc": "51750",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s14-fire-stay-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1665,
+  "nativeFrames": 1665,
+  "end": {
+   "st": "0",
+   "sc": "20850",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s14-fire-stay-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1630,
+  "nativeFrames": 1630,
+  "end": {
+   "st": "0",
+   "sc": "15400",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s14-random-seed1",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1078,
+  "nativeFrames": 1078,
+  "end": {
+   "st": "0",
+   "sc": "63770",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s14-random-seed2",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2266,
+  "nativeFrames": 2266,
+  "end": {
+   "st": "0",
+   "sc": "73020",
+   "l": "-1",
+   "scene": "2"
+  },
+  "match": true,
+  "first": null
+ },
+ {
+  "tape": "s14-random-seed3",
+  "ubFrames": 0,
+  "firstUB": null,
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1021,
+  "nativeFrames": 1021,
+  "end": {
+   "st": "0",
+   "sc": "26000",
+   "l": "-1",
+   "scene": "1"
+  },
+  "match": true,
+  "first": null
+ }
+]

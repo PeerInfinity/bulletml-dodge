@@ -3,7 +3,7 @@
  * Play one Noiz2sa stage headless.
  *
  *   node bin/play-game.mjs --stage 0 [--seed 1] [--endless-seed 1]
- *        [--tape in.json | --policy fire-stay|random] [--frames N]
+ *        [--tape in.json | --policy fire-stay|random|chase|lookahead] [--frames N]
  *        [--save-tape out.json] [--dump states.txt]
  *
  * A tape is {stage, seed, endlessSeed, inputs: [[byte, count], …]} (run-length encoded; byte = dir | fire<<4 | slow<<5).
@@ -11,7 +11,7 @@
  */
 import fs from 'node:fs';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
-import { newGame, stepGame, stateLine, STATUS, SPC, input, STAGE_NAMES } from '../src/game/noiz2sa-game.js';
+import { newGame, stepGame, stateLine, cloneGame, STATUS, SPC, input, STAGE_NAMES } from '../src/game/noiz2sa-game.js';
 
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : d; };
@@ -37,7 +37,37 @@ function nextInput(f) {
         const dx = best.x - g.ship.x;
         return input(Math.abs(dx) < 1024 ? 0 : dx > 0 ? 3 : 7, true, false);
     }
+    if (policy === 'lookahead') return lookahead();
     return input(0, true, false);
+}
+
+// a test policy, not the bot (G4): every 4 frames, try each direction (fast or slow) held for 8 frames then standing for
+// the rest of a 40-frame look-ahead, on a copy of the game; keep the safest, then the one nearest the
+// x of the lowest enemy. It only exists to record tapes that reach a boss kill for the G2 comparison.
+let plan = 0, planLeft = 0;
+const laSafe = Number(opt('la-safe', 40)); // frames of look-ahead survival that count as "safe" (lower = bolder)
+function chaseTarget(h) {
+    let best = null;
+    for (const f of h.foes) if (f && f.spc === SPC.FOE && (!best || f.y > best.y)) best = f;
+    return best ? best.x : h.ship.x;
+}
+function lookahead() {
+    if (planLeft-- > 0) return plan;
+    let bestScore = -Infinity;
+    for (let cand = 0; cand < 18; cand++) {
+        const dir = cand % 9, slow = cand >= 9;
+        const c = cloneGame(g);
+        let alive = 0;
+        for (let k = 0; k < 40 && c.status === STATUS.IN_GAME; k++) {
+            const ev = stepGame(c, input(k < 8 ? dir : 0, true, slow));
+            if (ev.some((e) => e[0] === 'hit')) break;
+            alive++;
+        }
+        const score = Math.min(alive, laSafe) * 1e6 - Math.abs(chaseTarget(c) - c.ship.x) - Math.abs(c.ship.y - 98304) * 0.5;
+        if (score > bestScore) { bestScore = score; plan = input(dir, true, slow); }
+    }
+    planLeft = 3;
+    return plan;
 }
 
 const g = newGame(loadNoiz2saPatterns(), stage, { seed, endlessSeed });

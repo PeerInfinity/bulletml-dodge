@@ -57,7 +57,22 @@ stays reproducible.
   Speed: a whole stage in ~0.3 s of CPU. Test policies in `bin/play-game.mjs` (`chase`, `random`,
   `fire-stay`) are smoke tests, not the bot.
 
+- **G2 DONE 2026-10-03** (report: `docs/g2-report.md`). The headless native 0.52 build is in `native/`.
+  `bin/compare-native.mjs` compares it with the port on 137 tapes (all stages and modes; one full-stage
+  clear per stage 1–10, no deaths).
+  - Against a diagnostic build that pins the over-read below to the port's wrap: **137/137 identical
+    frame for frame**.
+  - Against the reference build: 72 identical, and the other 65 each differ first at exactly the frame
+    of their first `sctbl` over-read (risk 2, undefined behaviour, recorded).
+  - Three port bugs were fixed: a reused slot's stale `mv` gives a wiped bullet's star its
+    velocity; vanish-then-fire slot reuse (risk 1); libBulletML `isEnd()` = ANY action ended.
+    ⚠ The single-pattern harness keeps the old behaviour on all three (sweep reproducibility); a
+    re-run is the user's call.
+  - Risks 3–5 were checked and show no difference.
+
 ### Where G2 may find differences (known places the port is not literally the C)
+
+*(As written before G2. The outcome of each is in the G2 bullet above and in `docs/g2-report.md`.)*
 
 1. **`<vanish>` then a new bullet in the same frame.** The C frees the vanishing foe's slot *during* its
    run, so a bullet fired later in that run can take the slot (and the C then moves it in the same
