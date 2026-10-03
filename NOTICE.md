@@ -13,3 +13,7 @@ holds its BulletML files:
 
     Copyright 2002 Kenta Cho. All rights reserved.
     BSD-2-Clause — full text in patterns/noiz2sa/LICENSE-noiz2sa-readme_e.txt.
+
+`web/sounds/` holds Noiz2sa 0.52's sound effects and music, unchanged, and `web/palette.js` its colour table
+(same copyright and licence; full text in web/sounds/LICENSE-noiz2sa-readme_e.txt). `src/game/` and `web/`
+port or follow Noiz2sa's game logic and drawing.

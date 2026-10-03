@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noiz2sa — browser play</title>
+<script type="importmap">{ "imports": { "@xmldom/xmldom": "./web/xmldom-shim.js" } }</script>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #0a0d10; color: #cdd6dd; font: 14px system-ui, sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 12px 16px; }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+  #wrap { position: relative; width: 100%; aspect-ratio: 4 / 3; }
+  #screen { width: 100%; height: 100%; display: block; background: #000; image-rendering: pixelated; }
+  #select { position: absolute; left: 25%; width: 50%; top: 0; height: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 4%; background: rgba(0, 0, 0, .55); }
+  #select[hidden] { display: none; }
+  #select h2 { margin: 0; font: bold clamp(16px, 4vw, 34px) monospace; letter-spacing: .1em; color: #fff; }
+  #select p { margin: 0; font: clamp(10px, 1.6vw, 13px) monospace; color: #8ab; text-align: center; }
+  #stages { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 92%; }
+  .stage { font: bold clamp(9px, 1.5vw, 13px) monospace; padding: 8px 0; background: #101820; color: #9cf;
+           border: 1px solid #234; cursor: pointer; }
+  .stage.endless { grid-column: span 1; color: #f9c; }
+  .stage.sel { background: #24425a; color: #fff; border-color: #8cf; }
+  #controls { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 10px; }
+  #controls label, #controls button, #controls select, #controls input { font: inherit; }
+  #controls select { max-width: 100%; }
+  #controls fieldset { border: 1px solid #233; padding: 6px 10px; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; min-width: 0; }
+  #controls legend { color: #8ab; font-size: 12px; }
+  button, select, input { background: #121a22; color: #dde; border: 1px solid #345; border-radius: 3px; padding: 3px 8px; }
+  button:disabled { opacity: .5; }
+  #seed { width: 9em; }
+  .note { color: #789; font-size: 12px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Noiz2sa 0.52 — the bulletml-dodge port, in the browser</h1>
+  <div id="wrap">
+    <canvas id="screen" width="640" height="480"></canvas>
+    <div id="select" hidden>
+      <h2>NOIZ2SA</h2>
+      <div id="stages"></div>
+      <p>arrows choose · Z or Enter starts<br>in game: arrows/WASD move · Z fire · X slow · P pause · Esc back</p>
+    </div>
+  </div>
+  <div id="controls">
+    <fieldset><legend>Bot</legend>
+      <label><input type="checkbox" id="bot"> bot plays (B)</label>
+      <select id="policy" aria-label="policy"></select>
+    </fieldset>
+    <fieldset><legend>Replay</legend>
+      <select id="tapes" aria-label="tape"></select>
+      <button id="play-tape">Play tape</button>
+      <input type="file" id="tape-file" accept=".json" aria-label="load a tape file">
+      <label>speed <select id="speed"><option>1</option><option>2</option><option>4</option><option>8</option><option>16</option></select></label>
+    </fieldset>
+    <fieldset><legend>Recording</legend>
+      <button id="download" disabled>Download last tape</button>
+      <label>seed <input id="seed" placeholder="random" inputmode="numeric"></label>
+    </fieldset>
+    <button id="mute">Sound: on (M)</button>
+  </div>
+  <p class="note">The bot policies are the G2 test policies (<code>lookahead</code> is the useful one), not the G4 bot.
+    Every game you play is recorded as a tape (the format <code>bin/play-game.mjs</code> writes) when it ends or on Esc.
+    Noiz2sa © 2002 Kenta Cho (BSD); sounds and music from the 0.52 distribution.</p>
+</main>
+<script type="module" src="web/play.js"></script>
+</body>
+</html>

@@ -141,7 +141,9 @@ export function newGame(patterns, stage, { seed = 1, endlessSeed = 1 } = {}) {
         ship: null,
         score: 0, nextExtend: 200000, neAdd: 300000, left: 2, ssSc: 0, sceneScores: [],
         endCnt: 0, mnp: 0,
-        events: [], // per-frame: ['kill', type, score] ['hit'] ['star'] ['lostStar'] ['extend'] ['clear'] ['gameover']
+        // per-frame: ['kill', type, score] ['hit'] ['star', score] ['lostStar'] ['extend'] ['clear'] ['gameover'];
+        // for sound only: ['shot'] ['damage', type] (a hit that does not kill)
+        events: [],
     };
     // initGame: initShip (scene is 0 here, as after the title), then initBarrages, initGameState
     g.ship = { x: (SCAN_WIDTH / 2) << 8, y: Math.trunc(SCAN_HEIGHT / 5 * 4) << 8, cnt: 0, shotCnt: -1, speed: SHIP_SPEED, invCnt: 0 };
@@ -421,7 +423,7 @@ function moveFoes(g) {
                         if (fe.type === BOSS_TYPE) bossDestroied(g);
                         if (g.foes[i] === fe) removeFoeSlot(g, i);
                         fe.spc = SPC.NOT_EXIST; fe.cmd = null;
-                    }
+                    } else g.events.push(['damage', fe.type]);
                 }
             }
         } else if (fe.spc !== SPC.NOT_EXIST) {
@@ -514,7 +516,7 @@ function bossDestroied(g) {
 
 // ── shot.c ──
 function addShot(g, x, y) {
-    for (let i = 0; i < SHOT_MAX; i++) if (!g.shots[i]) { g.shots[i] = { x, y, cnt: 0 }; return; }
+    for (let i = 0; i < SHOT_MAX; i++) if (!g.shots[i]) { g.shots[i] = { x, y, cnt: 0 }; g.events.push(['shot']); return; }
 }
 function moveShots(g) {
     for (let i = 0; i < SHOT_MAX; i++) {

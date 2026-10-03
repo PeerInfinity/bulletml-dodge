@@ -22,6 +22,15 @@ simple reflexes and which need planning.
   `rand()` (`crand.js`). Headless and deterministic; `cloneGame` copies a game for look-ahead.
 - `bin/play-game.mjs --stage N [--policy chase|random|fire-stay] [--tape t.json] [--save-tape] [--dump]` —
   play a stage headless; `npm test` checks replay, cloning and the stage-clear path.
+- `play.html` — **Noiz2sa in the browser** (slice G3; `docs/g3-report.md`): stage select (stages 1–10 and the
+  four endless modes), keyboard play (arrows/WASD, Z fire, X slow, P pause, Esc back), simple drawing, the game's
+  own sounds and music, a bot toggle (B; the test policies of `src/game/policies.js`), tape replay and recording.
+  It runs the same engine modules as Node; an import map points `@xmldom/xmldom` at the browser's `DOMParser`.
+  `npm run test:browser` checks it in headless Chromium against Node.
+- `src/game/policies.js` — the test policies (`lookahead`, `chase`, `random`, `fire-stay`), shared by
+  `bin/play-game.mjs` and the page; `src/game/tape.js` — tape encoding and replay.
+- `bin/build-web-index.mjs` (`npm run web-index`) — writes `web/index/` (the pattern order and the tape list the
+  page needs); re-run it after adding a tape or a pattern (`npm run test:browser` refuses a stale index).
 - `patterns/noiz2sa/` — the 73 patterns from Noiz2sa 0.52 (BSD; licence text beside them).
 
 ```
@@ -29,6 +38,8 @@ npm install
 node bin/run-pattern.mjs "patterns/noiz2sa/boss/[Progear]_round_1_boss_grow_bullets.xml" --seeds 2 --ranks 0.5,1
 node bin/sweep.mjs patterns/noiz2sa --jobs 4   # → results/noiz2sa.md
 python3 -m http.server 8765   # then open http://127.0.0.1:8765/viewer.html?trace=traces/…json
+                              #   or http://127.0.0.1:8765/play.html to play
+npm run test:browser          # the page vs Node, keyboard, screenshots (needs `npx playwright install chromium` once)
 ```
 
 ## What the measurements do and do not mean
@@ -43,4 +54,5 @@ python3 -m http.server 8765   # then open http://127.0.0.1:8765/viewer.html?trac
 
 ## Licence
 
-MIT (`LICENSE`). The ported libBulletML and Noiz2sa parts keep their BSD notices (`NOTICE.md`).
+MIT (`LICENSE`). The ported libBulletML and Noiz2sa parts keep their BSD notices (`NOTICE.md`); the sounds and
+music in `web/sounds/` are Noiz2sa 0.52's own (BSD, licence text beside them).

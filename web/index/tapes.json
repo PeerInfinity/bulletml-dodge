@@ -1,0 +1,961 @@
+[
+ {
+  "file": "s01-chase-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9272
+ },
+ {
+  "file": "s01-chase-seed2.json",
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 5674
+ },
+ {
+  "file": "s01-chase-seed3.json",
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 5658
+ },
+ {
+  "file": "s01-fire-stay-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1639
+ },
+ {
+  "file": "s01-fire-stay-seed2.json",
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1639
+ },
+ {
+  "file": "s01-fire-stay-seed3.json",
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1647
+ },
+ {
+  "file": "s01-lookahead-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10494
+ },
+ {
+  "file": "s01-random-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 4725
+ },
+ {
+  "file": "s01-random-seed2.json",
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 3550
+ },
+ {
+  "file": "s01-random-seed3.json",
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 4725
+ },
+ {
+  "file": "s02-chase-seed1.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10016
+ },
+ {
+  "file": "s02-chase-seed2.json",
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 8184
+ },
+ {
+  "file": "s02-chase-seed3.json",
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 8232
+ },
+ {
+  "file": "s02-fire-stay-seed1.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1798
+ },
+ {
+  "file": "s02-fire-stay-seed2.json",
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1818
+ },
+ {
+  "file": "s02-fire-stay-seed3.json",
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1807
+ },
+ {
+  "file": "s02-lookahead-seed1.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10582
+ },
+ {
+  "file": "s02-random-seed1.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1046
+ },
+ {
+  "file": "s02-random-seed2.json",
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1046
+ },
+ {
+  "file": "s02-random-seed3.json",
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1046
+ },
+ {
+  "file": "s03-chase-seed1.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10235
+ },
+ {
+  "file": "s03-chase-seed2.json",
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 6524
+ },
+ {
+  "file": "s03-chase-seed3.json",
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 6524
+ },
+ {
+  "file": "s03-fire-stay-seed1.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1652
+ },
+ {
+  "file": "s03-fire-stay-seed2.json",
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1898
+ },
+ {
+  "file": "s03-fire-stay-seed3.json",
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1652
+ },
+ {
+  "file": "s03-lookahead-seed1.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10633
+ },
+ {
+  "file": "s03-random-seed1.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2012
+ },
+ {
+  "file": "s03-random-seed2.json",
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1501
+ },
+ {
+  "file": "s03-random-seed3.json",
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1774
+ },
+ {
+  "file": "s04-chase-seed1.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2715
+ },
+ {
+  "file": "s04-chase-seed2.json",
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 3872
+ },
+ {
+  "file": "s04-chase-seed3.json",
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2420
+ },
+ {
+  "file": "s04-fire-stay-seed1.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2268
+ },
+ {
+  "file": "s04-fire-stay-seed2.json",
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2278
+ },
+ {
+  "file": "s04-fire-stay-seed3.json",
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2293
+ },
+ {
+  "file": "s04-lookahead-seed1.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10594
+ },
+ {
+  "file": "s04-random-seed1.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1748
+ },
+ {
+  "file": "s04-random-seed2.json",
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1748
+ },
+ {
+  "file": "s04-random-seed3.json",
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1748
+ },
+ {
+  "file": "s05-chase-seed1.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2593
+ },
+ {
+  "file": "s05-chase-seed2.json",
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 5787
+ },
+ {
+  "file": "s05-chase-seed3.json",
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 5030
+ },
+ {
+  "file": "s05-fire-stay-seed1.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1653
+ },
+ {
+  "file": "s05-fire-stay-seed2.json",
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1653
+ },
+ {
+  "file": "s05-fire-stay-seed3.json",
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1653
+ },
+ {
+  "file": "s05-lookahead-seed1.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10610
+ },
+ {
+  "file": "s05-random-seed1.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1570
+ },
+ {
+  "file": "s05-random-seed2.json",
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1817
+ },
+ {
+  "file": "s05-random-seed3.json",
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1964
+ },
+ {
+  "file": "s06-chase-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1804
+ },
+ {
+  "file": "s06-chase-seed2.json",
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2308
+ },
+ {
+  "file": "s06-chase-seed3.json",
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1866
+ },
+ {
+  "file": "s06-fire-stay-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1648
+ },
+ {
+  "file": "s06-fire-stay-seed2.json",
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1648
+ },
+ {
+  "file": "s06-fire-stay-seed3.json",
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1633
+ },
+ {
+  "file": "s06-lookahead-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10653
+ },
+ {
+  "file": "s06-random-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1085
+ },
+ {
+  "file": "s06-random-seed2.json",
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1345
+ },
+ {
+  "file": "s06-random-seed3.json",
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1345
+ },
+ {
+  "file": "s07-chase-seed1.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 3096
+ },
+ {
+  "file": "s07-chase-seed2.json",
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 5690
+ },
+ {
+  "file": "s07-chase-seed3.json",
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2275
+ },
+ {
+  "file": "s07-fire-stay-seed1.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2314
+ },
+ {
+  "file": "s07-fire-stay-seed2.json",
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2140
+ },
+ {
+  "file": "s07-fire-stay-seed3.json",
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2322
+ },
+ {
+  "file": "s07-lookahead-seed1.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10662
+ },
+ {
+  "file": "s07-random-seed1.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1678
+ },
+ {
+  "file": "s07-random-seed2.json",
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1648
+ },
+ {
+  "file": "s07-random-seed3.json",
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1752
+ },
+ {
+  "file": "s08-chase-seed1.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2432
+ },
+ {
+  "file": "s08-chase-seed2.json",
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 4682
+ },
+ {
+  "file": "s08-chase-seed3.json",
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2128
+ },
+ {
+  "file": "s08-fire-stay-seed1.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1638
+ },
+ {
+  "file": "s08-fire-stay-seed2.json",
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1631
+ },
+ {
+  "file": "s08-fire-stay-seed3.json",
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1626
+ },
+ {
+  "file": "s08-lookahead-seed1.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10529
+ },
+ {
+  "file": "s08-random-seed1.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1597
+ },
+ {
+  "file": "s08-random-seed2.json",
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1594
+ },
+ {
+  "file": "s08-random-seed3.json",
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1071
+ },
+ {
+  "file": "s09-chase-seed1.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2203
+ },
+ {
+  "file": "s09-chase-seed2.json",
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1804
+ },
+ {
+  "file": "s09-chase-seed3.json",
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2101
+ },
+ {
+  "file": "s09-fire-stay-seed1.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1734
+ },
+ {
+  "file": "s09-fire-stay-seed2.json",
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1707
+ },
+ {
+  "file": "s09-fire-stay-seed3.json",
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1832
+ },
+ {
+  "file": "s09-lookahead-seed1.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10506
+ },
+ {
+  "file": "s09-random-seed1.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1055
+ },
+ {
+  "file": "s09-random-seed2.json",
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1055
+ },
+ {
+  "file": "s09-random-seed3.json",
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1055
+ },
+ {
+  "file": "s10-chase-seed1.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2117
+ },
+ {
+  "file": "s10-chase-seed2.json",
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2302
+ },
+ {
+  "file": "s10-chase-seed3.json",
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2176
+ },
+ {
+  "file": "s10-fire-stay-seed1.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1634
+ },
+ {
+  "file": "s10-fire-stay-seed2.json",
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1679
+ },
+ {
+  "file": "s10-fire-stay-seed3.json",
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1650
+ },
+ {
+  "file": "s10-lookahead-seed1.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10477
+ },
+ {
+  "file": "s10-random-seed1.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1655
+ },
+ {
+  "file": "s10-random-seed2.json",
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1655
+ },
+ {
+  "file": "s10-random-seed3.json",
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1056
+ },
+ {
+  "file": "s11-chase-seed1.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 4251
+ },
+ {
+  "file": "s11-chase-seed2.json",
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 8712
+ },
+ {
+  "file": "s11-chase-seed3.json",
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 3871
+ },
+ {
+  "file": "s11-fire-stay-seed1.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1641
+ },
+ {
+  "file": "s11-fire-stay-seed2.json",
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1779
+ },
+ {
+  "file": "s11-fire-stay-seed3.json",
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1680
+ },
+ {
+  "file": "s11-lookahead-seed1.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "s11-random-seed1.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1615
+ },
+ {
+  "file": "s11-random-seed2.json",
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2016
+ },
+ {
+  "file": "s11-random-seed3.json",
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 2345
+ },
+ {
+  "file": "s12-chase-seed1.json",
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2530
+ },
+ {
+  "file": "s12-chase-seed2.json",
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 5024
+ },
+ {
+  "file": "s12-chase-seed3.json",
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 3376
+ },
+ {
+  "file": "s12-fire-stay-seed1.json",
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1629
+ },
+ {
+  "file": "s12-fire-stay-seed2.json",
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1779
+ },
+ {
+  "file": "s12-fire-stay-seed3.json",
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1666
+ },
+ {
+  "file": "s12-random-seed1.json",
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1348
+ },
+ {
+  "file": "s12-random-seed2.json",
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1849
+ },
+ {
+  "file": "s12-random-seed3.json",
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1934
+ },
+ {
+  "file": "s13-chase-seed1.json",
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 3129
+ },
+ {
+  "file": "s13-chase-seed2.json",
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2166
+ },
+ {
+  "file": "s13-chase-seed3.json",
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1879
+ },
+ {
+  "file": "s13-fire-stay-seed1.json",
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1629
+ },
+ {
+  "file": "s13-fire-stay-seed2.json",
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1665
+ },
+ {
+  "file": "s13-fire-stay-seed3.json",
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1630
+ },
+ {
+  "file": "s13-random-seed1.json",
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1078
+ },
+ {
+  "file": "s13-random-seed2.json",
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2266
+ },
+ {
+  "file": "s13-random-seed3.json",
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1021
+ },
+ {
+  "file": "s14-chase-seed1.json",
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 2764
+ },
+ {
+  "file": "s14-chase-seed2.json",
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2166
+ },
+ {
+  "file": "s14-chase-seed3.json",
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1879
+ },
+ {
+  "file": "s14-fire-stay-seed1.json",
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1629
+ },
+ {
+  "file": "s14-fire-stay-seed2.json",
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 1665
+ },
+ {
+  "file": "s14-fire-stay-seed3.json",
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1630
+ },
+ {
+  "file": "s14-random-seed1.json",
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 1078
+ },
+ {
+  "file": "s14-random-seed2.json",
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 2266
+ },
+ {
+  "file": "s14-random-seed3.json",
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 1021
+ }
+]

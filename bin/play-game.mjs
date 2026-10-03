@@ -7,11 +7,14 @@
  *        [--save-tape out.json] [--dump states.txt]
  *
  * A tape is {stage, seed, endlessSeed, inputs: [[byte, count], …]} (run-length encoded; byte = dir | fire<<4 | slow<<5).
+ * The policies are test policies, not the bot (src/game/policies.js).
  * --dump writes one state line per frame (the format the native build prints, for the fidelity check).
  */
 import fs from 'node:fs';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
-import { newGame, stepGame, stateLine, cloneGame, STATUS, SPC, input, STAGE_NAMES } from '../src/game/noiz2sa-game.js';
+import { newGame, stepGame, stateLine, STATUS, STAGE_NAMES } from '../src/game/noiz2sa-game.js';
+import { makePolicy } from '../src/game/policies.js';
+import { tapeInputs, makeTape } from '../src/game/tape.js';
 
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : d; };
@@ -22,53 +25,9 @@ const endlessSeed = tape ? tape.endlessSeed : Number(opt('endless-seed', 1));
 const policy = opt('policy', 'fire-stay');
 const maxFrames = Number(opt('frames', 200000));
 
-const inputs = [];
-if (tape) for (const [b, n] of tape.inputs) for (let k = 0; k < n; k++) inputs.push(b);
-let r = 12345;
-const rnd = () => ((r = (Math.imul(r, 1103515245) + 12345) >>> 0) >>> 16);
-function nextInput(f) {
-    if (tape) return f < inputs.length ? inputs[f] : 0;
-    if (policy === 'random') return input(rnd() % 9, rnd() % 4 !== 0, rnd() % 8 === 0);
-    if (policy === 'chase') {
-        // a test policy, not the bot: slide under the lowest enemy and fire; ignores bullets
-        let best = null;
-        for (const f of g.foes) if (f && f.spc === SPC.FOE && (!best || f.y > best.y)) best = f;
-        if (!best) return input(0, true, false);
-        const dx = best.x - g.ship.x;
-        return input(Math.abs(dx) < 1024 ? 0 : dx > 0 ? 3 : 7, true, false);
-    }
-    if (policy === 'lookahead') return lookahead();
-    return input(0, true, false);
-}
-
-// a test policy, not the bot (G4): every 4 frames, try each direction (fast or slow) held for 8 frames then standing for
-// the rest of a 40-frame look-ahead, on a copy of the game; keep the safest, then the one nearest the
-// x of the lowest enemy. It only exists to record tapes that reach a boss kill for the G2 comparison.
-let plan = 0, planLeft = 0;
-const laSafe = Number(opt('la-safe', 40)); // frames of look-ahead survival that count as "safe" (lower = bolder)
-function chaseTarget(h) {
-    let best = null;
-    for (const f of h.foes) if (f && f.spc === SPC.FOE && (!best || f.y > best.y)) best = f;
-    return best ? best.x : h.ship.x;
-}
-function lookahead() {
-    if (planLeft-- > 0) return plan;
-    let bestScore = -Infinity;
-    for (let cand = 0; cand < 18; cand++) {
-        const dir = cand % 9, slow = cand >= 9;
-        const c = cloneGame(g);
-        let alive = 0;
-        for (let k = 0; k < 40 && c.status === STATUS.IN_GAME; k++) {
-            const ev = stepGame(c, input(k < 8 ? dir : 0, true, slow));
-            if (ev.some((e) => e[0] === 'hit')) break;
-            alive++;
-        }
-        const score = Math.min(alive, laSafe) * 1e6 - Math.abs(chaseTarget(c) - c.ship.x) - Math.abs(c.ship.y - 98304) * 0.5;
-        if (score > bestScore) { bestScore = score; plan = input(dir, true, slow); }
-    }
-    planLeft = 3;
-    return plan;
-}
+const inputs = tape ? tapeInputs(tape) : null;
+const pol = tape ? null : makePolicy(policy, { laSafe: Number(opt('la-safe', 40)) });
+const nextInput = (f) => (tape ? (f < inputs.length ? inputs[f] : 0) : pol(g));
 
 const g = newGame(loadNoiz2saPatterns(), stage, { seed, endlessSeed });
 const played = [];
@@ -90,9 +49,5 @@ while (g.status !== STATUS.TITLE && g.frame < maxFrames && (!tape || g.frame < i
 const outcome = g.status === STATUS.TITLE ? (g.left < 0 ? 'game over' : 'returned to title') : g.status === STATUS.STAGE_CLEAR ? 'stage clear' : g.status === STATUS.GAMEOVER ? 'game over' : 'in game';
 console.log(`stage ${STAGE_NAMES[stage]} seed ${seed}: ${outcome} after ${g.frame} frames (${(g.frame / 60).toFixed(0)} s game time), scene ${g.scene}, score ${g.score}, ships left ${g.left}`);
 console.log(`kills zako/middle/big/boss ${tally.kills.join('/')}, deaths ${tally.hits}, stars ${tally.stars} (lost ${tally.lostStars}), extends ${tally.extends}; ${((Date.now() - t0) / 1000).toFixed(1)} s wall`);
-if (opt('save-tape', null)) {
-    const rle = [];
-    for (const b of played) { if (rle.length && rle[rle.length - 1][0] === b) rle[rle.length - 1][1]++; else rle.push([b, 1]); }
-    fs.writeFileSync(opt('save-tape'), JSON.stringify({ game: 'noiz2sa-0.52', stage, seed, endlessSeed, frames: played.length, inputs: rle }));
-}
+if (opt('save-tape', null)) fs.writeFileSync(opt('save-tape'), JSON.stringify(makeTape({ stage, seed, endlessSeed, played })));
 if (dump) fs.writeFileSync(opt('dump'), dump.join('\n') + '\n');
