@@ -70,6 +70,14 @@ stays reproducible.
     re-run is the user's call.
   - Risks 3–5 were checked and show no difference.
 
+- **G3 DONE 2026-10-03** (report: `docs/g3-report.md`). `play.html`: stage select (1–10 + 4 endless modes),
+  keyboard play as in the original, simple canvas drawing, the game's sounds and music (vendored, BSD), a bot
+  toggle (the test policies, now `src/game/policies.js`), tape replay and recording (the play-game format + `seed`).
+  `npm run test:browser`: page = Node on 6 tapes (2 full clears, the 30,000-frame ENDLESS); keyboard, bot, pause,
+  Esc and the recorded tape round-trip in page and Node. Smoke tapes re-record 126/126; wrap 137/137.
+  ⚠ The committed s01-lookahead tape's recipe is unrecorded (HEAD re-records 10,506 frames, not 10,494).
+  ⚠ `lookahead` ≈ 17 ms CPU per frame: 49–63 fps in the page in stage 1, slower in busy scenes — G4 needs a budget.
+
 ### Where G2 may find differences (known places the port is not literally the C)
 
 *(As written before G2. The outcome of each is in the G2 bullet above and in `docs/g2-report.md`.)*

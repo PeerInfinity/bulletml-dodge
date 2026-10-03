@@ -81,6 +81,12 @@ try {
     const x1 = (await state()).game.shipX;
     assert.ok(x1 > s.game.shipX, 'right arrow moves the ship back');
     await page.keyboard.up('ArrowRight');
+    // the sounds: a key press unlocked audio; all 7 effects decode, and stage 1 (index 0) plays stg1.ogg (index%5+1, noiz2sa.c)
+    await page.waitForFunction(() => window.noiz.sound().decoded === 7, null, { timeout: 20000 });
+    const snd = await page.evaluate(() => window.noiz.sound());
+    assert.equal(snd.music, 'stg1.ogg');
+    console.log(`ok sound: ${snd.decoded}/7 effects decoded, audio context ${snd.context}, music ${snd.music} (${snd.musicPaused ? 'paused' : 'playing'})`);
+
     // the panel redraws as the game runs (the frame counter, right panel)
     const panelPixels = (x, y, w, h) => page.evaluate(([x, y, w, h]) => document.getElementById('screen').getContext('2d').getImageData(x, y, w, h).data.join(), [x, y, w, h]);
     const r0 = await panelPixels(480, 200, 160, 50);

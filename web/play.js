@@ -287,6 +287,8 @@ window.noiz = {
         };
     },
     lastTape: () => app.lastTape,
+    sound: () => ({ decoded: sound.buffers.filter(Boolean).length, context: sound.ctx?.state ?? null,
+        music: sound.music.src.split('/').pop(), musicPaused: sound.music.paused, muted: sound.muted }),
     startStage: (i, o) => startStage(i, o),
     startReplay: (tape, name) => startReplay(tape, name),
     setSpeed: (s) => { app.speed = s; },
