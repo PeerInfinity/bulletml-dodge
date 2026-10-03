@@ -21,7 +21,7 @@
  * The whole state is plain data; `cloneGame` copies it for look-ahead search.
  */
 
-import { makeRunner, cloneRunner, runRunner, runnerIsEnd } from '../bulletml.js';
+import { makeRunner, cloneRunner, runRunner, runnerIsEndLib } from '../bulletml.js';
 import { newCRand, crand, cloneCRand, RAND_MAX } from './crand.js';
 
 // ── constants (screen.h, foe.cc, ship.c, shot.h, bonus.c, barragemanager.cc, attractmanager.*) ──
@@ -137,6 +137,7 @@ export function newGame(patterns, stage, { seed = 1, endlessSeed = 1 } = {}) {
         shots: new Array(SHOT_MAX).fill(null),
         bonuses: new Array(BONUS_MAX).fill(null), bonusScore: 10,
         frags: new Int32Array(FRAG_MAX),
+        slotMv: new Int32Array(FOE_MAX * 2), // each foe slot's last mv; a new occupant inherits it (see placeFoe)
         ship: null,
         score: 0, nextExtend: 200000, neAdd: 300000, left: 2, ssSc: 0, sceneScores: [],
         endCnt: 0, mnp: 0,
@@ -274,6 +275,15 @@ function moveFrags(g) {
 function newFoe(x, y, rank, d, spd, spc, type, shield, cmd, bml = null) {
     return { x, y, px: x, py: y, mx: 0, my: 0, vx: 0, vy: 0, rank, d, spd, spc, type, shield, cnt: 0, hit: 0, cmd, bml };
 }
+/**
+ * Put a new foe in slot i. The C never resets `mv` when it reuses a slot, so until the new occupant first
+ * moves, its mv is the previous occupant's last one — and a bullet wiped before its first move (created
+ * this frame) leaves a star with that stale velocity. Found by the G2 comparison.
+ */
+function placeFoe(g, i, fe) {
+    fe.mx = g.slotMv[2 * i]; fe.my = g.slotMv[2 * i + 1];
+    g.foes[i] = fe;
+}
 function freeFoeSlot(g) {
     for (let i = 0; i < FOE_MAX; i++) if (!g.foes[i]) return i;
     return -1;
@@ -281,7 +291,7 @@ function freeFoeSlot(g) {
 function addFoe(g, x, y, rank, d, spd, type, shield, bml) {
     const i = freeFoeSlot(g);
     if (i < 0) return -1;
-    g.foes[i] = newFoe(x, y, rank, d, spd, SPC.FOE, type, shield, makeRunner(bml), bml);
+    placeFoe(g, i, newFoe(x, y, rank, d, spd, SPC.FOE, type, shield, makeRunner(bml), bml));
     g.enNum[type]++;
     return i;
 }
@@ -297,36 +307,47 @@ function removeFoeSlot(g, i) {
     g.foes[i] = null;
 }
 
-function hostFor(g, fe) {
+/**
+ * The runner's view of its foe is the C's `Foe *`: a pointer to SLOT i, not to an object. `<vanish>` frees
+ * the slot at once (removeFoe only marks it NOT_EXIST), so a bullet fired later in the same run can take
+ * that very slot, and from then on the still-running command reads and writes the new occupant. Until
+ * then the vanished foe's fields are still there to read (fe0). Found by the G2 comparison.
+ */
+function hostFor(g, fe0, slot) {
+    const F = () => g.foes[slot] || fe0;
     return {
-        getBulletDirection: () => (fe.d * 360) / DIV,
-        getAimDirection: () => { g.aimed = true; return (getDeg(g.ship.x - fe.x, g.ship.y - fe.y) * 360) / DIV; },
-        getBulletSpeed: () => fe.spd / SPD_RATE,
+        getBulletDirection: () => (F().d * 360) / DIV,
+        getAimDirection: () => { const fe = F(); g.aimed = true; return (getDeg(g.ship.x - fe.x, g.ship.y - fe.y) * 360) / DIV; },
+        getBulletSpeed: () => F().spd / SPD_RATE,
         getDefaultSpeed: () => 1,
-        getRank: () => fe.rank,
+        getRank: () => F().rank,
         getRand: () => crand(g.rand) / RAND_MAX,
         getTurn: () => g.tick,
-        getBulletSpeedX: () => fe.vx / VEL_RATE,
-        getBulletSpeedY: () => fe.vy / VEL_RATE,
+        getBulletSpeedX: () => F().vx / VEL_RATE,
+        getBulletSpeedY: () => F().vy / VEL_RATE,
         createSimpleBullet: (dir, spd) => {
+            const fe = F();
             const d = Math.trunc((dir * DIV) / 360) & (DIV - 1);
             const i = freeFoeSlot(g);
-            if (i >= 0) g.foes[i] = newFoe(fe.x, fe.y, fe.rank, d, Math.trunc(spd * SPD_RATE), SPC.BULLET, 0, 0, null);
+            if (i >= 0) placeFoe(g, i, newFoe(fe.x, fe.y, fe.rank, d, Math.trunc(spd * SPD_RATE), SPC.BULLET, 0, 0, null));
         },
         createBullet: (state, dir, spd) => {
+            const fe = F();
             const d = Math.trunc((dir * DIV) / 360) & (DIV - 1);
             const i = freeFoeSlot(g);
-            if (i >= 0) g.foes[i] = newFoe(fe.x, fe.y, fe.rank, d, Math.trunc(spd * SPD_RATE), SPC.ACTIVE_BULLET, 0, 0, makeRunner(state.bml, state));
+            if (i >= 0) placeFoe(g, i, newFoe(fe.x, fe.y, fe.rank, d, Math.trunc(spd * SPD_RATE), SPC.ACTIVE_BULLET, 0, 0, makeRunner(state.bml, state)));
         },
         doVanish: () => {
+            const fe = F();
             if (fe.type === BOSS_TYPE) return;
             if (fe.spc === SPC.FOE) g.enNum[fe.type]--;
-            fe.spc = SPC.NOT_EXIST; // the slot is freed after run(), as in moveFoes
+            fe.spc = SPC.NOT_EXIST;
+            if (g.foes[slot] === fe) g.foes[slot] = null; // the slot is free from now on
         },
-        doChangeDirection: (d) => { fe.d = Math.trunc((d * DIV) / 360); },
-        doChangeSpeed: (s) => { fe.spd = Math.trunc(s * SPD_RATE); },
-        doAccelX: (ax) => { fe.vx = Math.trunc(ax * VEL_RATE); },
-        doAccelY: (ay) => { fe.vy = Math.trunc(ay * VEL_RATE); },
+        doChangeDirection: (d) => { F().d = Math.trunc((d * DIV) / 360); },
+        doChangeSpeed: (s) => { F().spd = Math.trunc(s * SPD_RATE); },
+        doAccelX: (ax) => { F().vx = Math.trunc(ax * VEL_RATE); },
+        doAccelY: (ay) => { F().vy = Math.trunc(ay * VEL_RATE); },
     };
 }
 
@@ -360,17 +381,22 @@ function clearFoesZako(g) {
 function moveFoes(g) {
     const ship = g.ship;
     for (let i = 0; i < FOE_MAX; i++) {
-        const fe = g.foes[i];
+        let fe = g.foes[i];
         if (!fe) continue;
         if (fe.cmd) {
-            if (fe.type === BOSS_TYPE && runnerIsEnd(fe.cmd)) fe.cmd = makeRunner(fe.bml);
-            runRunner(fe.cmd, hostFor(g, fe));
-            if (fe.spc === SPC.NOT_EXIST) { g.foes[i] = null; continue; }
+            // libBulletML's isEnd(): ANY top action ended — a two-action boss pattern restarts when its first ends
+            if (fe.type === BOSS_TYPE && runnerIsEndLib(fe.cmd)) fe.cmd = makeRunner(fe.bml);
+            runRunner(fe.cmd, hostFor(g, fe, i));
+            // as the C: what happens next is decided by the SLOT — vanished and empty, or vanished and
+            // already reused by a bullet that run fired (which the C then moves in this same iteration)
+            if (!g.foes[i]) continue;
+            fe = g.foes[i];
         }
         const mx = ((sinD(fe.d) * fe.spd) >> 8) + fe.vx;
         const my = -((cosD(fe.d) * fe.spd) >> 8) + fe.vy;
         fe.x += mx; fe.y += my;
         fe.mx = mx; fe.my = my;
+        g.slotMv[2 * i] = mx; g.slotMv[2 * i + 1] = my;
         const wl = fe.cnt < 4 ? 0 : fe.cnt < 8 ? 1 : 2;
         fe.px = fe.x - mx * (1 << wl);
         fe.py = fe.y - my * (1 << wl);
@@ -636,6 +662,7 @@ export function cloneGame(g) {
         shots: g.shots.map((x) => (x ? { ...x } : null)),
         bonuses: g.bonuses.map((b) => (b ? { ...b } : null)),
         frags: g.frags.slice(),
+        slotMv: g.slotMv.slice(),
         ship: { ...g.ship },
         sceneScores: g.sceneScores.slice(),
         events: [],

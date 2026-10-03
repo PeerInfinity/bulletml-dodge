@@ -109,7 +109,16 @@ export function cloneRunner(r) {
     };
 }
 
+/**
+ * ⚠ NOT libBulletML's isEnd(): this is true when EVERY top action has ended. It is kept as it is because the
+ * single-pattern harness (src/noiz2sa.js, bin/run-pattern.mjs) uses it and its sweep must stay reproducible.
+ */
 export const runnerIsEnd = (r) => r.impls.every((m) => m.end);
+/**
+ * libBulletML 0.0.6's BulletMLRunner::isEnd(): true as soon as ANY top action has ended (the "all" version
+ * is commented out in bulletmlrunner.cpp). Noiz2sa restarts a boss runner on it. Found by the G2 comparison.
+ */
+export const runnerIsEndLib = (r) => r.impls.some((m) => m.end);
 
 export function runRunner(r, host) {
     for (const m of r.impls) runImpl(m, host);
