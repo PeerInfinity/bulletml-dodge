@@ -1,7 +1,7 @@
 # bulletml-dodge
 
 **Play it:** https://peerinfinity.github.io/bulletml-dodge/play.html — Kenta Cho's Noiz2sa (BSD), ported to
-the browser and verified frame by frame against a native build; press B to let the bot play.
+the browser and verified frame by frame against a native build; press B to let the bot play (the G4 bot, in a Web Worker).
 
 Bots that dodge BulletML patterns, to find out which patterns can be dodged with
 simple reflexes and which need planning.
@@ -32,6 +32,13 @@ simple reflexes and which need planning.
   `npm run test:browser` checks it in headless Chromium against Node.
 - `src/game/policies.js` — the test policies (`lookahead`, `chase`, `random`, `fire-stay`), shared by
   `bin/play-game.mjs` and the page; `src/game/tape.js` — tape encoding and replay.
+- `src/game/bot.js` — **the G4 bot** (`docs/g4-report.md`), shared by Node and the page: survival first (an exact
+  look-ahead on copies of the game: a committed plan of `horizon` frames, extended one frame per frame and repaired
+  when it runs into a hit), then attack (get under an enemy and fire), stars a hook. Two variants, `attack` and
+  `no-attack`; the budget is a count of simulated frames (reproducible), calibrated to the browser's 16 ms frame.
+  In `play.html` it thinks in a Web Worker (`web/bot-worker.js`). `src/game/bot-run.js` plays one headless run.
+- `bin/bot-sweep.mjs` — the bot on every stage × variant × seed × budget, and the look-ahead needed, in worker
+  processes → `results/g4-bot.md`, `results/g4-bot.json`; tapes in `tapes/g4/` (they replay in the page).
 - `bin/build-web-index.mjs` (`npm run web-index`) — writes `web/index/` (the pattern order and the tape list the
   page needs); re-run it after adding a tape or a pattern (`npm run test:browser` refuses a stale index).
 - `patterns/noiz2sa/` — the 73 patterns from Noiz2sa 0.52 (BSD; licence text beside them).
