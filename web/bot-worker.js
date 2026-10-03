@@ -18,7 +18,14 @@ import { unpackBulletML } from '../src/bulletml.js';
 import { newGame, stepGame, STATUS } from '../src/game/noiz2sa-game.js';
 import { makeBot } from '../src/game/bot.js';
 
-const LEAD = 60; // frames the worker may run ahead of the page (~1 s): covers the bot's costliest searches
+// frames the worker may run ahead of the page (~3 s). Its bursts (an `improve` every 8 frames spends up to half the
+// bank, ~10,000 units) are paid back from this lead, so a slow machine needs it long (slice P1: 60 was ~1 s)
+const LEAD = 180;
+// the worker yields between slices with a message to itself: setTimeout(0) is clamped to ≥ 4 ms once nested, which
+// left the worker idle up to a third of the time when it was behind (slice P1)
+const kick = new MessageChannel();
+let kicked = false; // a kick is on its way
+kick.port1.onmessage = () => { kicked = false; pump(); };
 let patterns = null, run = null, pumping = false;
 let slow = 1; // for the frame-time checks only (window.noiz.setWorkerSlowdown): spin so each bot frame takes slow× its time
 
@@ -53,7 +60,7 @@ function pump() {
     flush();
     pumping = false;
     // keep going in slices so 'ack' and 'stop' get through between them
-    if (run && run.g.status === STATUS.IN_GAME && run.g.frame - run.pageFrame < LEAD) setTimeout(pump, 0);
+    if (run && run.g.status === STATUS.IN_GAME && run.g.frame - run.pageFrame < LEAD && !kicked) { kicked = true; kick.port2.postMessage(null); }
 }
 
 onmessage = (e) => {
@@ -64,7 +71,7 @@ onmessage = (e) => {
             for (const k of Object.keys(m.patterns)) patterns[k] = m.patterns[k].map(unpackBulletML);
             postMessage({ type: 'ready', lead: LEAD });
         } else if (m.type === 'start') start(m);
-        else if (m.type === 'ack') { if (run && run.id === m.id) { run.pageFrame = m.frame; pump(); } }
+        else if (m.type === 'ack') { if (run && run.id === m.id) { run.pageFrame = m.frame; if (!kicked) pump(); } }
         else if (m.type === 'stop') { if (run && run.id === m.id) run = null; }
         else if (m.type === 'slow') slow = m.factor;
     } catch (err) {

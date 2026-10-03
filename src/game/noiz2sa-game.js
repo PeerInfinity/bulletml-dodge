@@ -669,18 +669,32 @@ export function stepGame(g, inp) {
     return g.events;
 }
 
+// cloneGame's copies, written out (slice P1: faster than spreads and maps; the same fields in the same order as
+// newFoe / addShot / addBonus, so the copies share the originals' shapes)
+const cloneFoe = (f) => ({
+    x: f.x, y: f.y, px: f.px, py: f.py, mx: f.mx, my: f.my, vx: f.vx, vy: f.vy, rank: f.rank, d: f.d, spd: f.spd,
+    spc: f.spc, type: f.type, shield: f.shield, cnt: f.cnt, hit: f.hit, cmd: f.cmd ? cloneRunner(f.cmd) : null, bml: f.bml,
+});
+function cloneSlots(a, copy) {
+    const out = a.slice();
+    for (let i = 0; i < out.length; i++) if (out[i]) out[i] = copy(out[i]);
+    return out;
+}
+const cloneShot = (x) => ({ x: x.x, y: x.y, cnt: x.cnt });
+const cloneBonus = (b) => ({ x: b.x, y: b.y, vx: b.vx, vy: b.vy, cnt: b.cnt, down: b.down });
+
 export function cloneGame(g) {
-    const bp = g.bp.map((l) => l.map((b) => ({ ...b })));
+    const bp = g.bp.map((l) => l.map((b) => ({ type: b.type, i: b.i, maxRank: b.maxRank, rank: b.rank, frq: b.frq })));
     return {
         ...g,
         rand: cloneCRand(g.rand),
         bp,
         bq: g.bq.map((q) => q.slice()),
         barrage: g.barrage.map((b) => bp[b.type][b.i]), // barrage[] points at bp records
-        foes: g.foes.map((f) => (f ? { ...f, cmd: f.cmd ? cloneRunner(f.cmd) : null } : null)),
+        foes: cloneSlots(g.foes, cloneFoe),
         enNum: g.enNum.slice(),
-        shots: g.shots.map((x) => (x ? { ...x } : null)),
-        bonuses: g.bonuses.map((b) => (b ? { ...b } : null)),
+        shots: cloneSlots(g.shots, cloneShot),
+        bonuses: cloneSlots(g.bonuses, cloneBonus),
         frags: g.frags.slice(),
         slotMv: g.slotMv.slice(),
         ship: { ...g.ship },

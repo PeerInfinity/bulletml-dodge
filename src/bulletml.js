@@ -137,16 +137,18 @@ function makeImpl(state) {
     };
 }
 
-const cloneLin = (f) => (f ? { ...f } : null);
+const cloneLin = (f) => (f ? { fx: f.fx, lx: f.lx, fy: f.fy, ly: f.ly, g: f.g } : null);
+const cloneStack = (a) => (a.length ? a.map((e) => ({ ...e })) : []);
+// written out field by field, in makeImpl's order (slice P1: faster than a spread)
+const cloneImpl = (m) => ({
+    bml: m.bml, nodes: m.nodes.slice(), actIte: m.actIte, end: m.end, act: m.act,
+    actTurn: m.actTurn, endTurn: m.endTurn, params: m.params,
+    spd: m.spd, dir: m.dir, prevSpd: m.prevSpd, prevDir: m.prevDir,
+    changeDir: cloneLin(m.changeDir), changeSpeed: cloneLin(m.changeSpeed), accelX: cloneLin(m.accelX), accelY: cloneLin(m.accelY),
+    repeatStack: cloneStack(m.repeatStack), refStack: cloneStack(m.refStack),
+});
 export function cloneRunner(r) {
-    return {
-        impls: r.impls.map((m) => ({
-            ...m, nodes: m.nodes.slice(),
-            changeDir: cloneLin(m.changeDir), changeSpeed: cloneLin(m.changeSpeed),
-            accelX: cloneLin(m.accelX), accelY: cloneLin(m.accelY),
-            repeatStack: m.repeatStack.map((e) => ({ ...e })), refStack: m.refStack.map((e) => ({ ...e })),
-        })),
-    };
+    return { impls: r.impls.length === 1 ? [cloneImpl(r.impls[0])] : r.impls.map(cloneImpl) };
 }
 
 /**

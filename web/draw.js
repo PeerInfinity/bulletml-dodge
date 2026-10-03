@@ -106,38 +106,64 @@ function drawField(c, g, view) {
 function big(c, s, y) { c.font = 'bold 30px monospace'; c.fillStyle = '#fff'; c.fillText(s, FIELD_W / 2, y); }
 function small(c, s, y) { c.font = '14px monospace'; c.fillStyle = '#cfe'; c.fillText(s, FIELD_W / 2, y); }
 
-function drawPanels(c, g, view) {
+/**
+ * The side panels, redrawn only when what they show changes (slice P1: text is the costliest thing a software
+ * canvas draws, and the panels were redrawn every display frame). The static part (background, labels, help) is
+ * redrawn when its own key changes; each value is cleared and redrawn on its own when it changes.
+ */
+const panel = { key: null, vals: new Map() };
+const L = 14, R = FIELD_X + FIELD_W + 14;
+function lab(c, s, x, y) { c.font = '12px monospace'; c.fillStyle = '#7ab'; c.fillText(s, x, y); }
+function drawPanelsStatic(c, g, view) {
     c.fillStyle = '#05080c'; c.fillRect(0, 0, FIELD_X, FIELD_H); c.fillRect(FIELD_X + FIELD_W, 0, FIELD_X, FIELD_H);
     c.fillStyle = '#123'; c.fillRect(FIELD_X - 1, 0, 1, FIELD_H); c.fillRect(FIELD_X + FIELD_W, 0, 1, FIELD_H);
     c.textAlign = 'left';
-    const lab = (s, x, y) => { c.font = '12px monospace'; c.fillStyle = '#7ab'; c.fillText(s, x, y); };
-    const val = (s, x, y, col = '#fff') => { c.font = 'bold 20px monospace'; c.fillStyle = col; c.fillText(String(s), x, y); };
-    const L = 14, R = FIELD_X + FIELD_W + 14;
     if (g) {
-        lab('SCORE', L, 30); val(g.score, L, 54);
-        lab('STAR', L, 90); val(g.bonusScore, L, 114, PAL[16 * 3 - 3]);
-        lab('SHIPS LEFT', R, 30); val(g.left < 0 ? 0 : g.left, R, 54, PAL[16 * 2 - 1]);
-        for (let i = 0; i < Math.min(Math.max(g.left, 0), 8); i++) box(c, R + 6 + i * 14, 70, 6, 6, 16 * 2 - 1, 16 * 4 - 5);
-        lab('STAGE', R, 100); val(STAGE_NAMES[g.stage], R, 124);
-        // setBarrages counts the scene up as it starts one, so the boss scene is 9 (19, 29… in the endless modes)
-        lab('SCENE', R, 160); val(g.scene < 0 ? '-' : g.scene % 10 === 9 ? 'BOSS' : g.scene + 1, R, 184);
-        lab('FRAME', R, 220); val(g.frame, R, 240, '#9ab');
+        lab(c, 'SCORE', L, 30); lab(c, 'STAR', L, 90); lab(c, 'SHIPS LEFT', R, 30);
+        lab(c, 'STAGE', R, 100); lab(c, 'SCENE', R, 160); lab(c, 'FRAME', R, 220);
     }
-    lab(view.modeLabel, L, 160);
+    lab(c, view.modeLabel, L, 160);
     if (view.mode === 'replay') {
-        lab(`replay ×${view.speed}`, L, 180);
+        lab(c, `replay ×${view.speed}`, L, 180);
         const n = (view.tapeName || '').replace(/\.json$/, '');
-        lab(n.length > 18 ? n.slice(0, 17) + '…' : n, L, 196);
+        lab(c, n.length > 18 ? n.slice(0, 17) + '…' : n, L, 196);
     }
-    lab(view.bot ? `BOT: ${view.policyName}` : 'BOT: off', L, 220);
-    lab(view.muted ? 'SOUND: off' : 'SOUND: on', L, 240);
+    lab(c, view.bot ? `BOT: ${view.policyName}` : 'BOT: off', L, 220);
+    lab(c, view.muted ? 'SOUND: off' : 'SOUND: on', L, 240);
     c.font = '11px monospace'; c.fillStyle = '#567';
     const help = ['arrows/WASD move', 'Z fire  X slow', 'P pause  Esc back', 'B bot  M mute'];
     help.forEach((s, i) => c.fillText(s, L, 400 + i * 16));
 }
+/** a value at (x, y): its box (x, y-18, w, 24) is cleared and redrawn only when the value changes */
+function value(c, id, s, x, y, col = '#fff', w = FIELD_X - 20) {
+    s = String(s);
+    if (panel.vals.get(id) === s) return;
+    panel.vals.set(id, s);
+    c.fillStyle = '#05080c'; c.fillRect(x - 2, y - 18, w, 24);
+    c.textAlign = 'left'; c.font = 'bold 20px monospace'; c.fillStyle = col; c.fillText(s, x, y);
+}
+function drawPanels(c, g, view) {
+    const key = [!!g, g && g.stage, view.modeLabel, view.mode, view.speed, view.tapeName, view.bot, view.policyName, view.muted].join('|');
+    if (key !== panel.key) { panel.key = key; panel.vals.clear(); drawPanelsStatic(c, g, view); }
+    if (!g) return;
+    value(c, 'score', g.score, L, 54);
+    value(c, 'star', g.bonusScore, L, 114, PAL[16 * 3 - 3]);
+    const left = g.left < 0 ? 0 : g.left;
+    if (panel.vals.get('ships') !== String(left)) {
+        c.fillStyle = '#05080c'; c.fillRect(R - 2, 64, FIELD_X - 20, 12);
+        for (let i = 0; i < Math.min(left, 8); i++) box(c, R + 6 + i * 14, 70, 6, 6, 16 * 2 - 1, 16 * 4 - 5);
+    }
+    value(c, 'ships', left, R, 54, PAL[16 * 2 - 1]);
+    value(c, 'stage', STAGE_NAMES[g.stage], R, 124);
+    // setBarrages counts the scene up as it starts one, so the boss scene is 9 (19, 29… in the endless modes)
+    value(c, 'scene', g.scene < 0 ? '-' : g.scene % 10 === 9 ? 'BOSS' : g.scene + 1, R, 184);
+    value(c, 'frame', g.frame, R, 240, '#9ab');
+}
+/** the panels must be drawn whole again (e.g. after something else drew over the canvas) */
+export function invalidatePanels() { panel.key = null; }
 
 export function draw(c, g, view) {
-    c.fillStyle = '#000'; c.fillRect(0, 0, 640, 480);
+    // only the field is cleared each frame; the panels keep what they drew
     if (g) drawField(c, g, view); else { c.fillStyle = '#000'; c.fillRect(FIELD_X, 0, FIELD_W, FIELD_H); }
     drawPanels(c, g, view);
 }

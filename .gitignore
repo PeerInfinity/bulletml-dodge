@@ -3,3 +3,4 @@ traces/
 results/.*-parts/
 native/build/
 results/.g4-sweep.log
+native/wasm/build/
