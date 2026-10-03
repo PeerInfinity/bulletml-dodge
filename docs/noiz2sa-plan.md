@@ -92,3 +92,7 @@ stays reproducible.
 4. **Formula operand order.** libBulletML leaves `a + b` evaluation order to the compiler; it matters only
    with two `$rand`s in one formula, and no Noiz2sa pattern has one.
 5. **Pattern order.** Sorted by file name in both; the original `readdir` order is filesystem-dependent.
+
+- ⚖ **The user, 2026-10-03:** *"I want a pages deploy when this is finished. I don't think we need to rerun the
+  sweep."* The first pattern sweep stays as it is (its harness keeps the pre-G2 semantics). G3 is deployed to
+  GitHub Pages from `main` (root): https://peerinfinity.github.io/bulletml-dodge/play.html

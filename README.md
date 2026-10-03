@@ -1,5 +1,8 @@
 # bulletml-dodge
 
+**Play it:** https://peerinfinity.github.io/bulletml-dodge/play.html — Kenta Cho's Noiz2sa (BSD), ported to
+the browser and verified frame by frame against a native build; press B to let the bot play.
+
 Bots that dodge BulletML patterns, to find out which patterns can be dodged with
 simple reflexes and which need planning.
 
