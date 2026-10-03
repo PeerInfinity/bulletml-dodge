@@ -17,6 +17,11 @@ simple reflexes and which need planning.
 - `bin/sweep.mjs <dir> [--jobs N] [--timeout-min M] [-- run-pattern options]` — every pattern under
   `<dir>`, N at a time; writes `results/<name>.json` and `results/<name>.md`.
 - `viewer.html?trace=traces/<name>.json` — replay viewer (serve the directory over HTTP).
+- `src/game/` — **the whole of Noiz2sa** (slice G1 of `docs/noiz2sa-plan.md`): stages, enemies, shots,
+  stars, lives, scoring, with the C's integer and float arithmetic, its pools, the stage LCG and glibc's
+  `rand()` (`crand.js`). Headless and deterministic; `cloneGame` copies a game for look-ahead.
+- `bin/play-game.mjs --stage N [--policy chase|random|fire-stay] [--tape t.json] [--save-tape] [--dump]` —
+  play a stage headless; `npm test` checks replay, cloning and the stage-clear path.
 - `patterns/noiz2sa/` — the 73 patterns from Noiz2sa 0.52 (BSD; licence text beside them).
 
 ```
