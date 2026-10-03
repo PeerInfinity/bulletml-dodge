@@ -957,5 +957,1769 @@
   "seed": 3,
   "endlessSeed": 23757,
   "frames": 1021
+ },
+ {
+  "file": "g4/s01-attack-seed1-b16x.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9764
+ },
+ {
+  "file": "g4/s01-attack-seed1-b1x.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9672
+ },
+ {
+  "file": "g4/s01-attack-seed1-b4x.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9764
+ },
+ {
+  "file": "g4/s01-attack-seed2-b16x.json",
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9766
+ },
+ {
+  "file": "g4/s01-attack-seed2-b1x.json",
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9694
+ },
+ {
+  "file": "g4/s01-attack-seed2-b4x.json",
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9766
+ },
+ {
+  "file": "g4/s01-attack-seed3-b16x.json",
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9700
+ },
+ {
+  "file": "g4/s01-attack-seed3-b1x.json",
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9673
+ },
+ {
+  "file": "g4/s01-attack-seed3-b4x.json",
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9700
+ },
+ {
+  "file": "g4/s01-no-attack-seed1-b16x.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s01-no-attack-seed1-b1x.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s01-no-attack-seed1-b4x.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s01-no-attack-seed2-b16x.json",
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s01-no-attack-seed2-b1x.json",
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s01-no-attack-seed2-b4x.json",
+  "stage": 0,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s01-no-attack-seed3-b16x.json",
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s01-no-attack-seed3-b1x.json",
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s01-no-attack-seed3-b4x.json",
+  "stage": 0,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s02-attack-seed1-b16x.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9964
+ },
+ {
+  "file": "g4/s02-attack-seed1-b1x.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9827
+ },
+ {
+  "file": "g4/s02-attack-seed1-b4x.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9964
+ },
+ {
+  "file": "g4/s02-attack-seed2-b16x.json",
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9956
+ },
+ {
+  "file": "g4/s02-attack-seed2-b1x.json",
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9944
+ },
+ {
+  "file": "g4/s02-attack-seed2-b4x.json",
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9956
+ },
+ {
+  "file": "g4/s02-attack-seed3-b16x.json",
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9838
+ },
+ {
+  "file": "g4/s02-attack-seed3-b1x.json",
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9794
+ },
+ {
+  "file": "g4/s02-attack-seed3-b4x.json",
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9838
+ },
+ {
+  "file": "g4/s02-no-attack-seed1-b16x.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s02-no-attack-seed1-b1x.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s02-no-attack-seed1-b4x.json",
+  "stage": 1,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s02-no-attack-seed2-b16x.json",
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s02-no-attack-seed2-b1x.json",
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s02-no-attack-seed2-b4x.json",
+  "stage": 1,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s02-no-attack-seed3-b16x.json",
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s02-no-attack-seed3-b1x.json",
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s02-no-attack-seed3-b4x.json",
+  "stage": 1,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s03-attack-seed1-b16x.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10136
+ },
+ {
+  "file": "g4/s03-attack-seed1-b1x.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9938
+ },
+ {
+  "file": "g4/s03-attack-seed1-b4x.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10136
+ },
+ {
+  "file": "g4/s03-attack-seed2-b16x.json",
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9856
+ },
+ {
+  "file": "g4/s03-attack-seed2-b1x.json",
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9897
+ },
+ {
+  "file": "g4/s03-attack-seed2-b4x.json",
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9856
+ },
+ {
+  "file": "g4/s03-attack-seed3-b16x.json",
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9876
+ },
+ {
+  "file": "g4/s03-attack-seed3-b1x.json",
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10114
+ },
+ {
+  "file": "g4/s03-attack-seed3-b4x.json",
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9876
+ },
+ {
+  "file": "g4/s03-no-attack-seed1-b16x.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s03-no-attack-seed1-b1x.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s03-no-attack-seed1-b4x.json",
+  "stage": 2,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s03-no-attack-seed2-b16x.json",
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s03-no-attack-seed2-b1x.json",
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s03-no-attack-seed2-b4x.json",
+  "stage": 2,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s03-no-attack-seed3-b16x.json",
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s03-no-attack-seed3-b1x.json",
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s03-no-attack-seed3-b4x.json",
+  "stage": 2,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s04-attack-seed1-b16x.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10066
+ },
+ {
+  "file": "g4/s04-attack-seed1-b1x.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9864
+ },
+ {
+  "file": "g4/s04-attack-seed1-b4x.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9991
+ },
+ {
+  "file": "g4/s04-attack-seed2-b16x.json",
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10039
+ },
+ {
+  "file": "g4/s04-attack-seed2-b1x.json",
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9735
+ },
+ {
+  "file": "g4/s04-attack-seed2-b4x.json",
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9940
+ },
+ {
+  "file": "g4/s04-attack-seed3-b16x.json",
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9923
+ },
+ {
+  "file": "g4/s04-attack-seed3-b1x.json",
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9722
+ },
+ {
+  "file": "g4/s04-attack-seed3-b4x.json",
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10010
+ },
+ {
+  "file": "g4/s04-no-attack-seed1-b16x.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s04-no-attack-seed1-b1x.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s04-no-attack-seed1-b4x.json",
+  "stage": 3,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s04-no-attack-seed2-b16x.json",
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s04-no-attack-seed2-b1x.json",
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s04-no-attack-seed2-b4x.json",
+  "stage": 3,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s04-no-attack-seed3-b16x.json",
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s04-no-attack-seed3-b1x.json",
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s04-no-attack-seed3-b4x.json",
+  "stage": 3,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s05-attack-seed1-b16x.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10103
+ },
+ {
+  "file": "g4/s05-attack-seed1-b1x.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10054
+ },
+ {
+  "file": "g4/s05-attack-seed1-b4x.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10103
+ },
+ {
+  "file": "g4/s05-attack-seed2-b16x.json",
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10096
+ },
+ {
+  "file": "g4/s05-attack-seed2-b1x.json",
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10033
+ },
+ {
+  "file": "g4/s05-attack-seed2-b4x.json",
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10096
+ },
+ {
+  "file": "g4/s05-attack-seed3-b16x.json",
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10168
+ },
+ {
+  "file": "g4/s05-attack-seed3-b1x.json",
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10046
+ },
+ {
+  "file": "g4/s05-attack-seed3-b4x.json",
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10168
+ },
+ {
+  "file": "g4/s05-no-attack-seed1-b16x.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s05-no-attack-seed1-b1x.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s05-no-attack-seed1-b4x.json",
+  "stage": 4,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s05-no-attack-seed2-b16x.json",
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s05-no-attack-seed2-b1x.json",
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s05-no-attack-seed2-b4x.json",
+  "stage": 4,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s05-no-attack-seed3-b16x.json",
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s05-no-attack-seed3-b1x.json",
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s05-no-attack-seed3-b4x.json",
+  "stage": 4,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s06-attack-seed1-b16x.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10965
+ },
+ {
+  "file": "g4/s06-attack-seed1-b1x.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10041
+ },
+ {
+  "file": "g4/s06-attack-seed1-b4x.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10873
+ },
+ {
+  "file": "g4/s06-attack-seed2-b16x.json",
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10924
+ },
+ {
+  "file": "g4/s06-attack-seed2-b1x.json",
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10907
+ },
+ {
+  "file": "g4/s06-attack-seed2-b4x.json",
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10755
+ },
+ {
+  "file": "g4/s06-attack-seed3-b16x.json",
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10936
+ },
+ {
+  "file": "g4/s06-attack-seed3-b1x.json",
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10714
+ },
+ {
+  "file": "g4/s06-attack-seed3-b4x.json",
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10896
+ },
+ {
+  "file": "g4/s06-no-attack-seed1-b16x.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s06-no-attack-seed1-b1x.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s06-no-attack-seed1-b4x.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s06-no-attack-seed2-b16x.json",
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s06-no-attack-seed2-b1x.json",
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s06-no-attack-seed2-b4x.json",
+  "stage": 5,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s06-no-attack-seed3-b16x.json",
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s06-no-attack-seed3-b1x.json",
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s06-no-attack-seed3-b4x.json",
+  "stage": 5,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s07-attack-seed1-b16x.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10344
+ },
+ {
+  "file": "g4/s07-attack-seed1-b1x.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10106
+ },
+ {
+  "file": "g4/s07-attack-seed1-b4x.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10294
+ },
+ {
+  "file": "g4/s07-attack-seed2-b16x.json",
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10318
+ },
+ {
+  "file": "g4/s07-attack-seed2-b1x.json",
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10029
+ },
+ {
+  "file": "g4/s07-attack-seed2-b4x.json",
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 10328
+ },
+ {
+  "file": "g4/s07-attack-seed3-b16x.json",
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10306
+ },
+ {
+  "file": "g4/s07-attack-seed3-b1x.json",
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10137
+ },
+ {
+  "file": "g4/s07-attack-seed3-b4x.json",
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 10409
+ },
+ {
+  "file": "g4/s07-no-attack-seed1-b16x.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s07-no-attack-seed1-b1x.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s07-no-attack-seed1-b4x.json",
+  "stage": 6,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s07-no-attack-seed2-b16x.json",
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s07-no-attack-seed2-b1x.json",
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s07-no-attack-seed2-b4x.json",
+  "stage": 6,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s07-no-attack-seed3-b16x.json",
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s07-no-attack-seed3-b1x.json",
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s07-no-attack-seed3-b4x.json",
+  "stage": 6,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s08-attack-seed1-b16x.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9974
+ },
+ {
+  "file": "g4/s08-attack-seed1-b1x.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9961
+ },
+ {
+  "file": "g4/s08-attack-seed1-b4x.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10329
+ },
+ {
+  "file": "g4/s08-attack-seed2-b16x.json",
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9919
+ },
+ {
+  "file": "g4/s08-attack-seed2-b1x.json",
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9873
+ },
+ {
+  "file": "g4/s08-attack-seed2-b4x.json",
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9892
+ },
+ {
+  "file": "g4/s08-attack-seed3-b16x.json",
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9980
+ },
+ {
+  "file": "g4/s08-attack-seed3-b1x.json",
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9964
+ },
+ {
+  "file": "g4/s08-attack-seed3-b4x.json",
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9859
+ },
+ {
+  "file": "g4/s08-no-attack-seed1-b16x.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s08-no-attack-seed1-b1x.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s08-no-attack-seed1-b4x.json",
+  "stage": 7,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s08-no-attack-seed2-b16x.json",
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s08-no-attack-seed2-b1x.json",
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s08-no-attack-seed2-b4x.json",
+  "stage": 7,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s08-no-attack-seed3-b16x.json",
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s08-no-attack-seed3-b1x.json",
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s08-no-attack-seed3-b4x.json",
+  "stage": 7,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s09-attack-seed1-b16x.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9844
+ },
+ {
+  "file": "g4/s09-attack-seed1-b1x.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9820
+ },
+ {
+  "file": "g4/s09-attack-seed1-b4x.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9840
+ },
+ {
+  "file": "g4/s09-attack-seed2-b16x.json",
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9853
+ },
+ {
+  "file": "g4/s09-attack-seed2-b1x.json",
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9786
+ },
+ {
+  "file": "g4/s09-attack-seed2-b4x.json",
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9912
+ },
+ {
+  "file": "g4/s09-attack-seed3-b16x.json",
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9854
+ },
+ {
+  "file": "g4/s09-attack-seed3-b1x.json",
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9840
+ },
+ {
+  "file": "g4/s09-attack-seed3-b4x.json",
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9852
+ },
+ {
+  "file": "g4/s09-no-attack-seed1-b16x.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s09-no-attack-seed1-b1x.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s09-no-attack-seed1-b4x.json",
+  "stage": 8,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s09-no-attack-seed2-b16x.json",
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s09-no-attack-seed2-b1x.json",
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s09-no-attack-seed2-b4x.json",
+  "stage": 8,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s09-no-attack-seed3-b16x.json",
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s09-no-attack-seed3-b1x.json",
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s09-no-attack-seed3-b4x.json",
+  "stage": 8,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s10-attack-seed1-b16x.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9838
+ },
+ {
+  "file": "g4/s10-attack-seed1-b1x.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9807
+ },
+ {
+  "file": "g4/s10-attack-seed1-b4x.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9797
+ },
+ {
+  "file": "g4/s10-attack-seed2-b16x.json",
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9739
+ },
+ {
+  "file": "g4/s10-attack-seed2-b1x.json",
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9909
+ },
+ {
+  "file": "g4/s10-attack-seed2-b4x.json",
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 9771
+ },
+ {
+  "file": "g4/s10-attack-seed3-b16x.json",
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9762
+ },
+ {
+  "file": "g4/s10-attack-seed3-b1x.json",
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9902
+ },
+ {
+  "file": "g4/s10-attack-seed3-b4x.json",
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 9882
+ },
+ {
+  "file": "g4/s10-no-attack-seed1-b16x.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s10-no-attack-seed1-b1x.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s10-no-attack-seed1-b4x.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s10-no-attack-seed2-b16x.json",
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s10-no-attack-seed2-b1x.json",
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s10-no-attack-seed2-b4x.json",
+  "stage": 9,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s10-no-attack-seed3-b16x.json",
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s10-no-attack-seed3-b1x.json",
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s10-no-attack-seed3-b4x.json",
+  "stage": 9,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s11-attack-seed1-b16x.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s11-attack-seed1-b1x.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s11-attack-seed1-b4x.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s11-attack-seed2-b16x.json",
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s11-attack-seed2-b1x.json",
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s11-attack-seed2-b4x.json",
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s11-attack-seed3-b16x.json",
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s11-attack-seed3-b1x.json",
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s11-attack-seed3-b4x.json",
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s11-no-attack-seed1-b16x.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s11-no-attack-seed1-b1x.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s11-no-attack-seed1-b4x.json",
+  "stage": 10,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s11-no-attack-seed2-b16x.json",
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s11-no-attack-seed2-b1x.json",
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s11-no-attack-seed2-b4x.json",
+  "stage": 10,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s11-no-attack-seed3-b16x.json",
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s11-no-attack-seed3-b1x.json",
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s11-no-attack-seed3-b4x.json",
+  "stage": 10,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s12-attack-seed1-b16x.json",
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s12-attack-seed1-b1x.json",
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s12-attack-seed1-b4x.json",
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s12-attack-seed2-b16x.json",
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s12-attack-seed2-b1x.json",
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s12-attack-seed2-b4x.json",
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s12-attack-seed3-b16x.json",
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s12-attack-seed3-b1x.json",
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s12-attack-seed3-b4x.json",
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s12-no-attack-seed1-b16x.json",
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s12-no-attack-seed1-b1x.json",
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s12-no-attack-seed1-b4x.json",
+  "stage": 11,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s12-no-attack-seed2-b16x.json",
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s12-no-attack-seed2-b1x.json",
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s12-no-attack-seed2-b4x.json",
+  "stage": 11,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s12-no-attack-seed3-b16x.json",
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s12-no-attack-seed3-b1x.json",
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s12-no-attack-seed3-b4x.json",
+  "stage": 11,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s13-attack-seed1-b16x.json",
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s13-attack-seed1-b1x.json",
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s13-attack-seed1-b4x.json",
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s13-attack-seed2-b16x.json",
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s13-attack-seed2-b1x.json",
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s13-attack-seed2-b4x.json",
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s13-attack-seed3-b16x.json",
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s13-attack-seed3-b1x.json",
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s13-attack-seed3-b4x.json",
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s13-no-attack-seed1-b16x.json",
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s13-no-attack-seed1-b1x.json",
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s13-no-attack-seed1-b4x.json",
+  "stage": 12,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s13-no-attack-seed2-b16x.json",
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s13-no-attack-seed2-b1x.json",
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s13-no-attack-seed2-b4x.json",
+  "stage": 12,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s13-no-attack-seed3-b16x.json",
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s13-no-attack-seed3-b1x.json",
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s13-no-attack-seed3-b4x.json",
+  "stage": 12,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s14-attack-seed1-b16x.json",
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s14-attack-seed1-b1x.json",
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s14-attack-seed1-b4x.json",
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s14-attack-seed2-b16x.json",
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s14-attack-seed2-b1x.json",
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s14-attack-seed2-b4x.json",
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s14-attack-seed3-b16x.json",
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s14-attack-seed3-b1x.json",
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s14-attack-seed3-b4x.json",
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 30000
+ },
+ {
+  "file": "g4/s14-no-attack-seed1-b16x.json",
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s14-no-attack-seed1-b1x.json",
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s14-no-attack-seed1-b4x.json",
+  "stage": 13,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s14-no-attack-seed2-b16x.json",
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s14-no-attack-seed2-b1x.json",
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s14-no-attack-seed2-b4x.json",
+  "stage": 13,
+  "seed": 2,
+  "endlessSeed": 15838,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s14-no-attack-seed3-b16x.json",
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s14-no-attack-seed3-b1x.json",
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
+ },
+ {
+  "file": "g4/s14-no-attack-seed3-b4x.json",
+  "stage": 13,
+  "seed": 3,
+  "endlessSeed": 23757,
+  "frames": 20260
  }
 ]

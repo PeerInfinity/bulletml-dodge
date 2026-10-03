@@ -43,7 +43,7 @@ Started 2026-10-03. Rulings by the user (verbatim where quoted):
 | **G1** | The game logic, headless (`src/game/`): ship, shots, foes, stars, fragments' rand calls, stage generation, scoring, lives; driven by an input tape `{dir, fire, slow}` per frame; a state hash per frame. | A tape plays a stage from start to clear or game over; replay is bit-identical. |
 | **G2** | Fidelity: native Noiz2sa (ledyba's SDL2 port, BSD) patched for a fixed `srand` seed, sorted pattern order, tape input and a per-frame state dump; compare with G1. | Identical dumps on recorded tapes for several stages, or every difference explained. |
 | **G3** | The browser front end: stage select, keyboard play, simple drawing, the game's sounds, a bot toggle, tape replay. | A human can play every stage; the bot can be switched on. |
-| **G4** | The bot: survival first (the look-ahead planner), then positioning and shooting, then stars; a no-attack variant. | Runs a stage end to end; reports cleared / lives lost / score / look-ahead. |
+| **G4** | The bot: survival first (the look-ahead planner), then positioning and shooting, then stars; a no-attack variant. Includes the sweep (every stage × variant × seeds × budgets). | Runs a stage end to end; reports cleared / lives lost / score / look-ahead. |
 | **G5** | Cloud sweep: every stage × bot variant × seeds. | `results/` tables, as for the pattern sweep. |
 | later | The original look: the 8-bit palette, blur trails, line-drawn letters. | — |
 
@@ -77,6 +77,18 @@ stays reproducible.
   Esc and the recorded tape round-trip in page and Node. Smoke tapes re-record 126/126; wrap 137/137.
   ⚠ The committed s01-lookahead tape's recipe is unrecorded (HEAD re-records 10,506 frames, not 10,494).
   ⚠ `lookahead` ≈ 17 ms CPU per frame: 49–63 fps in the page in stage 1, slower in busy scenes — G4 needs a budget.
+
+- **G4 DONE 2026-10-03** (report: `docs/g4-report.md`, tables: `results/g4-bot.md`). `src/game/bot.js`: an exact
+  look-ahead bot (a committed plan extended one frame per frame, repaired from snapshots when it runs into a hit,
+  improved with spare budget), variants `attack` and `no-attack`; the budget is a count (1 + live/52 units per simulated
+  frame; 1× = 600 ≈ 3 ms in Chromium), so runs are reproducible. In `play.html` it runs in a Web Worker: 62.5 frames/s in
+  stage 10's busiest stretch, input for input what Node plays. Sweep (`bin/bot-sweep.mjs`, 218 min on 4 cores):
+  **252 runs, 0 lives lost** — attack clears 90/90 stage runs, no-attack lives 3 minutes into the boss on 90/90, every
+  endless run reaches 30,000 frames (scene 29–30). **Look-ahead needed: 1 frame** on all 60 (stage × variant × seed);
+  0 frames loses 3–7 lives. 4×/16× budgets change no outcome, +4% score (stages) / +18% (endless). Tapes: `tapes/g4/`.
+  ⚠ The look-ahead knows the future `$rand` draws (copies the seeded game) — "never dies" is about determinism, not foresight.
+  ⚖ For the coordinator: the browser budget (kept 1×), the page's default policy (now "bot: attack"), a bot without
+  future knowledge as the next measurement.
 
 ### Where G2 may find differences (known places the port is not literally the C)
 
