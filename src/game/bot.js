@@ -8,8 +8,9 @@
  * copy of the game (`cloneGame` + `stepGame`, the engine itself — nothing approximated) happens exactly as
  * simulated. The bot keeps ONE committed plan of `horizon` frames:
  *  - Every frame it plays the plan's first input and extends the plan by one frame at its far end, with a
- *    cheap reflex "tail" controller (head for the target, steer away from nearby bullets). That costs one
- *    simulated frame per game frame: a verified-safe plan never needs re-checking.
+ *    cheap "tail" controller: head straight for the target (under an enemy; home for no-attack), or, with
+ *    `tail: 'reflex'`, also steer off nearby bullets. That costs one simulated frame per game frame: a
+ *    verified-safe plan never needs re-checking.
  *  - When the extension runs into a hit, it REPAIRS the plan: from the snapshot nearest the hit backwards to
  *    the present, it tries each of the 18 inputs (9 directions × normal/slow) held, then the tail, to the end
  *    of the horizon; the latest branch point with a surviving candidate wins, best value first. If none
@@ -28,7 +29,8 @@
 import { stepGame, cloneGame, STATUS, SPC, input, SCAN_WIDTH_8, SCAN_HEIGHT_8, FOE_SCAN_SIZE, SHIP_SPEED, SHIP_SLOW_SPEED } from './noiz2sa-game.js';
 
 export const BOT_VARIANTS = ['attack', 'no-attack'];
-/** the tail controller: `reflex` (steers off bullets) or `straight` (does not; for the look-ahead measurements) */
+/** the tail controller: `straight` (the default: heads for the target, all dodging is the exact search) or
+ *  `reflex` (also steers off bullets by itself, from their straight-line motion) */
 export const TAILS = ['reflex', 'straight'];
 /** simulated frames (+ game copies) per game frame that fit the browser's 16 ms frame; see docs/g4-report.md */
 export const BROWSER_BUDGET = 600;
@@ -120,7 +122,7 @@ function clearance2(g) {
  * (like the test policies). `bot.stats` counts what it did. A bot follows ONE game; if it is handed a game at
  * another frame than it expects, it starts over from that game.
  */
-export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'reflex' } = {}) {
+export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'straight' } = {}) {
     if (!BOT_VARIANTS.includes(variant)) throw new Error(`unknown bot variant "${variant}" (have: ${BOT_VARIANTS.join(', ')})`);
     if (!TAILS.includes(tailKind)) throw new Error(`unknown tail "${tailKind}" (have: ${TAILS.join(', ')})`);
     const fire = variant === 'attack';

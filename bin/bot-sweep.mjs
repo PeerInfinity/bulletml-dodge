@@ -31,7 +31,7 @@ const STAGES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'ENDLESS', 'H
 const VARIANTS = ['attack', 'no-attack'];
 const BUDGETS_X = [1, 4, 16];
 // the look-ahead ladder; a (stage, variant, seed, tail) climbs it until two horizons in a row succeed
-const H_LADDER = { reflex: [0, 1, 2, 4, 8, 16, 32, 48], straight: [0, 1, 2, 4, 8, 16, 32, 48] };
+const H_LADDER = { straight: [0, 1, 2, 4, 8, 16, 32, 48], reflex: [0, 1, 2, 4, 8, 16, 32, 48] };
 const H_BUDGET_X = 1;
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -86,7 +86,7 @@ const only = opt('only', null);
 const jobs = [];
 if (!only || only === 'main') {
     for (let stage = 0; stage < STAGES.length; stage++) for (const variant of VARIANTS) for (const seed of seeds) for (const budgetX of BUDGETS_X) {
-        jobs.push({ kind: 'main', stage, variant, seed, budgetX, tail: 'reflex' });
+        jobs.push({ kind: 'main', stage, variant, seed, budgetX, tail: 'straight' });
     }
 }
 if (!only || only === 'horizons') {

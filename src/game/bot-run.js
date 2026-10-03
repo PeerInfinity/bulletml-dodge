@@ -19,7 +19,7 @@ import { makeTape } from './tape.js';
 export const BOSS_CAP = 11250;
 const BOSS_SCENE = 9; // the scene number while the boss is up (setBarrages counts the scene up as it starts it)
 
-export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, variant = 'attack', horizon, budget, tail = 'reflex', endlessCap = 30000, hardCap = 60000 } = {}) {
+export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, variant = 'attack', horizon, budget, tail = 'straight', endlessCap = 30000, hardCap = 60000 } = {}) {
     const g = newGame(patterns, stage, { seed, endlessSeed });
     const bot = makeBot({ variant, horizon, budget, tail });
     const endless = stage >= STAGE_NUM;
@@ -66,6 +66,6 @@ export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, v
     const st = bot.stats;
     r.bot = { cost: Math.round(st.cost), steps: st.steps, costPerFrame: +(st.cost / Math.max(1, st.frames)).toFixed(1), maxFrameCost: Math.round(st.maxFrameCost),
         repairs: st.repairs, repairFails: st.repairFails, beams: st.beams, improves: st.improves };
-    const tape = makeTape({ stage, seed, endlessSeed, played, extra: { player: `bot-${variant}`, bot: { variant, horizon: r.horizon, budget, ...(tail !== 'reflex' ? { tail } : {}) } } });
+    const tape = makeTape({ stage, seed, endlessSeed, played, extra: { player: `bot-${variant}`, bot: { variant, horizon: r.horizon, budget, ...(tail !== 'straight' ? { tail } : {}) } } });
     return { result: r, tape, game: g };
 }
