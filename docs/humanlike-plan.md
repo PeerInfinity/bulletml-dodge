@@ -77,3 +77,7 @@ The **skill slider** (0–100) interpolates the knobs from Cautious beginner (0)
   `docs/h3b-report.md` (flaws at skill 100, Cautious vs Steady at 50, the Score chaser at 50) are closed with no change.
   **The arc's planned slices H1–H3 (and H1b, H3b) are complete**; CI verified the slider and personality grids run for run
   (`results/h3-calibrated.md`, `results/h3b-personalities.md`).
+
+- **HB (2026-10-04, branch `hitbox`, `docs/hitbox-report.md`):** a hitbox setting, original (default) / centered. The
+  Expert and the humanlike bots read it from the game: the observed model predicts the active hit test and keeps the
+  bullet clearance from that test's hit area. Original-hitbox moves are unchanged (bot tapes re-record the same).

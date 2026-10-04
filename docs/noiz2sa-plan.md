@@ -102,6 +102,14 @@ stays reproducible.
   least score (+2…−20%). ⚖ Recommended: neither wasm nor a data-layout rewrite now; a start-up hold for the remaining
   waits; if moves may change, browser budget 300 (then re-run the 1× sweep rows).
 
+- **HB built 2026-10-04, branch `hitbox`** (report: `docs/hitbox-report.md`). ⚖ The user: a **hitbox setting**.
+  *Original* (the default: the C's test, which hits within ~2 px of the TAIL of a bullet's trail, up to ~12 px behind
+  its head; still 137/137 against the native build) and *centered* (2 px around the bullet's position, swept from the
+  frame before, PARSEC47-style; a bullet resting on the ship hits). Tapes record it (none = original), the bots follow
+  the game's (the observed model predicts the active test), the page has the setting and white hit-spot dots (on by
+  default; at the tail in original, at the bullet in centered). The full CI comparison `hb-centered` is the
+  coordinator's to dispatch (command in the report).
+
 ### Where G2 may find differences (known places the port is not literally the C)
 
 *(As written before G2. The outcome of each is in the G2 bullet above and in `docs/g2-report.md`.)*
