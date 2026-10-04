@@ -2853,7 +2853,7 @@
   "stage": 3,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9798
+  "frames": 9750
  },
  {
   "file": "h1/s04-attack-seed2-expert.json",
@@ -3070,7 +3070,7 @@
   "stage": 8,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9788
+  "frames": 9814
  },
  {
   "file": "h1/s09-attack-seed3-expert.json",
