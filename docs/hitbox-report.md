@@ -117,7 +117,7 @@ the bullet itself; "centered" moves it to the bullet (white dots show where it i
   tapes record, omit and replay it. Bots: the observed model's one-frame hit predictions are the engine's in both
   modes; the Expert under centered gives the same tape twice, records `hitbox`, and replays.
 - `npm run test:browser` adds: the setting's default and menu text, saved; an Expert game under centered whose tape
-  carries `hitbox: "centered"` and whose moves Node's Expert plays input for input (994 frames); browser = Node on that
+  carries `hitbox: "centered"` and whose moves Node's Expert plays input for input (~990 frames; the length depends on the page's timing); browser = Node on that
   tape; a replay uses the tape's hitbox when the menu says original; the canvas is white at each bullet's centre
   (centered) or tail (original) with the dots on, and not with them off.
 - Old tapes: `node bin/check-bot-tapes.mjs tapes/g4/s01-attack-seed1-b1x.json tapes/h1b/s01-attack-seed1-expert.json
