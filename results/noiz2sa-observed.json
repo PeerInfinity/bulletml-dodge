@@ -18,8 +18,8 @@
   "beam": 16,
   "perception": "observed"
  },
- "wallSeconds": 26.973,
- "jobs": 2,
+ "wallSeconds": 11.52,
+ "jobs": 4,
  "results": [
   {
    "pattern": "[daiouzyou]_hibati_2_2_b.xml",
@@ -27,7 +27,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.834,
+   "seconds": 0.742,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -103,7 +103,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.563,
+   "seconds": 0.662,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -179,7 +179,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.7,
+   "seconds": 0.657,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -255,7 +255,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 1.097,
+   "seconds": 1.029,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -331,7 +331,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 1.671,
+   "seconds": 1.85,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -407,7 +407,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.51,
+   "seconds": 0.469,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -483,7 +483,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.521,
+   "seconds": 0.514,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -559,7 +559,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.466,
+   "seconds": 0.435,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -635,7 +635,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 1.542,
+   "seconds": 1.624,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -711,7 +711,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 0.985,
+   "seconds": 0.954,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -787,7 +787,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.397,
+   "seconds": 0.36,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -863,7 +863,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.807,
+   "seconds": 0.851,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -939,7 +939,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.504,
+   "seconds": 0.455,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1015,7 +1015,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.401,
+   "seconds": 0.402,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1091,7 +1091,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 2.241,
+   "seconds": 1.997,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1167,7 +1167,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 1.466,
+   "seconds": 1.697,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1243,7 +1243,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 2.461,
+   "seconds": 2.592,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1319,7 +1319,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 3.027,
+   "seconds": 3.097,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1395,7 +1395,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.532,
+   "seconds": 0.495,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1471,7 +1471,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.939,
+   "seconds": 0.899,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1547,7 +1547,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 1.255,
+   "seconds": 1.108,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1623,7 +1623,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.464,
+   "seconds": 0.443,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1699,7 +1699,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.518,
+   "seconds": 0.504,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1775,7 +1775,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.629,
+   "seconds": 0.6,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1851,7 +1851,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.602,
+   "seconds": 0.637,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -1927,7 +1927,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.401,
+   "seconds": 0.337,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2003,7 +2003,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 1.528,
+   "seconds": 1.562,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2079,7 +2079,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 2.888,
+   "seconds": 2.811,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2155,7 +2155,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.384,
+   "seconds": 0.38,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2231,7 +2231,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.433,
+   "seconds": 0.52,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2307,7 +2307,7 @@
    "kind": "boss",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.61,
+   "seconds": 0.655,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2383,7 +2383,7 @@
    "kind": "boss",
    "verdict": "H2",
    "need": 2,
-   "seconds": 1.466,
+   "seconds": 1.514,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2459,7 +2459,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.166,
+   "seconds": 0.114,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2535,7 +2535,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.132,
+   "seconds": 0.15,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2611,7 +2611,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.226,
+   "seconds": 0.199,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2763,7 +2763,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.219,
+   "seconds": 0.19,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2839,7 +2839,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.107,
+   "seconds": 0.14,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2915,7 +2915,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.188,
+   "seconds": 0.19,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -2991,7 +2991,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.316,
+   "seconds": 0.306,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3067,7 +3067,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.212,
+   "seconds": 0.241,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3143,7 +3143,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.209,
+   "seconds": 0.172,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3219,7 +3219,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.198,
+   "seconds": 0.17,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3295,7 +3295,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.132,
+   "seconds": 0.14,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3371,7 +3371,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.163,
+   "seconds": 0.153,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3447,7 +3447,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.181,
+   "seconds": 0.17,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3523,7 +3523,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.283,
+   "seconds": 0.156,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3599,7 +3599,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.181,
+   "seconds": 0.174,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3675,7 +3675,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.126,
+   "seconds": 0.142,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3751,7 +3751,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.104,
+   "seconds": 0.098,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3827,7 +3827,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.179,
+   "seconds": 0.188,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3903,7 +3903,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.147,
+   "seconds": 0.155,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -3979,7 +3979,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.22,
+   "seconds": 0.196,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4055,7 +4055,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.336,
+   "seconds": 0.195,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4131,7 +4131,7 @@
    "kind": "middle",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.256,
+   "seconds": 0.214,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4207,7 +4207,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.144,
+   "seconds": 0.154,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4283,7 +4283,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.118,
+   "seconds": 0.136,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4359,7 +4359,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.173,
+   "seconds": 0.142,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4435,7 +4435,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.153,
+   "seconds": 0.172,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4511,7 +4511,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.195,
+   "seconds": 0.2,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4587,7 +4587,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.251,
+   "seconds": 0.173,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4663,7 +4663,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.281,
+   "seconds": 0.196,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4739,7 +4739,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.19,
+   "seconds": 0.187,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4815,7 +4815,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.173,
+   "seconds": 0.158,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4891,7 +4891,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.209,
+   "seconds": 0.196,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -4967,7 +4967,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.186,
+   "seconds": 0.204,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -5043,7 +5043,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.207,
+   "seconds": 0.191,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -5119,7 +5119,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.127,
+   "seconds": 0.204,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -5195,7 +5195,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.161,
+   "seconds": 0.13,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -5271,7 +5271,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.2,
+   "seconds": 0.176,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -5347,7 +5347,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.172,
+   "seconds": 0.108,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -5423,7 +5423,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.123,
+   "seconds": 0.081,
    "settings": {
     "seeds": 3,
     "ranks": [
@@ -5499,7 +5499,7 @@
    "kind": "zako",
    "verdict": "reflex",
    "need": 0,
-   "seconds": 0.143,
+   "seconds": 0.135,
    "settings": {
     "seeds": 3,
     "ranks": [

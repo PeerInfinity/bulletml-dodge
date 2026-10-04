@@ -1,6 +1,6 @@
 # Sweep: noiz2sa-observed
 
-73 patterns, 2 jobs, 0.4 min wall.
+73 patterns, 4 jobs, 0.2 min wall.
 Settings: {"seeds":3,"ranks":[0.5,1],"frames":1200,"horizons":[2,4,8,16,32,64],"beam":16,"perception":"observed"}
 
 ## Tally
