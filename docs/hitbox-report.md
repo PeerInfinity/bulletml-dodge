@@ -217,3 +217,26 @@ CI, Expert, centered, stages 1–10 + ENDLESS × attack/no-attack × seeds 1–3
 | **grown, capped at 16 px** (`results/hb-centered-fast16.md`) | **0** | **0** | 3,088,757 | 7,210,907 |
 
 ⚖ Questions 2 (bullets drawn past the edge) and 3 (the centered line length): the user keeps them as they are.
+
+## Follow-up: the grown spawner clearance under BOTH hitboxes (2026-10-04)
+
+⚖ The user: *"I would recommend implementing the change in both modes. I think it's a coincidence that it wasn't a
+problem in original mode."* (Under the original a new bullet's first hit point is its spawner, so the risk is smaller
+there, but the clearance costs little.) The growth now applies under both hitboxes. It changes the Expert's and the
+humanlike bots' moves under the original hitbox, so their tapes and results were re-recorded on CI:
+
+| CI (original hitbox) | Before | After |
+|---|---|---|
+| Expert, stages 1–10 attack: lives lost / mean score | 0 / 3,089,185 | 0 / 3,051,264 |
+| Expert, ENDLESS attack: lives lost / mean score | 0 / 7,988,477 | 0 / 7,157,860 |
+| Slider: strictly monotonic in clears, game overs, survival | yes | yes |
+| Personalities monotonic in skill (clears) | yes | yes |
+
+`results/h1b-bot.md`, `results/h3-calibrated.md` and `results/h3b-personalities.md` now describe the current bots.
+
+**A CI bug found on the way, and fixed:** every sweep shard uploaded its checkout's whole `tapes/h1` (or `tapes/h2`),
+committed tapes included, and the merge job unpacked all shards into one directory. Committed copies overwrote fresh
+tapes, so the "Expert" tapes saved since H1b were mostly the older H1 Expert's; and concurrent unpacking corrupted
+some files. The numbers were never affected (they come from per-run parts, which are not committed). Each job now
+starts by deleting the committed tapes and that sweep's shard folder. `tapes/h1`, `tapes/h1b` and `tapes/h2` were
+re-recorded with the fixed workflows (CI runs 37241892767, 37241898012) and re-record from their own records.
