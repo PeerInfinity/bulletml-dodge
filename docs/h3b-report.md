@@ -32,6 +32,53 @@ for it after seeing these.
   skill 30); all 34 bot tapes re-record the same (the Expert's and the Ace's byte for byte, the H2 tapes from their own
   records); `npm run compare-native` (wrap) 137/137.
 
+## The full set (⚖ "keep the settings as they are for now; run the full set")
+
+Each personality at skill 0, 25, 50, 75, 100 × stages 1–10 × seeds 1–3 × bot seeds 1–2: 1,710 runs, run locally
+(26 min on 4 cores; the 540 runs of the small set were reused as they are). A personality whose knobs at a skill
+draw nothing from the bot's generator (Steady, Score chaser and Cautious at 100) plays once per game seed (30 runs).
+Compared with the plain slider's runs on the same cells (`results/h3-local.json`):
+`results/h3b-full.json`, `results/h3b-full-vs-slider.md`.
+
+Equivalent skill (by clears / by survival; the slider's 60-run levels from H3):
+
+| Personality | 0 | 25 | 50 | 75 | 100 |
+|---|---|---|---|---|---|
+| *the plain slider* | *0* | *25* | *50* | *75* | *100* |
+| Steady | 16 / 16 | 35 / 41 | **78 / 79** | 85 / 88 | = the Expert |
+| Score chaser | < 0 / < 0 | 7 / < 0 | **16 / 19** | 43 / 42 | ≥ 90 |
+| Cautious | 18 / 14 | 30 / 29 | **75 / 75** | ≥ 90 | ≥ 90 |
+| Panicky | 0 / < 0 | 20 / 20 | **40 / 39** | 74 / 74 | ≥ 90 |
+| Tunnel vision | 3 / 3 | 14 / 15 | **48 / 46** | 78 / 78 | ≥ 90 |
+| Distracted | 0 / 3 | 18 / 21 | **48 / 50** | 76 / 79 | ≥ 90 |
+
+Clears (of 60; of 30 where marked) and survival (s):
+
+| Personality | 0 | 25 | 50 | 75 | 100 |
+|---|---|---|---|---|---|
+| *the plain slider (skill 0 / 50 / 100)* | *1 · 59.2* | — | *34 · 143.3* | — | *30/30 · 180* |
+| Steady | 7 · 82.0 | 19 · 130.5 | 56 · 174.4 | 59 · 179.1 | 30/30 · 180 |
+| Score chaser | 0 · 42.9 | 3 · 55.8 | 7 · 85.8 | 25 · 130.7 | 30/30 · 180 |
+| Cautious | 8 · 79.7 | 17 · 108.6 | 51 · 167.9 | 60 · 180 | 30/30 · 180 |
+| Panicky | 1 · 58.9 | 9 · 86.8 | 21 · 125.9 | 50 · 167.0 | 60 · 180 |
+| Tunnel vision | 2 · 63.4 | 6 · 81.1 | 31 · 137.8 | 55 · 172.2 | 60 · 180 |
+| Distracted | 1 · 63.5 | 8 · 89.5 | 32 · 143.2 | 53 · 174.2 | 60 · 180 |
+
+What the full set says:
+
+- **Every personality is strictly monotonic in skill** in clears and survival (equal only at 60/60 and 180 s).
+- **The two bot seeds moved the small set's numbers by up to 13 skill points**, so read the small set (below) as
+  superseded. At 50: Score chaser ≈ 16–19, Panicky ≈ 40, Tunnel vision ≈ 46–48, Distracted ≈ 48–50, Cautious ≈ 75,
+  Steady ≈ 78–79.
+- **Tunnel vision and Distracted cost little at 50 and above** (≈ 0–4 skill points by clears and survival), but ≈ 10 at
+  25. They show up instead in **early hits**: no hit in the first minute in 10 and 9 of 60 runs at 50, against the slider's
+  20. They are hit more and recover. Panicky costs ≈ 10 at 50 and ≈ 1 at 75; the Score chaser ≈ 32–35 at 50 and 75.
+- **Cautious and Steady are stronger than the slider** from 50 up (Cautious 75 clears 60 of 60). Their biases are
+  mostly larger margins and steadier hands, which help most in the middle.
+- **At skill 100 the flaws still barely cost**: every run clears; Panicky and Distracted lose 0.13 lives per run, the
+  others nothing. The Score chaser still outscores everyone (4.18 M).
+- The questions below stand as asked, with these numbers; the user ruled to keep the settings for now.
+
 ## How a bias works
 
 At skill s the slider is at path position p = `skillPosition(s)` (H3). A personality changes knobs in three ways:
@@ -72,7 +119,7 @@ gone at the Expert: Steady 100 = the Expert exactly.
 At skill 50 the flaws match the old presets' (Tunnel vision 64 px, Distracted 8 lapses of 30 frames, Panicky +14
 frames / 4 px / 0.6). The rest of the knobs are now the slider's.
 
-## The small measurement set
+## The small measurement set (superseded by the full set above)
 
 Each personality at skill 0, 50, 100 on stages 1–10 × seeds 1–3 × bot seed 1 (30 runs each; the slider's own runs on
 the same 30 cells from `results/h3-local.json`). ≈ skill = the slider level with the same clears / survival.
@@ -116,7 +163,7 @@ What it says:
 
 ## Questions for the user
 
-1. **The full set?** Proposed: every personality at skill 0, 25, 50, 75 and 100, with 2 bot seeds (1,770 runs, ~1.5
+1. **The full set?** ⚖ Run (above). The CI equivalent, for a re-run after the merge: every personality at skill 0, 25, 50, 75 and 100, with 2 bot seeds (1,770 runs, ~1.5
    CPU-hours, ~10 min on 16 CI runners), after `h3-calibrate` and this branch are merged:
 
    ```
@@ -143,6 +190,7 @@ What it says:
 - `bin/h2-sweep.mjs`: `--preset-skills` (each personality at each of these skills); "Name N" players.
 - `test/bot.test.mjs`, `test/browser.test.mjs`: the personalities at every skill (on the grid, one way, never beyond
   the Expert, Steady 100 = the Expert, the others not); "Panicky 90" reproducible; the page at Panicky 80.
-- `results/h3b-small.json` (the 540 runs), `results/h3b-small-vs-slider.md` (with the slider's runs on the same cells).
+- `results/h3b-small.json` (the 540 runs), `results/h3b-small-vs-slider.md` (with the slider's runs on the same cells);
+  `results/h3b-full.json` (the full set, 1,710 runs, which include those 540), `results/h3b-full-vs-slider.md`.
 - The old H2 preset tapes in `tapes/h2/` (`cautious-beginner-…`, `steady-veteran-…`, …) are kept: they carry their own
   knobs and still replay, as the H2 presets they were.
