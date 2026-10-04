@@ -29,6 +29,7 @@
  * `$rand` draws: the horizon answers "is there a path that far ahead", not "could a player guess it".
  */
 import { stepGame, cloneGame, STATUS, SPC, input, SCAN_WIDTH_8, SCAN_HEIGHT_8, FOE_SCAN_SIZE, SHIP_SPEED, SHIP_SLOW_SPEED } from './noiz2sa-game.js';
+import { observe, newTracker, cloneModel, stepModel, MOTIONS } from './perception.js';
 
 export const BOT_VARIANTS = ['attack', 'no-attack'];
 /** the tail controller: `straight` (the default: heads for the target, all dodging is the exact search) or
@@ -37,6 +38,11 @@ export const TAILS = ['reflex', 'straight'];
 /** simulated frames (+ game copies) per game frame that fit the browser's 16 ms frame; see docs/g4-report.md */
 export const BROWSER_BUDGET = 600;
 export const DEFAULT_HORIZON = 48;
+/** what the plan is simulated on (slice H1): `omniscient` = a copy of the seeded game (the Ace: it knows every
+ *  future shot); `observed` = the picture on screen, predicted forward (src/game/perception.js: the Expert) */
+export const PERCEPTIONS = ['omniscient', 'observed'];
+/** the levels in the page and the sweep: a level is a perception with otherwise the max settings */
+export const LEVELS = { ace: { perception: 'omniscient' }, expert: { perception: 'observed' } };
 
 const HOME_X = SCAN_WIDTH_8 / 2;
 const HOME_Y = Math.trunc((SCAN_HEIGHT_8 / 5) * 4);
@@ -49,6 +55,9 @@ const HIT_R2 = (6 * 256) ** 2;
 const SIGMA2 = (14 * 256) ** 2;
 /** a simulated frame costs 1 + (live foe slots) / UNIT_FOES budget units */
 export const UNIT_FOES = 52;
+/** a predicted frame of the observed model (or a copy of it) costs MODEL_BASE + live objects / MODEL_FOES units:
+ *  fitted, like UNIT_FOES, so that a unit is about the same CPU time (bin/bench-model.mjs, docs/h1-report.md) */
+export const MODEL_BASE = 0.15, MODEL_FOES = 220;
 
 /** the enemy the attacker goes for: the lowest one above the ship (the boss in its scene, once it is alone) */
 export function attackTarget(g) {
@@ -124,12 +133,18 @@ function clearance2(g) {
  * (like the test policies). `bot.stats` counts what it did. A bot follows ONE game; if it is handed a game at
  * another frame than it expects, it starts over from that game.
  */
-export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'straight', costCap = Infinity } = {}) {
+export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'straight', costCap = Infinity, perception = 'omniscient', motion = 'curve' } = {}) {
     if (!BOT_VARIANTS.includes(variant)) throw new Error(`unknown bot variant "${variant}" (have: ${BOT_VARIANTS.join(', ')})`);
     if (!TAILS.includes(tailKind)) throw new Error(`unknown tail "${tailKind}" (have: ${TAILS.join(', ')})`);
-    const fire = variant === 'attack';
+    if (!PERCEPTIONS.includes(perception)) throw new Error(`unknown perception "${perception}" (have: ${PERCEPTIONS.join(', ')})`);
+    if (!MOTIONS.includes(motion)) throw new Error(`unknown motion "${motion}" (have: ${MOTIONS.join(', ')})`);
+    const fire = variant === 'attack', observed = perception === 'observed';
     const H = Math.max(0, horizon | 0), K = snapEvery, cap = budget * bankFrames;
-    const stats = { frames: 0, cost: 0, steps: 0, clones: 0, lastSteps: 0, lastLive: 0, lastCost: 0, maxFrameCost: 0, repairs: 0, repairFails: 0, beams: 0, improves: 0, improveTries: 0, doomed: 0 };
+    const stats = { frames: 0, cost: 0, steps: 0, clones: 0, lastSteps: 0, lastLive: 0, lastCost: 0, maxFrameCost: 0, repairs: 0, repairFails: 0, beams: 0, improves: 0, improveTries: 0, doomed: 0,
+        // observed only: frames whose fresh picture put a hit into a plan that was safe the frame before (a surprise),
+        // and what the observer saw (object-frames, turning / accelerating fits, dots not yet moving)
+        surprises: 0, seen: { objects: 0, turning: 0, accel: 0, unseen: 0 } };
+    const tracker = observed ? newTracker() : null;
 
     // the plan: plan[i] is the input for frame f0 + i; snaps.get(f) is the game at frame f (before its input);
     // end is the game after the whole plan; hits are the frames whose input runs into a hit
@@ -139,7 +154,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     // from the live foe slots then (enemies + bullets), so that a unit of budget is about the same CPU time
     let unit = 1, steps = 0;
     const charge = (n) => { spent += n * unit; steps += n; };
-    const clone = (s) => { stats.clones++; return cloneGame(s); };
+    const clone = observed ? (s) => { stats.clones++; return cloneModel(s); } : (s) => { stats.clones++; return cloneGame(s); };
     const left = () => bank - spent;
     // what this frame's decision may still spend: the bank, and at most `costCap` units in one frame (slice P1:
     // a per-decision cap, counted in units like everything else, so still reproducible; Infinity = no cap, G4's bot)
@@ -157,6 +172,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     /** step c with input b; true if the ship was hit */
     function step(c, b, acc) {
         charge(1);
+        if (observed) return stepModel(c, b, acc, starWeight);
         let hit = false;
         for (const e of stepGame(c, b)) {
             if (e[0] === 'hit') hit = true;
@@ -329,9 +345,9 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         if (best !== cur) { stats.improves++; commit(best); }
     }
 
-    function reset(g) {
-        f0 = g.frame; plan = []; snaps = new Map(); hits = []; lastFail = -1e9;
-        end = clone(g); charge(1);
+    function reset(s) {
+        f0 = s.frame; plan = []; snaps = new Map(); hits = []; lastFail = -1e9;
+        end = clone(s); charge(1);
     }
 
     function bot(g) {
@@ -339,10 +355,22 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         spent = 0; steps = 0;
         let live = 0;
         for (const f of g.foes) if (f) live++;
-        unit = 1 + live / UNIT_FOES;
+        unit = observed ? MODEL_BASE + live / MODEL_FOES : 1 + live / UNIT_FOES;
         bank = Math.min(bank + budget, cap);
-        if (g.frame !== f0 || !end) reset(g);
-        rootState = g;
+        if (!observed) {
+            if (g.frame !== f0 || !end) reset(g);
+            rootState = g;
+        } else {
+            // the observed bot looks again every frame: what it predicted last frame may be wrong (a bullet fired since,
+            // a turn), so the plan is re-checked against the fresh picture — and repaired below if it now runs into a hit
+            rootState = observe(g, tracker, { motion, stars: starWeight > 0 }, stats.seen); charge(1); // looking costs a model frame
+            if (g.frame !== f0 || !end) reset(rootState);
+            else {
+                const wasSafe = hits.length === 0;
+                commit({ from: f0, inputs: plan.slice() });
+                if (wasSafe && hits.length) stats.surprises++;
+            }
+        }
         while (plan.length < H) extendOne();
         if (g.status === STATUS.IN_GAME) {
             if (hits.length && (f0 - lastFail >= K || lastFail < 0)) repair();
@@ -359,6 +387,6 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         return b;
     }
     bot.stats = stats;
-    bot.config = { variant, horizon: H, budget, bankFrames, snapEvery: K, starWeight, tail: tailKind, ...(costCap !== Infinity ? { costCap } : {}) };
+    bot.config = { variant, horizon: H, budget, bankFrames, snapEvery: K, starWeight, tail: tailKind, ...(costCap !== Infinity ? { costCap } : {}), ...(observed ? { perception, motion } : {}) };
     return bot;
 }

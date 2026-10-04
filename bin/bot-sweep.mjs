@@ -3,6 +3,7 @@
  * The G4 sweep: the bot on every stage, in worker processes.
  *
  *   node bin/bot-sweep.mjs [--jobs N] [--timeout-min M] [--only main|horizons] [--seeds 1,2,3] [--summary]
+ *   node bin/bot-sweep.mjs --perception observed …   (slice H1: the Expert's sweep, see bin/h1-sweep.mjs)
  *
  *  - main:     stages 1–10 and ENDLESS/HARD/EXTREME/INSANE × attack/no-attack × seeds × budgets 1×, 4×, 16×
  *              BROWSER_BUDGET, at the default horizon. Tapes → tapes/g4/ (they replay in play.html).
@@ -26,6 +27,8 @@ const partsDir = path.join(root, 'results/.g4-parts');
 const tapesDir = path.join(root, 'tapes/g4');
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : d; };
+// slice H1: `--perception observed` is the Expert's sweep (sharded, its own job list and outputs): bin/h1-sweep.mjs
+if (opt('perception', 'omniscient') === 'observed') { await import('./h1-sweep.mjs'); process.exit(0); }
 
 const STAGES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'ENDLESS', 'HARD', 'EXTREME', 'INSANE'];
 const VARIANTS = ['attack', 'no-attack'];
