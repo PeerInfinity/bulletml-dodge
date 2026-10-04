@@ -5,9 +5,9 @@
  *
  * window.noiz is a small API for the headless checks (test/browser.test.mjs).
  */
-import { newGame, stepGame, stateLine, STATUS, SPC, STAGE_NAMES, input } from '../src/game/noiz2sa-game.js';
+import { newGame, stepGame, stateLine, STATUS, SPC, STAGE_NAMES, HITBOXES, input } from '../src/game/noiz2sa-game.js';
 import { makePolicy, POLICY_NAMES } from '../src/game/policies.js';
-import { makeTape, tapeInputs, replayTape } from '../src/game/tape.js';
+import { makeTape, tapeInputs, replayTape, tapeGameOptions } from '../src/game/tape.js';
 import { loadNoiz2saPatternsWeb } from '../src/game/patterns-web.js';
 import { packBulletML } from '../src/bulletml.js';
 import { BOT_VARIANTS, BROWSER_BUDGET, DEFAULT_HORIZON, makeBot, tapeBotRecord } from '../src/game/bot.js';
@@ -63,11 +63,14 @@ const app = {
     // (null: the budget menu × BROWSER_BUDGET) and its bank (frames of budget)
     costCap: Infinity, budgetUnits: null, bankFrames: 32,
     speed: 1, lastTape: null, effects: [], banner: '', endReported: false,
+    // slice HB: the hit test of the next game ('original' or 'centered'; a replay uses its tape's), and the hit-spot dots
+    hitbox: store.get('hitbox', 'original'), hitDot: store.get('hitDot', true),
     // slice H2: the humanlike bot's setting — a preset's name or 'custom'; the skill (a personality's, H3b: its biases
     // apply to the slider at this skill; or the plain slider's under 'custom'); every knob; the bot seed (its own
     // generator is seeded from the game's seed and this)
     persona: store.get('persona', 'Steady'), skill: store.get('skill', null), knobs: null, botSeedFixed: store.get('botSeedFixed', null), botSeed: 0, // ⚖ 2026-10-04: the bot seed is random per game unless fixed under advanced
 };
+if (!HITBOXES.includes(app.hitbox)) app.hitbox = 'original';
 // ⚖ H3b renamed two presets
 app.persona = { 'Steady veteran': 'Steady', 'Cautious beginner': 'Cautious' }[app.persona] ?? app.persona;
 if (app.persona !== 'custom' && !PRESET[app.persona]) app.persona = 'Steady';
@@ -146,7 +149,7 @@ function startStage(stage, { seed = null, endlessSeed = null, prefix = [] } = {}
     app.seed = seed ?? (fixed !== '' ? Number(fixed) >>> 0 : randomSeed());
     app.endlessSeed = endlessSeed ?? (fixed !== '' ? (Math.imul(7919, app.seed) >>> 0) : randomSeed());
     app.botSeed = app.botSeedFixed ?? randomSeed();
-    app.g = newGame(app.patterns, stage, { seed: app.seed, endlessSeed: app.endlessSeed });
+    app.g = newGame(app.patterns, stage, { seed: app.seed, endlessSeed: app.endlessSeed, hitbox: app.hitbox });
     app.played = []; app.paused = false; app.effects = []; app.replay = null; app.banner = '';
     if ($('knob-botSeed')) updateBotSeedField();
     for (const b of prefix) { if (app.g.status !== STATUS.IN_GAME) break; stepGame(app.g, b); app.played.push(b); }
@@ -158,7 +161,7 @@ function startStage(stage, { seed = null, endlessSeed = null, prefix = [] } = {}
 }
 function startReplay(tape, name) {
     app.stage = tape.stage; app.seed = tape.seed; app.endlessSeed = tape.endlessSeed;
-    app.g = newGame(app.patterns, tape.stage, { seed: tape.seed, endlessSeed: tape.endlessSeed });
+    app.g = newGame(app.patterns, tape.stage, tapeGameOptions(tape));
     app.replay = { tape, name, inputs: tapeInputs(tape) };
     app.played = []; app.paused = false; app.effects = []; app.banner = ''; app.endReported = false;
     setMode('replay');
@@ -174,7 +177,7 @@ function backToSelect() {
 function finishRecording() {
     if (!app.played.length) return;
     app.lastTape = makeTape({
-        stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, played: app.played,
+        stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, hitbox: app.g ? app.g.hitbox : app.hitbox, played: app.played,
         extra: { player: app.botUsed ? `human+${app.policyName.replace('bot: ', 'bot-').replace(' ', '-')}` : 'human',
             ...(app.botUsed && isG4(app.policyName) ? { bot: botRecord() } : {}) },
     });
@@ -185,6 +188,12 @@ function setMode(m) {
     app.mode = m;
     $('select').hidden = m !== 'select';
     renderSelect(); updateControls();
+}
+/** (HB) the hit test of the games started from now on (a game in play keeps its own; a replay uses its tape's) */
+function setHitbox(h) {
+    if (!HITBOXES.includes(h)) return;
+    app.hitbox = h; store.set('hitbox', h);
+    updateControls();
 }
 function togglePause() { if (app.mode === 'play' || app.mode === 'replay') app.paused = !app.paused; }
 function setMuted(m) { sound.setMuted(m); store.set('muted', m); updateControls(); }
@@ -202,7 +211,7 @@ function armBot() {
     if (!isG4(app.policyName)) { app.pol = makePolicy(app.policyName); return; }
     const id = ++g4Id;
     app.g4 = { id, from: app.g.frame, queue: [], stalls: 0, ms: [], units: [], maxMs: 0, startedAt: app.g.frame, warmUntil: performance.now() + START_HOLD_MAX_MS };
-    app.worker.postMessage({ type: 'start', id, stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, inputs: app.played.slice(), bot: botOpts() });
+    app.worker.postMessage({ type: 'start', id, stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, hitbox: app.g.hitbox, inputs: app.played.slice(), bot: botOpts() });
 }
 /** the makeBot options of the chosen G4 / Expert / humanlike bot (the worker's bot, and what the tape records) */
 function botOpts() {
@@ -403,7 +412,7 @@ function loop(now) {
 function render() {
     draw(ctx, app.g, {
         mode: app.mode, paused: app.paused, bot: app.bot, policyName: botShortLabel(), muted: sound.muted,
-        speed: app.speed, tapeName: app.replay?.name, effects: app.effects, banner: app.banner,
+        speed: app.speed, tapeName: app.replay?.name, effects: app.effects, banner: app.banner, hitDot: app.hitDot,
         modeLabel: app.mode === 'play' ? (app.bot ? 'PLAY (bot)' : 'PLAY') : app.mode === 'replay' ? 'REPLAY' : app.mode === 'select' ? 'STAGE SELECT' : 'LOADING…',
     });
 }
@@ -426,6 +435,8 @@ function updateControls() {
     $('policy').value = app.policyName;
     updatePersona();
     $('mute').textContent = sound.muted ? 'Sound: off (M)' : 'Sound: on (M)';
+    $('hitbox').value = app.hitbox;
+    $('hit-dot').checked = app.hitDot;
     $('download').disabled = !app.lastTape;
     $('download').textContent = app.lastTape ? `Download your last game (${stageText(app.lastTape.stage)}, ${app.lastTape.frames} frames)` : 'Download your last game';
 }
@@ -530,6 +541,8 @@ function initControls() {
     $('bot').addEventListener('change', (e) => setBot(e.target.checked));
     $('mute').addEventListener('click', () => { sound.unlock(); setMuted(!sound.muted); });
     $('speed').addEventListener('change', (e) => { app.speed = Number(e.target.value); });
+    $('hitbox').addEventListener('change', (e) => setHitbox(e.target.value));
+    $('hit-dot').addEventListener('change', (e) => { app.hitDot = e.target.checked; store.set('hitDot', app.hitDot); });
     $('download').addEventListener('click', () => {
         const t = app.lastTape;
         if (!t) return;
@@ -610,6 +623,12 @@ window.noiz = {
         };
     },
     lastTape: () => app.lastTape,
+    /** (HB) the hitbox of the next game and the dot toggle; what the page shows now */
+    setHitbox: (h) => setHitbox(h),
+    setHitDot: (on) => { app.hitDot = !!on; store.set('hitDot', app.hitDot); updateControls(); },
+    /** (HB) the first n bullets: their position and trail end, in 1/256 px */
+    bullets: (n = 8) => (app.g ? app.g.foes.filter((f) => f && f.spc !== SPC.FOE && f.spc !== SPC.NOT_EXIST).slice(0, n).map((f) => ({ x: f.x, y: f.y, px: f.px, py: f.py })) : []),
+    hitboxSetting: () => ({ hitbox: app.hitbox, hitDot: app.hitDot, game: app.g ? app.g.hitbox : null, menuText: $('hitbox').selectedOptions[0]?.textContent }),
     sound: () => ({ decoded: sound.buffers.filter(Boolean).length, context: sound.ctx?.state ?? null,
         music: sound.music.src.split('/').pop(), musicPaused: sound.music.paused, muted: sound.muted }),
     startStage: (i, o) => startStage(i, o),

@@ -60,6 +60,8 @@ const results = [];
 let bad = 0;
 for (const file of tapes) {
     const tape = JSON.parse(fs.readFileSync(file, 'utf8'));
+    // the native build has the C's hit test only (slice HB: a centered tape is not a fidelity tape)
+    if (tape.hitbox && tape.hitbox !== 'original') { console.log(`skipped ${path.basename(file)}: hitbox ${tape.hitbox}`); continue; }
     const t0 = Date.now();
     const js = runPort(tape), { lines: cc, ub } = runNative(tape);
     const name = path.basename(file, '.json');

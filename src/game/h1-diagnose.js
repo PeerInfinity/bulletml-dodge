@@ -11,8 +11,8 @@
  *  - warned more: predicted well ahead, and the bot still found no way out: cornered, its search missed one, or (at
  *    horizon 0) it does not look ahead at all.
  */
-import { newGame, stepGame, cloneGame, segmentHitsShip, getDeg, SPC, STATUS } from './noiz2sa-game.js';
-import { tapeInputs } from './tape.js';
+import { newGame, stepGame, cloneGame, segmentHitsShip, centeredHitsShip, getDeg, SPC, STATUS } from './noiz2sa-game.js';
+import { tapeInputs, tapeGameOptions } from './tape.js';
 import { observe, newTracker, stepModel } from './perception.js';
 
 const WINDOW = 240; // frames of history kept before each hit
@@ -22,7 +22,7 @@ export function diagnoseDeaths(patterns, tape, hitFrames, { motion = 'curve' } =
     const out = [];
     for (const hf of hitFrames) {
         const F = hf - 1; // the hit happens in the step from frame F
-        const g = newGame(patterns, tape.stage, { seed: tape.seed, endlessSeed: tape.endlessSeed });
+        const g = newGame(patterns, tape.stage, tapeGameOptions(tape));
         const hist = new Map(); // frame → {foes: [slot → light record], ship, model}
         const tr = newTracker();
         while (g.frame < F) {
@@ -39,7 +39,8 @@ export function diagnoseDeaths(patterns, tape, hitFrames, { motion = 'curve' } =
         for (let j = 0; j < c.foes.length; j++) {
             const f = c.foes[j];
             if (!f || f.spc === SPC.FOE) continue;
-            if (segmentHitsShip(f.px, f.py, f.x, f.y, c.ship.x, c.ship.y)) hitters.push(j);
+            if (c.hitbox === 'centered' ? centeredHitsShip(f.x - f.mx, f.y - f.my, f.x, f.y, c.ship.x, c.ship.y)
+                : segmentHitsShip(f.px, f.py, f.x, f.y, c.ship.x, c.ship.y)) hitters.push(j);
         }
         const bullets = hitters.map((j) => bulletStory(g, c, j, F, hist, inputs, motion));
         out.push({ frame: hf, scene, bullets, live: g.foes.filter((f) => f).length });

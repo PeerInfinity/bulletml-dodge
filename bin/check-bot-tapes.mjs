@@ -23,7 +23,7 @@ if (args[0] === '--one') {
     const o = botOptionsFromTape(want);
     const t0 = Date.now();
     const { tape } = runBot(loadNoiz2saPatterns(), {
-        stage: want.stage, seed: want.seed, endlessSeed: want.endlessSeed, variant: o.variant, horizon: o.horizon, budget: o.budget, tail: o.tail,
+        stage: want.stage, seed: want.seed, endlessSeed: want.endlessSeed, hitbox: want.hitbox || 'original', variant: o.variant, horizon: o.horizon, budget: o.budget, tail: o.tail,
         costCap: o.costCap, bankFrames: o.bankFrames, perception: o.perception, motion: o.motion ?? 'curve',
         expert: o.perception === 'observed' ? { margin: o.margin, attackY: o.attackY } : {}, starWeight: o.starWeight, human: o.human ?? null, botSeed: o.botSeed ?? 1,
         personality: want.bot.personality ?? null,

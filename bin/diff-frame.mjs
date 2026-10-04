@@ -11,6 +11,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
 import { newGame, stepGame, STATUS, SPC } from '../src/game/noiz2sa-game.js';
+import { tapeGameOptions } from '../src/game/tape.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const [file, frameArg] = process.argv.slice(2);
@@ -32,7 +33,7 @@ function detail(g) {
 
 const inputs = [];
 for (const [b, n] of tape.inputs) for (let k = 0; k < n; k++) inputs.push(b);
-const g = newGame(loadNoiz2saPatterns(), tape.stage, { seed: tape.seed, endlessSeed: tape.endlessSeed });
+const g = newGame(loadNoiz2saPatterns(), tape.stage, tapeGameOptions(tape));
 const js = [];
 while (g.status !== STATUS.TITLE && g.frame < Math.min(N, inputs.length)) {
     stepGame(g, inputs[g.frame]);

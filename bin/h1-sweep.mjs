@@ -5,7 +5,7 @@
  *
  *   node bin/h1-sweep.mjs [--perception observed|omniscient|both] [--variants attack,no-attack]
  *        [--stages 1,2,…,10,ENDLESS] [--seeds 1,2,3] [--horizons 0,4,8,16,32,48,64,96 | none] [--main-horizon 48]
- *        [--budget 1] [--motion straight] [--name h1-bot] [--jobs N] [--shard i/n] [--timeout-min M] [--list]
+ *        [--budget 1] [--motion straight] [--hitbox centered] [--name h1-bot] [--jobs N] [--shard i/n] [--timeout-min M] [--list]
  *   node bin/h1-sweep.mjs --merge [--expect n] [--name h1-bot] [the same run options]   (combine the shard files)
  *   node bin/h1-sweep.mjs --summary [--name h1-bot] [run options]                      (local parts, no checks)
  *
@@ -24,7 +24,8 @@
  * a partial table is never written as complete. It writes results/<name>.json and results/<name>.md.
  * Without omniscient rows of its own, the summary takes the Ace from G4 (results/g4-bot.json, budget 1×), whose
  * omniscient path is unchanged (G4 tapes re-record byte for byte; docs/h1-report.md).
- * Seeds: C rand() seed s, endlessSeed 7919 × s (the G2 convention).
+ * Seeds: C rand() seed s, endlessSeed 7919 × s (the G2 convention). --hitbox centered (slice HB): every run on the
+ * centered hit test; its keys end in -centered and its Expert tapes go to tapes/h1/ as …-expert-centered.json.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -43,7 +44,7 @@ const MAX_DIAG = 12;
 
 const pad = (n) => String(n).padStart(2, '0');
 // keys: o- = observed (the Expert), a- = omniscient (the Ace)
-const runKey = (j) => `${j.perception === 'omniscient' ? 'a' : 'o'}-s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}-h${j.horizon}${j.budgetX !== 1 ? `-b${j.budgetX}x` : ''}${j.motion === 'straight' ? '-straight' : ''}${j.expert ? `-x${expertTag(j.expert)}` : ''}`;
+const runKey = (j) => `${j.perception === 'omniscient' ? 'a' : 'o'}-s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}-h${j.horizon}${j.budgetX !== 1 ? `-b${j.budgetX}x` : ''}${j.motion === 'straight' ? '-straight' : ''}${j.expert ? `-x${expertTag(j.expert)}` : ''}${j.hitbox === 'centered' ? '-centered' : ''}`;
 // an --expert override in a part's name: its settings, made file-name safe
 function expertTag(x) { return JSON.stringify(x).replace(/[^A-Za-z0-9.]+/g, '_').replace(/^_|_$/g, ''); }
 const cellKey = (c) => `${c.perception === 'omniscient' ? 'a' : 'o'}-s${pad(c.stage + 1)}-${c.variant}-seed${c.seed}`;
@@ -61,9 +62,9 @@ if (opt('one', null)) {
     const key = runKey(j), part = path.join(partsDir, `${key}.json`);
     fs.mkdirSync(partsDir, { recursive: true });
     if (!fs.existsSync(part)) {
-        const { result, tape } = runBot(P, { stage: j.stage, seed: j.seed, variant: j.variant, horizon: j.horizon, budget: j.budgetX * BROWSER_BUDGET, perception: j.perception, motion: j.motion ?? 'curve', expert: j.perception === 'observed' ? j.expert ?? {} : {} });
+        const { result, tape } = runBot(P, { stage: j.stage, seed: j.seed, variant: j.variant, horizon: j.horizon, budget: j.budgetX * BROWSER_BUDGET, perception: j.perception, motion: j.motion ?? 'curve', expert: j.perception === 'observed' ? j.expert ?? {} : {}, hitbox: j.hitbox ?? 'original' });
         if (j.main && j.perception === 'observed' && !j.motion && !j.expert) {
-            const file = `s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}-expert${j.budgetX !== 1 ? `-b${j.budgetX}x` : ''}${j.horizon !== 48 ? `-h${j.horizon}` : ''}.json`;
+            const file = `s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}-expert${j.budgetX !== 1 ? `-b${j.budgetX}x` : ''}${j.horizon !== 48 ? `-h${j.horizon}` : ''}${j.hitbox === 'centered' ? '-centered' : ''}.json`;
             fs.mkdirSync(tapesDir, { recursive: true });
             fs.writeFileSync(path.join(tapesDir, file), JSON.stringify(tape));
             result.tape = `h1/${file}`;
@@ -93,8 +94,10 @@ const budgetX = Number(opt('budget', 1));
 const motionOpt = opt('motion', null); // null = the Expert's own (curve)
 // --expert '{"margin":null}': the Expert's settings changed from its defaults (EXPERT_DEFAULTS in src/game/bot.js), for ablations
 const expertOpt = opt('expert', null) ? JSON.parse(opt('expert')) : null;
+const hitboxOpt = opt('hitbox', 'original');
+if (!['original', 'centered'].includes(hitboxOpt)) { console.error(`unknown hitbox "${hitboxOpt}"`); process.exit(2); }
 const name = opt('name', 'h1-bot');
-const signature = { perception: perceptionOpt, variants, stages: stageNames, seeds, horizons: ladder, mainHorizon: mainH, budgetX, motion: motionOpt, ...(expertOpt ? { expert: expertOpt } : {}) };
+const signature = { perception: perceptionOpt, variants, stages: stageNames, seeds, horizons: ladder, mainHorizon: mainH, budgetX, motion: motionOpt, ...(expertOpt ? { expert: expertOpt } : {}), ...(hitboxOpt !== 'original' ? { hitbox: hitboxOpt } : {}) };
 const shardsDir = path.join(root, `results/${name}-shards`);
 
 const cells = [];
@@ -146,7 +149,7 @@ if (!args.includes('--summary') && !args.includes('--merge')) {
         fs.writeFileSync(path.join(shardsDir, `shard-${shardI}-of-${shardN}.json`), JSON.stringify({ shard: shardI, of: shardN, signature, done, cells: myCells.length, cellsDone, commit, cores: os.cpus().length, jobs: nJobs, wallMin: +((Date.now() - t0) / 60000).toFixed(1), rows: [...mine.values()] }) + '\n');
     };
     const doCell = async (c) => {
-        const base = { perception: c.perception, stage: c.stage, variant: c.variant, seed: c.seed, budgetX, ...(motionOpt ? { motion: motionOpt } : {}), ...(expertOpt && c.perception === 'observed' ? { expert: expertOpt } : {}) };
+        const base = { perception: c.perception, stage: c.stage, variant: c.variant, seed: c.seed, budgetX, ...(motionOpt ? { motion: motionOpt } : {}), ...(expertOpt && c.perception === 'observed' ? { expert: expertOpt } : {}), ...(hitboxOpt !== 'original' ? { hitbox: hitboxOpt } : {}) };
         const add = (r) => mine.set(r.key, r);
         add(await runOne({ ...base, horizon: mainH, main: true }));
         if (ladder.length && c.stage < 10) {
@@ -198,12 +201,12 @@ if (args.includes('--merge')) {
 }
 // rows from before the perception / budget fields (early H1 parts) are the Expert at budget 1×
 const allRuns = [...byKey.values()].map((r) => ({ perception: r.key.startsWith('a-') ? 'omniscient' : 'observed', budgetX: 1, ...r })).sort((a, b) => a.key.localeCompare(b.key));
-const sel = (r) => r.budgetX === budgetX && (r.perception === 'omniscient' || JSON.stringify(r.expert ?? null) === JSON.stringify(expertOpt));
+const sel = (r) => r.budgetX === budgetX && (r.hitbox ?? 'original') === hitboxOpt && (r.perception === 'omniscient' || JSON.stringify(r.expert ?? null) === JSON.stringify(expertOpt));
 const runs = allRuns.filter((r) => r.perception === 'observed' && !r.motion && sel(r));
 const straightRuns = allRuns.filter((r) => r.perception === 'observed' && r.motion === 'straight' && sel(r));
 const aceOwn = allRuns.filter((r) => r.perception === 'omniscient' && sel(r));
 const g4 = JSON.parse(fs.readFileSync(path.join(root, 'results/g4-bot.json'), 'utf8'));
-const aceFromG4 = !aceOwn.length;
+const aceFromG4 = !aceOwn.length && hitboxOpt === 'original'; // G4's Ace played the original hit test
 const ace = aceFromG4 ? g4.main.filter((r) => r.budgetX === 1 && r.tail === 'straight').map((r) => ({ ...r, horizon: 48 })) : aceOwn;
 const aceLadder = aceFromG4 ? g4.horizons.filter((r) => r.tail === 'straight') : aceOwn;
 const stagesShown = STAGES.map((_, i) => i).filter((i) => allRuns.some((r) => r.stage === i));
@@ -222,7 +225,7 @@ const mean = (a) => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : null);
 const md = [];
 md.push('# H1 — the Expert (observed perception) against the Ace (omniscient)', '');
 md.push(`Written by \`bin/h1-sweep.mjs ${args.includes('--merge') ? '--merge' : '--summary'}\` at commit \`${commit}\`, ${meta.date}, from ${allRuns.length} runs (${(meta.cpuSec / 3600).toFixed(1)} CPU-hours, diagnosis included)${shardInfo.length ? ` in ${shardInfo.length} shards` : ' (local parts)'}.`);
-md.push(`Budget ${budgetX}× = ${budgetX * BROWSER_BUDGET} units per frame; main horizon ${mainH}. ${aceFromG4 ? 'The Ace\'s rows are G4\'s (results/g4-bot.json, budget 1×, horizon 48, its own ladder 0, 1, 2, 4, …).' : 'The Ace ran in this sweep.'}`);
+md.push(`Budget ${budgetX}× = ${budgetX * BROWSER_BUDGET} units per frame; main horizon ${mainH}.${hitboxOpt !== 'original' ? ` Hitbox: ${hitboxOpt} (slice HB).` : ''} ${aceFromG4 ? 'The Ace\'s rows are G4\'s (results/g4-bot.json, budget 1×, horizon 48, its own ladder 0, 1, 2, 4, …).' : 'The Ace ran in this sweep.'}`);
 md.push(`The Expert's settings: ${Object.keys(expertUsed).length ? `\`${JSON.stringify(expertUsed)}\`` : 'none (the H1 Expert)'}${expertOpt ? ` (changed by --expert \`${JSON.stringify(expertOpt)}\`)` : ' (its defaults, EXPERT_DEFAULTS in src/game/bot.js)'}: margin = the clearance in px it keeps from a bullet's drawn trail and from a spawner (an enemy, an active bullet, a dot not yet moving); attackY = the height it attacks from, px from the top.`);
 md.push(`Seeds: C rand() seed s, endlessSeed 7919 × s. "boss 3 min" = alive ${BOSS_CAP} frames into the boss scene (no-attack's goal). Endless modes stop at 30,000 frames.`, '');
 

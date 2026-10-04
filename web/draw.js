@@ -56,18 +56,24 @@ function drawField(c, g, view) {
             }
         }
     }
-    // bullets: a thick line along the last move (the swept segment the hit test uses)
+    // bullets: a thick line along the last move. Original hitbox: the trail ends at the bullet, and the hit area is
+    // at its tail (segmentHitsShip); centered (slice HB): the same line centred on the bullet, the hit area its centre.
+    // view.hitDot: a dot where the hit area is (a hit = the ship's centre point within 2 px of it)
     c.lineCap = 'round';
+    const centered = g.hitbox === 'centered', dots = view.hitDot ? [] : null;
     for (let i = 0; i < g.foes.length; i++) {
         const fe = g.foes[i];
         if (!fe || fe.spc === SPC.FOE || fe.spc === SPC.NOT_EXIST) continue;
         const bc = BULLET_COLOR[fe.spc === SPC.BULLET ? 0 : fe.spc === SPC.ACTIVE_BULLET ? 2 : 1];
-        const x = fe.x / 256, y = fe.y / 256, px = fe.px / 256, py = fe.py / 256;
+        let x = fe.x / 256, y = fe.y / 256, px = fe.px / 256, py = fe.py / 256;
+        if (centered) { const hx = (x - px) / 2, hy = (y - py) / 2; px = x - hx; py = y - hy; x += hx; y += hy; }
         c.strokeStyle = PAL[bc[1]]; c.lineWidth = 6;
         c.beginPath(); c.moveTo(px, py); c.lineTo(x + 0.01, y); c.stroke();
         c.strokeStyle = PAL[bc[0]]; c.lineWidth = 3;
         c.beginPath(); c.moveTo(px, py); c.lineTo(x + 0.01, y); c.stroke();
+        if (dots) dots.push(centered ? fe.x / 256 : px, centered ? fe.y / 256 : py);
     }
+    if (dots) { c.fillStyle = '#fff'; for (let k = 0; k < dots.length; k += 2) c.fillRect(Math.round(dots[k]) - 1, Math.round(dots[k + 1]) - 1, 2, 2); }
     // shots: two thin boxes
     for (const st of g.shots) {
         if (!st) continue;
@@ -130,6 +136,7 @@ function drawPanelsStatic(c, g, view) {
     }
     lab(c, view.bot ? `BOT: ${view.policyName}` : 'BOT: off', L, 220);
     lab(c, view.muted ? 'SOUND: off' : 'SOUND: on', L, 240);
+    if (g) lab(c, `HITBOX: ${g.hitbox}`, L, 260);
     c.font = '11px monospace'; c.fillStyle = '#567';
     const help = ['arrows/WASD move', 'Z fire  X slow', 'P pause  Esc back', 'B bot  M mute'];
     help.forEach((s, i) => c.fillText(s, L, 400 + i * 16));
@@ -143,7 +150,7 @@ function value(c, id, s, x, y, col = '#fff', w = FIELD_X - 20) {
     c.textAlign = 'left'; c.font = 'bold 20px monospace'; c.fillStyle = col; c.fillText(s, x, y);
 }
 function drawPanels(c, g, view) {
-    const key = [!!g, g && g.stage, view.modeLabel, view.mode, view.speed, view.tapeName, view.bot, view.policyName, view.muted].join('|');
+    const key = [!!g, g && g.stage, g && g.hitbox, view.modeLabel, view.mode, view.speed, view.tapeName, view.bot, view.policyName, view.muted].join('|');
     if (key !== panel.key) { panel.key = key; panel.vals.clear(); drawPanelsStatic(c, g, view); }
     if (!g) return;
     value(c, 'score', g.score, L, 54);

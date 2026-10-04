@@ -56,6 +56,12 @@ simple reflexes and which need planning.
   `.github/workflows/h2-sweep.yml`) → `results/<name>.md` (clears, game overs, survival, the slider's monotonicity and
   each preset's equivalent skill); `bin/check-bot-tapes.mjs` re-records any bot tape from the
   settings it carries.
+- **The hitbox setting** (slice HB, `docs/hitbox-report.md`): `newGame(…, {hitbox: 'original' | 'centered'})`.
+  *Original* (the default, the C's test, which the native build verifies) hits near the TAIL of a bullet's trail, up to
+  ~12 px behind its head; *centered* hits within 2 px of the bullet's position, swept from where it was the frame
+  before (PARSEC47-style; a bullet resting on the ship hits). Tapes record it (none = original); the bots follow the
+  game's. The page: a "Hitbox" box (the hit area, and white dots where each bullet can hit, on by default);
+  `bin/play-game.mjs --hitbox`, `bin/h1-sweep.mjs --hitbox`, `bin/h2-sweep.mjs --hitbox`.
 - `bin/build-web-index.mjs` (`npm run web-index`) — writes `web/index/` (the pattern order and the tape list the
   page needs); re-run it after adding a tape or a pattern (`npm run test:browser` refuses a stale index).
 - `patterns/noiz2sa/` — the 73 patterns from Noiz2sa 0.52 (BSD; licence text beside them).

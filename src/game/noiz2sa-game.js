@@ -34,6 +34,12 @@ export const SPC = { NOT_EXIST: -1, FOE: 0, BOSS_ACTIVE_BULLET: 1, ACTIVE_BULLET
 export const BOSS_TYPE = 3;
 export const STATUS = { IN_GAME: 1, GAMEOVER: 2, STAGE_CLEAR: 3, TITLE: 0 };
 const SHIP_HIT_WIDTH = 512 * 512;
+/**
+ * The hit test (slice HB): 'original' = the C's (segmentHitsShip: near the TAIL of the drawn trail, see there), the
+ * default, which the native build verifies; 'centered' = 2 px around the bullet's position, swept from where it was
+ * the frame before (centeredHitsShip, PARSEC47-style).
+ */
+export const HITBOXES = ['original', 'centered'];
 export const SHIP_SPEED = 1280, SHIP_SLOW_SPEED = 640;
 const SHIP_SLOW_DOWN = 64, SHIP_INVINCIBLE_CNT_BASE = 240, SHOT_INTERVAL = 3;
 const SHIP_SCAN_WIDTH = 1024, SHIP_SCREEN_EDGE_WIDTH = 3;
@@ -122,10 +128,11 @@ export const inputSlow = (b) => (b & 32) !== 0;
  * file name, and so does our native build). `seed` seeds C's rand() (the game uses SDL_GetTicks);
  * `endlessSeed` seeds the endless modes' stage LCG (the game uses SDL_GetTicks there too).
  */
-export function newGame(patterns, stage, { seed = 1, endlessSeed = 1 } = {}) {
+export function newGame(patterns, stage, { seed = 1, endlessSeed = 1, hitbox = 'original' } = {}) {
+    if (!HITBOXES.includes(hitbox)) throw new Error(`unknown hitbox "${hitbox}" (have: ${HITBOXES.join(', ')})`);
     const lists = [patterns.zako, patterns.middle, patterns.boss];
     const g = {
-        lists, stage, tick: 0, status: STATUS.IN_GAME, frame: 0,
+        lists, stage, hitbox, tick: 0, status: STATUS.IN_GAME, frame: 0,
         rand: newCRand(seed),
         rnd: 0,
         // barragePattern[type][i] records; barrageQueue[type] = indices into them; barrage[] = {type, idx}
@@ -386,7 +393,7 @@ function clearFoesZako(g) {
 }
 
 function moveFoes(g) {
-    const ship = g.ship;
+    const ship = g.ship, centered = g.hitbox === 'centered';
     for (let i = 0; i < FOE_MAX; i++) {
         let fe = g.foes[i];
         if (!fe) continue;
@@ -431,6 +438,12 @@ function moveFoes(g) {
                     } else g.events.push(['damage', fe.type]);
                 }
             }
+        } else if (fe.spc !== SPC.NOT_EXIST && centered) {
+            // centered: from where the bullet was the frame before to where it is now (exact: see NEAR_POINT)
+            const sx = ship.x, sy = ship.y, qx = fe.x - mx, qy = fe.y - my;
+            if (sx > (qx < fe.x ? qx : fe.x) - NEAR_POINT && sx < (qx < fe.x ? fe.x : qx) + NEAR_POINT
+                && sy > (qy < fe.y ? qy : fe.y) - NEAR_POINT && sy < (qy < fe.y ? fe.y : qy) + NEAR_POINT
+                && centeredHitsShip(qx, qy, fe.x, fe.y, sx, sy)) destroyShip(g);
         } else if (fe.spc !== SPC.NOT_EXIST) {
             // the float test only for a ship near the swept segment's box (exact: see NEAR_SEGMENT)
             const sx = ship.x, sy = ship.y;
@@ -466,6 +479,26 @@ export function segmentHitsShip(px, py, x, y, sx, sy) {
     if (!(ht > 0 && ht < 1)) return false;
     const hd = f32(ip(ox, oy, ox, oy) - f32(f32(f32(inab * inab) / inaa) / inaa));
     return hd >= 0 && hd < SHIP_HIT_WIDTH;
+}
+
+
+/** centered's box prefilter: 4 px, twice the hit radius (outside it the distance is ≥ 4 px, so never a hit) */
+const NEAR_POINT = 4 * 256;
+/**
+ * The centered hit test (slice HB; PARSEC47's BulletActor.checkShipHit, with the ends included): the ship is hit when
+ * it comes within 2 px (SHIP_HIT_WIDTH = 512², the original's threshold) of the segment the bullet's POSITION swept
+ * this frame, from (qx, qy) (the frame before) to (x, y) — a capsule, so a fast bullet cannot skip the ship. A bullet
+ * that does not move is a plain point test: one resting on the ship hits (in the original it never does). Exact
+ * integers up to the one division, all correctly rounded doubles, so Node and every browser agree.
+ */
+export function centeredHitsShip(qx, qy, x, y, sx, sy) {
+    const bx = x - qx, by = y - qy, ox = sx - qx, oy = sy - qy;
+    const inaa = bx * bx + by * by, inab = bx * ox + by * oy;
+    let d2;
+    if (inaa === 0 || inab <= 0) d2 = ox * ox + oy * oy; // not moving, or the ship behind where it started
+    else if (inab >= inaa) { const ex = sx - x, ey = sy - y; d2 = ex * ex + ey * ey; } // the ship past where it is now
+    else d2 = ox * ox + oy * oy - (inab * inab) / inaa;
+    return d2 < SHIP_HIT_WIDTH;
 }
 
 // ── barragemanager.cc addBullets / boss ──

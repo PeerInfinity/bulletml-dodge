@@ -11,10 +11,10 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { chromium } from 'playwright';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
-import { newGame, stepGame, STATUS } from '../src/game/noiz2sa-game.js';
+import { newGame, stepGame, stateLine, STATUS } from '../src/game/noiz2sa-game.js';
 import { makeBot, BROWSER_BUDGET, DEFAULT_HORIZON, EXPERT_DEFAULTS, expertSettings, botOptionsFromTape } from '../src/game/bot.js';
 import { PRESET, skillKnobs, presetKnobs, humanDiff } from '../src/game/human.js';
-import { tapeInputs } from '../src/game/tape.js';
+import { tapeInputs, replayTape } from '../src/game/tape.js';
 
 const root = new URL('..', import.meta.url).pathname;
 const shots = path.join(root, 'docs/g3-screens');
@@ -303,6 +303,79 @@ try {
         assert.equal(await page.evaluate(() => document.querySelectorAll('#knobs input').length), Object.keys(PRESET.Expert.knobs).length + 1, 'every knob (and the bot seed) in the advanced panel');
         await page.evaluate(() => { window.noiz.setPersonality('Expert'); window.noiz.setPolicy('bot: attack'); });
         console.log('ok the advanced panel shows every knob; changing one makes the setting "custom"');
+    }
+
+    // ── 2e. slice HB: the hitbox setting (default original, saved, recorded in the tape, a replay uses its tape's), the
+    //    hit-spot dots (at the trail's tail in original, at the bullet in centered), and the page = Node for the
+    //    Expert in centered ──
+    {
+        let h = await page.evaluate(() => window.noiz.hitboxSetting());
+        assert.equal(h.hitbox, 'original', 'the default hitbox is the original');
+        assert.equal(h.hitDot, true, 'the hit spots are shown by default');
+        assert.equal(h.menuText, 'original (behind the bullet)');
+        await page.selectOption('#hitbox', 'centered');
+        h = await page.evaluate(() => window.noiz.hitboxSetting());
+        assert.equal(h.hitbox, 'centered');
+        assert.equal(await page.evaluate(() => localStorage.getItem('noiz2sa.hitbox')), '"centered"', 'the setting is saved');
+        // the Expert in a centered game: its tape records the hitbox, and Node's Expert plays it input for input
+        await page.evaluate(() => { window.noiz.setPolicy('bot: expert attack'); window.noiz.startStage(5, { seed: 2, endlessSeed: 7919 * 2 }); });
+        await page.waitForFunction(() => window.noiz.state().game.frame >= 900, null, { timeout: 60000 });
+        assert.equal((await page.evaluate(() => window.noiz.hitboxSetting())).game, 'centered');
+        // the dots: pause, then read the canvas at each bullet's hit spot (white with the dots on, not with them off)
+        await page.keyboard.press('KeyP');
+        const pix = () => page.evaluate(() => {
+            const c = document.getElementById('screen').getContext('2d');
+            const cen = window.noiz.hitboxSetting().game === 'centered';
+            return window.noiz.bullets(30).map((b) => {
+                const x = Math.round((cen ? b.x : b.px) / 256) + window.noiz.fieldX, y = Math.round((cen ? b.y : b.py) / 256);
+                if (y < 2 || y > 477 || x < window.noiz.fieldX + 2 || x > window.noiz.fieldX + 317) return null;
+                const d = c.getImageData(x - 1, y - 1, 1, 1).data;
+                return d[0] === 255 && d[1] === 255 && d[2] === 255;
+            }).filter((v) => v !== null);
+        });
+        await page.waitForTimeout(100);
+        const on = await pix();
+        await page.locator('#wrap').screenshot({ path: path.join(shots, 'hitbox-centered.png') });
+        await page.click('#hit-dot');
+        await page.waitForTimeout(100);
+        const off = await pix();
+        assert.ok(on.length >= 3 && on.filter(Boolean).length >= 0.8 * on.length, `every bullet has a white dot at its centre (${on.filter(Boolean).length}/${on.length})`);
+        assert.ok(off.filter(Boolean).length < off.length / 4, `no dots when they are off (${off.filter(Boolean).length}/${off.length} white)`);
+        assert.equal((await page.evaluate(() => window.noiz.hitboxSetting())).hitDot, false);
+        await page.click('#hit-dot');
+        await page.keyboard.press('KeyP');
+        await page.waitForTimeout(1500);
+        await page.keyboard.press('Escape');
+        const tape = await page.evaluate(() => window.noiz.lastTape());
+        assert.equal(tape.hitbox, 'centered', 'the tape records the hitbox');
+        assert.equal(tape.player, 'human+bot-expert-attack');
+        const inputs = tapeInputs(tape);
+        const g = newGame(loadNoiz2saPatterns(), tape.stage, { seed: tape.seed, endlessSeed: tape.endlessSeed, hitbox: 'centered' });
+        const bot = makeBot({ variant: 'attack', horizon: DEFAULT_HORIZON, budget: BROWSER_BUDGET, perception: 'observed' });
+        for (let f = 0; f < inputs.length && g.status === STATUS.IN_GAME; f++) {
+            const b = bot(g);
+            assert.equal(b, inputs[f], `the page's centered Expert and Node's differ at frame ${f}`);
+            stepGame(g, b);
+        }
+        // a replay plays with its tape's hitbox, whatever the setting: the centered tape under "original", and the
+        // page's engine ends it on Node's state line
+        await page.selectOption('#hitbox', 'original');
+        const web = await page.evaluate((t) => window.noiz.replayFast(t), tape);
+        assert.equal(web.stateLine, stateLine(replayTape(loadNoiz2saPatterns(), tape)), 'browser = Node on a centered tape');
+        await page.evaluate((t) => window.noiz.startReplay(t, 'centered.json'), tape);
+        assert.equal((await page.evaluate(() => window.noiz.hitboxSetting())).game, 'centered', 'a replay uses its tape\'s hitbox');
+        // original: the dot sits at the trail's tail
+        await page.evaluate(() => { window.noiz.setPolicy('bot: expert attack'); window.noiz.startStage(5, { seed: 2, endlessSeed: 7919 * 2 }); });
+        await page.waitForFunction(() => window.noiz.state().game.frame >= 600, null, { timeout: 60000 });
+        assert.equal((await page.evaluate(() => window.noiz.hitboxSetting())).game, 'original');
+        await page.keyboard.press('KeyP');
+        await page.waitForTimeout(100);
+        const tail = await pix();
+        await page.locator('#wrap').screenshot({ path: path.join(shots, 'hitbox-original.png') });
+        assert.ok(tail.length >= 3 && tail.filter(Boolean).length >= 0.8 * tail.length, `original: every bullet has its dot at its trail's tail (${tail.filter(Boolean).length}/${tail.length})`);
+        await page.keyboard.press('KeyP');
+        await page.keyboard.press('Escape');
+        console.log(`ok hitbox: default original, saved, recorded in the tape and used by its replay; the dots (${on.length} bullets at their centre in centered, ${tail.length} at the tail in original; none when off); the page's centered Expert played ${inputs.length} frames input for input what Node's plays`);
     }
 
     // ── 3. a busy mid-stage frame, then a stage clear, from replayed tapes ──

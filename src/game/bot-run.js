@@ -19,15 +19,16 @@ import { makeTape } from './tape.js';
 export const BOSS_CAP = 11250;
 const BOSS_SCENE = 9; // the scene number while the boss is up (setBarrages counts the scene up as it starts it)
 
-export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, variant = 'attack', horizon, budget, tail = 'straight', costCap = Infinity, bankFrames = 32, perception = 'omniscient', motion = 'curve', endlessCap = 30000, hardCap = 60000, expert = {}, human = null, botSeed = 1, starWeight = 0, personality = null } = {}) {
-    const g = newGame(patterns, stage, { seed, endlessSeed });
+export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, variant = 'attack', horizon, budget, tail = 'straight', costCap = Infinity, bankFrames = 32, perception = 'omniscient', motion = 'curve', endlessCap = 30000, hardCap = 60000, expert = {}, human = null, botSeed = 1, starWeight = 0, personality = null, hitbox = 'original' } = {}) {
+    // slice HB: the bots read the hit test from the game (the Ace plays the engine, the observed bots' model follows g.hitbox)
+    const g = newGame(patterns, stage, { seed, endlessSeed, hitbox });
     // slice H2: `human` = the human knobs (src/game/human.js), seeded from the game's seed and `botSeed`; `personality` is only a label
     const bot = makeBot({ variant, horizon, budget, tail, costCap, bankFrames, perception, motion, ...expert, starWeight, human, botSeed, gameSeed: seed });
     const observed = perception === 'observed';
     const endless = stage >= STAGE_NUM;
     const played = [];
     const r = {
-        stage, seed, endlessSeed, variant, horizon: bot.config.horizon, budget, tail, perception, ...(observed && motion !== 'curve' ? { motion } : {}), ...(costCap !== Infinity ? { costCap } : {}), ...(bankFrames !== 32 ? { bankFrames } : {}),
+        stage, seed, endlessSeed, ...(hitbox !== 'original' ? { hitbox } : {}), variant, horizon: bot.config.horizon, budget, tail, perception, ...(observed && motion !== 'curve' ? { motion } : {}), ...(costCap !== Infinity ? { costCap } : {}), ...(bankFrames !== 32 ? { bankFrames } : {}),
         outcome: null, frames: 0, clearFrame: null, gameoverFrame: null, bossStart: null, bossFrames: 0,
         livesLost: 0, hitFrames: [], score: 0, kills: [0, 0, 0, 0], stars: 0, starScore: 0, lostStars: 0, extends: 0,
         sceneReached: 0, cpuSec: 0, bot: null,
@@ -69,6 +70,6 @@ export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, v
     r.bot = { cost: Math.round(st.cost), steps: st.steps, costPerFrame: +(st.cost / Math.max(1, st.frames)).toFixed(1), maxFrameCost: Math.round(st.maxFrameCost),
         repairs: st.repairs, repairFails: st.repairFails, beams: st.beams, improves: st.improves, ...(observed ? { surprises: st.surprises, nearFails: st.nearFails, seen: st.seen } : {}),
         ...(st.human ? { human: { ...st.human } } : {}) };
-    const tape = makeTape({ stage, seed, endlessSeed, played, extra: { player: `bot-${variant}`, bot: { ...tapeBotRecord(bot.config), ...(personality ? { personality } : {}) } } });
+    const tape = makeTape({ stage, seed, endlessSeed, hitbox, played, extra: { player: `bot-${variant}`, bot: { ...tapeBotRecord(bot.config), ...(personality ? { personality } : {}) } } });
     return { result: r, tape, game: g };
 }

@@ -42,7 +42,7 @@ export const KNOBS = [
     { key: 'replanEvery', label: 'Looks again every', group: 'thinking', unit: 'frames', min: 1, max: 30, step: 1, expert: 1, skill: -1,
         help: 'how often it looks again and replans; in between it plays its plan blind.' },
     { key: 'marginBullet', label: 'Bullet clearance', group: 'thinking', unit: 'px', min: -2, max: 16, step: 0.25, expert: 2, skill: 0,
-        help: 'perceived bullet size: the clearance it keeps from a bullet\'s drawn trail (the hit area is 2 px around it); below 0 it shaves inside the hit area.' },
+        help: 'perceived bullet size: the clearance it keeps from a bullet (from its drawn streak with the original hitbox, from the path of its centre with the centered one; a hit is within 2 px); below 0 it shaves inside the hit area.' },
     { key: 'marginSpawner', label: 'Enemy clearance', group: 'thinking', unit: 'px', min: 0, max: 40, step: 1, expert: 8, skill: 0,
         help: 'the clearance it keeps from anything that can fire a bullet: enemies, and bullets that fire bullets of their own.' },
     { key: 'marginTop', label: 'Stays below', group: 'thinking', unit: 'px', min: 0, max: 400, step: 1, expert: 136, skill: 0,

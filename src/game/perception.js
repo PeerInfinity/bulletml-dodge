@@ -18,13 +18,15 @@
  *  - the ship, its shots, the shots' hits on enemies, kills, the kill's bullet wipe, invincibility after a hit and
  *    the stars (only when they have a weight) follow the engine's own rules, since all of that is visible or the
  *    bot's own doing;
- *  - the hit test is the engine's exact one (perfect perception): the swept segment from the trail end (pos − mv
- *    × 1/2/4 by age) to the bullet, within 2 px, and only when the ship projects inside it.
+ *  - the hit test is the engine's exact one (perfect perception), for the game's hitbox (slice HB): 'original' = the
+ *    swept segment from the trail end (pos − mv × 1/2/4 by age) to the bullet, within 2 px, and only when the ship
+ *    projects inside it; 'centered' = within 2 px of the segment the bullet's position sweeps this frame, ends
+ *    included (a dot that has not moved yet: of the dot itself, which is where its first move starts).
  *
  * Arithmetic: +, −, ×, ÷ and sqrt only (all correctly rounded in IEEE 754), so a prediction is the same number in
  * Node and in any browser — the bot stays reproducible and the page plays Node's moves.
  */
-import { SPC, BOSS_TYPE, STATUS, FOE_SCAN_SIZE, SCAN_WIDTH_8, SCAN_HEIGHT_8, SHIP_SPEED, SHIP_SLOW_SPEED, segmentHitsShip, vctDist, inputDir, inputFire, inputSlow } from './noiz2sa-game.js';
+import { SPC, BOSS_TYPE, STATUS, FOE_SCAN_SIZE, SCAN_WIDTH_8, SCAN_HEIGHT_8, SHIP_SPEED, SHIP_SLOW_SPEED, segmentHitsShip, centeredHitsShip, vctDist, inputDir, inputFire, inputSlow } from './noiz2sa-game.js';
 
 export const MOTIONS = ['curve', 'straight'];
 const SHOT_SPEED = 4096, SHOT_MAX = 16, SHOT_INTERVAL = 3, SHOT_SCAN_HEIGHT = 3072;
@@ -79,7 +81,7 @@ export function observe(g, tracker, { motion = 'curve', stars = false } = {}, st
     if (stats) stats.objects += foes.length;
     const s = g.ship;
     const m = {
-        model: true, frame: g.frame, status: g.status, scene: g.scene, endless: g.endless, left: g.left,
+        model: true, frame: g.frame, status: g.status, scene: g.scene, endless: g.endless, left: g.left, centered: g.hitbox === 'centered',
         ship: { x: s.x, y: s.y, speed: s.speed, shotCnt: s.shotCnt, invCnt: s.invCnt },
         shots: [], foes, bonuses: null, bonusScore: g.bonusScore,
     };
@@ -93,7 +95,7 @@ export function cloneModel(m) {
     const foes = new Array(m.foes.length);
     for (let i = 0; i < foes.length; i++) foes[i] = cloneObj(m.foes[i]);
     return {
-        model: true, frame: m.frame, status: m.status, scene: m.scene, endless: m.endless, left: m.left,
+        model: true, frame: m.frame, status: m.status, scene: m.scene, endless: m.endless, left: m.left, centered: m.centered,
         ship: { ...m.ship }, shots: m.shots.map((s) => ({ x: s.x, y: s.y })), foes,
         bonuses: m.bonuses && m.bonuses.map((b) => ({ ...b })), bonusScore: m.bonusScore,
     };
@@ -106,7 +108,8 @@ function addBonus(m, x, y, vx, vy) {
 /**
  * The safety margin (slice H1b; the H2 "perceived bullet size" knob reuses it), in px:
  *  - `bullet`: the clearance kept from a bullet's DRAWN trail (the segment from its trail end to its head, ends
- *    included), where the engine only hits within 2 px of the segment's inside;
+ *    included), where the engine only hits within 2 px of the segment's inside; with the centered hitbox (slice HB)
+ *    from the hit area itself: the segment the bullet's position swept this frame, ends included;
  *  - `spawner`: the clearance kept from whatever can fire a bullet next frame — an enemy, an active (bullet-firing)
  *    bullet, and a dot not yet moving (where it goes is not on screen yet). A new bullet appears at its spawner and
  *    moves in that same frame, so it cannot be seen before it hits: only distance protects from it;
@@ -119,7 +122,7 @@ export function makeMargin(mg) {
     const rb = Math.max(0, mg.bullet || 0) * 256, rs = Math.max(0, mg.spawner || 0) * 256;
     const out = { rb, rs, b2: rb * rb, s2: rs * rs, box: Math.max(rb, rs), top: Math.max(0, mg.top || 0) * 256 };
     // slice H2: a NEGATIVE bullet clearance is a misjudged bullet size — the bot thinks the hit area (2 px around the
-    // trail) is smaller than it is: hit2 = its squared radius, at least 1/4 px
+    // trail; centered: around the swept position) is smaller than it is: hit2 = its squared radius, at least 1/4 px
     if (mg.bullet < 0) { const r = Math.max(0.25, 2 + mg.bullet) * 256; out.hit2 = r * r; }
     return out;
 }
@@ -229,12 +232,15 @@ export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
     if (ship.invCnt > 0) ship.invCnt--;
     // the objects (moveFoes), as seen moving
     let hit = false, removed = false, near = !!margin && ship.y < margin.top && ship.invCnt <= 0;
-    const sx = ship.x, sy = ship.y, foes = m.foes;
+    const sx = ship.x, sy = ship.y, foes = m.foes, cen = m.centered;
     for (let i = 0; i < foes.length; i++) {
         const o = foes[i];
         if (o.spc < 0) continue; // removed this frame (a wipe, a kill)
         const isFoe = o.spc === SPC.FOE;
+        const qx = o.x, qy = o.y; // where it was (centered: the swept segment starts here)
         if (o.cnt > 0) moveObj(o);
+        // the segment the hit test and the bullet clearance use: the drawn trail (original), the swept position (centered)
+        const ax = cen ? qx : o.px, ay = cen ? qy : o.py;
         if (isFoe) {
             const ss = FOE_SCAN_SIZE[o.type];
             for (let j = 0; j < m.shots.length; j++) {
@@ -262,18 +268,21 @@ export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
             // the margin: the drawn trail of a moving bullet; the position of a spawner (an enemy, an active bullet,
             // a dot not yet moving)
             const bx = margin.box;
-            if (sx > Math.min(o.px, o.x) - bx && sx < Math.max(o.px, o.x) + bx && sy > Math.min(o.py, o.y) - bx && sy < Math.max(o.py, o.y) + bx) {
-                if (!isFoe && o.cnt > 0 && margin.b2 > 0 && segDist2(o.px, o.py, o.x, o.y, sx, sy) < margin.b2) near = true;
+            if (sx > Math.min(ax, o.x) - bx && sx < Math.max(ax, o.x) + bx && sy > Math.min(ay, o.y) - bx && sy < Math.max(ay, o.y) + bx) {
+                if (!isFoe && o.cnt > 0 && margin.b2 > 0 && segDist2(ax, ay, o.x, o.y, sx, sy) < margin.b2) near = true;
                 else if ((o.spc !== SPC.BULLET || o.cnt === 0) && margin.s2 > 0) {
                     const dx = o.x - sx, dy = o.y - sy;
                     if (dx * dx + dy * dy < margin.s2) near = true;
                 }
             }
         }
-        if (!isFoe && o.cnt > 0) {
-            // the engine's test, on the predicted segment (a dot that has not moved never hits)
-            if (sx > Math.min(o.px, o.x) - 4096 && sx < Math.max(o.px, o.x) + 4096 && sy > Math.min(o.py, o.y) - 4096 && sy < Math.max(o.py, o.y) + 4096
-                && (margin && margin.hit2 !== undefined ? smallHit(o.px, o.py, o.x, o.y, sx, sy, margin.hit2) : segmentHitsShip(o.px, o.py, o.x, o.y, sx, sy)) && ship.invCnt <= 0) {
+        if (!isFoe && (o.cnt > 0 || cen)) {
+            // the engine's test, on the predicted segment (original: a dot that has not moved never hits; centered: it
+            // does, on the ship, since its first move starts there)
+            if (sx > Math.min(ax, o.x) - 4096 && sx < Math.max(ax, o.x) + 4096 && sy > Math.min(ay, o.y) - 4096 && sy < Math.max(ay, o.y) + 4096
+                && (margin && margin.hit2 !== undefined
+                    ? (cen ? segDist2(ax, ay, o.x, o.y, sx, sy) < margin.hit2 : smallHit(ax, ay, o.x, o.y, sx, sy, margin.hit2))
+                    : (cen ? centeredHitsShip(ax, ay, o.x, o.y, sx, sy) : segmentHitsShip(ax, ay, o.x, o.y, sx, sy))) && ship.invCnt <= 0) {
                 hit = true;
                 m.left--;
                 if (m.left < 0) m.status = STATUS.GAMEOVER;

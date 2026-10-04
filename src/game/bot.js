@@ -45,7 +45,8 @@ export const PERCEPTIONS = ['omniscient', 'observed'];
 /** the levels in the page and the sweep: a level is a perception with otherwise the max settings */
 export const LEVELS = { ace: { perception: 'omniscient' }, expert: { perception: 'observed' } };
 /** the Expert's own defaults (slice H1b, chosen by measurement: docs/h1b-report.md), used when makeBot is not given them:
- *  - margin: the clearance it keeps, in px, from a bullet's drawn trail and from anything that can fire a bullet
+ *  - margin: the clearance it keeps, in px, from a bullet's drawn trail (centered hitbox: from the path its position
+ *    swept this frame, the hit area itself) and from anything that can fire a bullet
  *    (an enemy, an active bullet, a dot not yet moving), and the line it stays below (top: under the band where
  *    enemies appear, 48–128 px down, plus the spawner clearance); perception.js makeMargin;
  *  - attackY: the height it attacks from, in px from the top (the Ace's and no-attack's home is 384, 4/5 down):

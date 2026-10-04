@@ -74,6 +74,13 @@
       <input type="file" id="tape-file" accept=".json" aria-label="load a recorded game">
       <label>speed <select id="speed"><option>1</option><option>2</option><option>4</option><option>8</option><option>16</option></select></label>
     </fieldset>
+    <fieldset><legend>Hitbox</legend>
+      <label title="where a bullet hits you; changes the next game (a replay uses the setting it was played with)">hit area <select id="hitbox">
+        <option value="original">original (behind the bullet)</option>
+        <option value="centered">centered (on the bullet)</option>
+      </select></label>
+      <label title="a white dot where each bullet can hit you: it hits when the dot touches the white dot in your ship"><input type="checkbox" id="hit-dot"> show the hit spots</label>
+    </fieldset>
     <fieldset><legend>Your games</legend>
       <button id="download" disabled>Download your last game</button>
       <label title="the same seed gives the same enemies and bullets; leave empty for a new game each time">game seed <input id="seed" placeholder="random" inputmode="numeric"></label>
@@ -85,7 +92,8 @@
     people, with slower reactions, limited attention and the occasional slip. Pick a personality and a skill (0 = a beginner,
     100 = the Expert), or change anything under “Advanced settings”. Each bot can attack or only dodge. The test bots are
     simple helpers used to check the game. Every game you play is saved when it ends (or on Esc) and can be downloaded and
-    replayed. Press F for a speed overlay.
+    replayed. The original game checks a hit near the back end of each bullet's streak, not at the bullet itself;
+    “centered” moves it to the bullet (white dots show where it is). Press F for a speed overlay.
     Noiz2sa © 2002 Kenta Cho (BSD); its sounds and music are from the original game.</p>
 </main>
 <script type="module" src="web/play.js"></script>

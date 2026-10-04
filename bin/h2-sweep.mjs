@@ -5,7 +5,7 @@
  * merge). Run as GitHub Actions shards (.github/workflows/h2-sweep.yml) or by hand. This is slice H3's calibration tool.
  *
  *   node bin/h2-sweep.mjs [--presets "Expert,Steady,Panicky 70,…" | all | none] [--preset-skills 0,50,100] [--skills 0,25,50,75,100 | none]
- *        [--variants attack] [--stages 1,…,10] [--seeds 1,2,3] [--bot-seeds 1] [--budget 1] [--name h2-bot]
+ *        [--variants attack] [--stages 1,…,10] [--seeds 1,2,3] [--bot-seeds 1] [--budget 1] [--hitbox centered] [--name h2-bot]
  *        [--jobs N] [--shard i/n] [--timeout-min M] [--tapes] [--list]
  *   node bin/h2-sweep.mjs --merge [--expect n] [the same run options]   (combine the shard files; fails if one is missing)
  *   node bin/h2-sweep.mjs --summary [the same run options]               (the local parts, no checks)
@@ -20,6 +20,7 @@
  * no hit before frame 3750), score, kills, stars, and the human layer's counts (looks, lapses, the hands' changes).
  * Parts go to results/.h2-parts/<key>.json (resumable); --tapes also writes each run's tape to tapes/h2/.
  * Seeds: C rand() seed s, endlessSeed 7919 × s (the G2 convention); the bot's own generator: seed s and the bot seed.
+ * --hitbox centered (slice HB): every run on the centered hit test (its keys end in -centered).
  * A part records its setting's knobs; one recorded with other knobs (the slider's curve changed since) is run again.
  *
  * The report (H3) judges a player by clears, game overs, survival (seconds to the game over, or 3 minutes without one),
@@ -41,7 +42,7 @@ const STAGES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'ENDLESS', 'H
 const MINUTE = 3750; // frames (62.5 per second)
 const pad = (n) => String(n).padStart(2, '0');
 const slug = (p) => p.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-const runKey = (j) => `${slug(j.player)}-s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}${j.botSeed !== 1 ? `-bot${j.botSeed}` : ''}${j.budgetX !== 1 ? `-b${j.budgetX}x` : ''}`;
+const runKey = (j) => `${slug(j.player)}-s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}${j.botSeed !== 1 ? `-bot${j.botSeed}` : ''}${j.budgetX !== 1 ? `-b${j.budgetX}x` : ''}${j.hitbox === 'centered' ? '-centered' : ''}`;
 
 // ── one run, in its own process ──
 if (opt('one', null)) {
@@ -57,7 +58,7 @@ if (opt('one', null)) {
         const { result, tape } = runBot(loadNoiz2saPatterns(), {
             stage: j.stage, seed: j.seed, variant: j.variant, budget: j.budgetX * BROWSER_BUDGET, horizon: b.horizon, perception: b.perception,
             expert: b.perception === 'observed' ? { margin: b.margin, attackY: b.attackY } : {}, starWeight: b.starWeight ?? 0,
-            human: b.human ?? null, botSeed: j.botSeed, personality: st.name,
+            human: b.human ?? null, botSeed: j.botSeed, personality: st.name, hitbox: j.hitbox ?? 'original',
         });
         if (j.tapes) {
             fs.mkdirSync(tapesDir, { recursive: true });
@@ -96,7 +97,9 @@ const botSeeds = opt('bot-seeds', '1').split(',').map(Number);
 const budgetX = Number(opt('budget', 1));
 const tapes = args.includes('--tapes');
 const name = opt('name', 'h2-bot');
-const signature = { players, variants, stages: stageNames, seeds, botSeeds, budgetX };
+const hitbox = opt('hitbox', 'original');
+if (!['original', 'centered'].includes(hitbox)) { console.error(`unknown hitbox "${hitbox}"`); process.exit(2); }
+const signature = { players, variants, stages: stageNames, seeds, botSeeds, budgetX, ...(hitbox !== 'original' ? { hitbox } : {}) };
 const shardsDir = path.join(root, `results/${name}-shards`);
 
 // a setting without a human layer (the Ace, the Expert, skill 100) never draws from its generator: one bot seed is enough
@@ -104,7 +107,7 @@ const { settingByName: byName, botOptions: optsOf } = await import('../src/game/
 const usesBotSeed = (p) => !!optsOf(byName(p)).human;
 const cells = [];
 for (const player of players) for (const stage of stagesWanted) for (const variant of variants) for (const seed of seeds) for (const botSeed of usesBotSeed(player) ? botSeeds : botSeeds.slice(0, 1)) {
-    cells.push({ player, stage, variant, seed, botSeed, budgetX });
+    cells.push({ player, stage, variant, seed, botSeed, budgetX, ...(hitbox !== 'original' ? { hitbox } : {}) });
 }
 // longest first (the Ace and the Expert play whole stages; endless modes; no-attack lives 3 minutes into the boss), in a
 // fixed order so every shard deals the same hands
@@ -219,7 +222,7 @@ const mean = (a) => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : null);
 const md = [];
 md.push('# H2 — humanlike bots: presets and skill levels', '');
 md.push(`Written by \`bin/h2-sweep.mjs ${fromFiles ? `--from ${fromFiles.map((f) => path.relative(root, path.resolve(f))).join(',')}` : args.includes('--merge') ? '--merge' : '--summary'}\` at commit \`${commit}\`, ${meta.date}, from ${runs.length} of ${cells.length} runs (${(meta.cpuSec / 3600).toFixed(2)} CPU-hours)${shardInfo.length ? ` in ${shardInfo.length} shards` : fromFiles ? '' : ' (local parts)'}.`);
-md.push(`Budget ${budgetX}× = ${budgetX * BROWSER_BUDGET} units per frame. Seeds ${seeds.join(', ')} (C rand() seed s, endlessSeed 7919 × s); bot seeds ${botSeeds.join(', ')}. A cell: lives lost per run (g = game over, c = cleared, b = alive 3 min into the boss scene). "1st min" = runs with no hit in the first minute (${MINUTE} frames).`, '');
+md.push(`Budget ${budgetX}× = ${budgetX * BROWSER_BUDGET} units per frame.${hitbox !== 'original' ? ` Hitbox: ${hitbox} (slice HB).` : ''} Seeds ${seeds.join(', ')} (C rand() seed s, endlessSeed 7919 × s); bot seeds ${botSeeds.join(', ')}. A cell: lives lost per run (g = game over, c = cleared, b = alive 3 min into the boss scene). "1st min" = runs with no hit in the first minute (${MINUTE} frames).`, '');
 const cell = (r) => (!r ? '·' : !ok(r) ? r.outcome : `${r.livesLost}${r.outcome === 'game over' ? 'g' : r.outcome === 'cleared' ? 'c' : r.outcome === 'boss-cap' ? 'b' : ''}`);
 const stagesShown = stagesWanted;
 // ── the measures (H3). Lives lost alone misleads: a weak bot reaches its game over early, which caps its losses at 3–4,

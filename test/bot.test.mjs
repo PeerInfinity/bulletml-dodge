@@ -273,3 +273,37 @@ for (const variant of ['attack', 'no-attack']) {
         console.log(`ok the late picture (${n} frames) puts ${same}/${moving} straight bullets where they are now; attention keeps ${bullets.length} bullets within 80 px and every enemy`);
     }
 }
+
+// 9. slice HB: the bots under the centered hitbox — the observed model predicts the engine's centered hits, the Expert
+//    is reproducible and its tape records the hitbox (and re-records from it), the default stays original
+{
+    const { cloneModel } = await import('../src/game/perception.js');
+    const { tapeGameOptions } = await import('../src/game/tape.js');
+    // one-frame predictions against the engine, for a ship that sits still (so bullets run into it): the hits the
+    // model predicts are hits, in both modes
+    for (const hitbox of ['original', 'centered']) {
+        let predicted = 0, real = 0, both = 0;
+        for (const seed of [1, 2, 3]) {
+            const g = newGame(P, 4, { seed, hitbox }), tr = newTracker();
+            while (g.status === STATUS.IN_GAME && g.frame < 3000) {
+                const m = cloneModel(observe(g, tr));
+                assert.equal(m.centered, hitbox === 'centered');
+                const p = stepModel(m, 0);
+                const r = stepGame(g, 0).some((e) => e[0] === 'hit');
+                predicted += p; real += r; both += p && r;
+            }
+        }
+        assert.ok(predicted >= 3 && both / predicted >= 0.9, `${hitbox}: the model's predicted hits are the engine's (${both}/${predicted}, ${real} real)`);
+        console.log(`ok ${hitbox}: the observed model's one-frame hit predictions: ${both}/${predicted} are real hits (${real} hits in all)`);
+    }
+    const opts = { stage: 5, seed: 1, variant: 'attack', perception: 'observed', horizon: 32, budget: BROWSER_BUDGET, hardCap: 1500, hitbox: 'centered' };
+    const a = runBot(P, opts), b = runBot(P, opts);
+    assert.equal(JSON.stringify(a.tape), JSON.stringify(b.tape), 'centered: two Expert runs gave different tapes');
+    assert.equal(a.tape.hitbox, 'centered'); assert.equal(a.result.hitbox, 'centered');
+    assert.equal(tapeGameOptions(a.tape).hitbox, 'centered');
+    assert.equal(stateLine(replayTape(P, a.tape)), stateLine(a.game), 'the centered tape replays to the run');
+    const o = runBot(P, { ...opts, hitbox: undefined });
+    assert.ok(!('hitbox' in o.tape) && !('hitbox' in o.result), 'the default is original, and not written');
+    assert.notEqual(JSON.stringify(o.tape.inputs), JSON.stringify(a.tape.inputs), 'the Expert plays the centered game differently');
+    console.log(`ok the Expert under centered: same tape twice (stage 6 seed 1, ${a.tape.frames} frames), records and replays its hitbox; lives lost ${a.result.livesLost} (original ${o.result.livesLost})`);
+}

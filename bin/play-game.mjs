@@ -4,11 +4,11 @@
  *
  *   node bin/play-game.mjs --stage 0 [--seed 1] [--endless-seed 1]
  *        [--tape in.json | --policy fire-stay|random|chase|lookahead] [--frames N]
- *        [--save-tape out.json] [--dump states.txt]
+ *        [--save-tape out.json] [--dump states.txt] [--hitbox original|centered]
  *
  * A tape is {stage, seed, endlessSeed, inputs: [[byte, count], …]} (run-length encoded; byte = dir | fire<<4 | slow<<5).
  * The policies are test policies, not the bot (src/game/policies.js).
- * --dump writes one state line per frame (the format the native build prints, for the fidelity check).
+ * --hitbox: the hit test (default original, the C's; a tape's own `hitbox` wins). --dump writes one state line per frame (the format the native build prints, for the fidelity check).
  */
 import fs from 'node:fs';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
@@ -22,6 +22,7 @@ let tape = opt('tape', null) ? JSON.parse(fs.readFileSync(opt('tape'), 'utf8')) 
 const stage = tape ? tape.stage : Number(opt('stage', 0));
 const seed = tape ? tape.seed : Number(opt('seed', 1));
 const endlessSeed = tape ? tape.endlessSeed : Number(opt('endless-seed', 1));
+const hitbox = tape ? tape.hitbox || 'original' : opt('hitbox', 'original');
 const policy = opt('policy', 'fire-stay');
 const maxFrames = Number(opt('frames', 200000));
 
@@ -29,7 +30,7 @@ const inputs = tape ? tapeInputs(tape) : null;
 const pol = tape ? null : makePolicy(policy, { laSafe: Number(opt('la-safe', 40)) });
 const nextInput = (f) => (tape ? (f < inputs.length ? inputs[f] : 0) : pol(g));
 
-const g = newGame(loadNoiz2saPatterns(), stage, { seed, endlessSeed });
+const g = newGame(loadNoiz2saPatterns(), stage, { seed, endlessSeed, hitbox });
 const played = [];
 const dump = opt('dump', null) ? [] : null;
 const t0 = Date.now();
@@ -49,5 +50,5 @@ while (g.status !== STATUS.TITLE && g.frame < maxFrames && (!tape || g.frame < i
 const outcome = g.status === STATUS.TITLE ? (g.left < 0 ? 'game over' : 'returned to title') : g.status === STATUS.STAGE_CLEAR ? 'stage clear' : g.status === STATUS.GAMEOVER ? 'game over' : 'in game';
 console.log(`stage ${STAGE_NAMES[stage]} seed ${seed}: ${outcome} after ${g.frame} frames (${(g.frame / 60).toFixed(0)} s game time), scene ${g.scene}, score ${g.score}, ships left ${g.left}`);
 console.log(`kills zako/middle/big/boss ${tally.kills.join('/')}, deaths ${tally.hits}, stars ${tally.stars} (lost ${tally.lostStars}), extends ${tally.extends}; ${((Date.now() - t0) / 1000).toFixed(1)} s wall`);
-if (opt('save-tape', null)) fs.writeFileSync(opt('save-tape'), JSON.stringify(makeTape({ stage, seed, endlessSeed, played })));
+if (opt('save-tape', null)) fs.writeFileSync(opt('save-tape'), JSON.stringify(makeTape({ stage, seed, endlessSeed, hitbox, played })));
 if (dump) fs.writeFileSync(opt('dump'), dump.join('\n') + '\n');
