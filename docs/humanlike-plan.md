@@ -69,3 +69,12 @@ The **skill slider** (0–100) interpolates the knobs from Cautious beginner (0)
 | **H1** | Perception model (observed vs omniscient) and the Expert level; look-ahead needed and outcomes on stages 1–10 (sharded sweep). |
 | **H2** | The human knobs, the bot's own RNG, settings in the tape, stars on; the skill slider and the presets in the page (an advanced panel for the knobs). |
 | **H3** | Calibration: sweeps per preset and skill level × stages × seeds; tune to the targets; monotonic curves; report. |
+
+## Status
+
+| Slice | State |
+|---|---|
+| **H1** | Built on branch `h1-perception` (`docs/h1-report.md`): `src/game/perception.js` (the observed model), `perception: 'observed'` in `src/game/bot.js`, the Expert in the page ("bot: expert attack / no-attack"), `bin/h1-sweep.mjs` (sharded; `bin/bot-sweep.mjs --perception observed` hands over to it), death diagnosis (`src/game/h1-diagnose.js`), the observed planner for single patterns (`bin/run-pattern.mjs --perception observed`). Results: see the report. |
+| H2 | not started |
+| H3 | not started |
+
