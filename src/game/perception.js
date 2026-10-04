@@ -36,7 +36,7 @@ const SHIP_MV = [[0, -256], [181, -181], [256, 0], [181, 181], [0, 256], [-181, 
 // a turn is fitted only between two motions at least this fast (1/256 px per frame); slower ones: a constant change
 const MIN_TURN_SPEED = 32;
 const STRAIGHT = 0, TURN = 1, ACCEL = 2;
-// the spawner clearance under the centered hitbox: the fastest bullet's move + this (2 px hit radius + 1 px), 1/256 px
+// the spawner clearance: the fastest bullet's move + this (2 px hit radius + 1 px), 1/256 px
 const FAST_SLACK = 3 * 256;
 // …but at most this (16 px): the fastest bullet on screen widens the clearance around EVERY spawner, and an uncapped
 // clearance boxed the bot in on a dense stage (CI run 37239314882: stage 9 seed 2, a hit it had predicted 28 frames ahead)
@@ -84,8 +84,8 @@ export function observe(g, tracker, { motion = 'curve', stars = false } = {}, st
     }
     tr.frame = g.frame;
     if (stats) stats.objects += foes.length;
-    // the fastest bullet now on screen: under the centered hitbox a bullet fired next frame can reach this far from its
-    // spawner in its first move, before anyone sees it (⚖ the user, 2026-10-04: the spawner clearance grows with it)
+    // the fastest bullet now on screen: a bullet fired next frame can reach this far from its spawner in its first move,
+    // before anyone sees it (⚖ the user, 2026-10-04: the spawner clearance grows with it, under both hitboxes)
     let fastest = 0;
     for (const o of foes) {
         if (o.spc === SPC.FOE || o.cnt <= 0) continue;
@@ -246,11 +246,11 @@ export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
     // the objects (moveFoes), as seen moving
     let hit = false, removed = false, near = !!margin && ship.y < margin.top && ship.invCnt <= 0;
     const sx = ship.x, sy = ship.y, foes = m.foes, cen = m.centered;
-    // the spawner clearance: under the centered hitbox at least one first move of the fastest bullet on screen, plus
-    // the 2 px hit radius and 1 px to spare (FAST_SLACK); the original hitbox hits at the trail's tail, which for a
-    // new bullet is the spawner itself, so it keeps the set clearance
+    // the spawner clearance: at least one first move of the fastest bullet on screen, plus the 2 px hit radius and 1 px
+    // to spare (FAST_SLACK), capped (FAST_CAP) — under both hitboxes (⚖ the user, 2026-10-04: "implementing the change in
+    // both modes"; under the original a new bullet's first hit point is its spawner, so the risk is smaller there)
     let s2 = margin ? margin.s2 : 0, box = margin ? margin.box : 0;
-    if (margin && cen && s2 > 0 && m.fastest > 0) {
+    if (margin && s2 > 0 && m.fastest > 0) {
         const r = Math.min(m.fastest + FAST_SLACK, FAST_CAP);
         if (r * r > s2) { s2 = r * r; if (r > box) box = r; }
     }
