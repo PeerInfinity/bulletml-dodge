@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Noiz2sa — browser play</title>
+<title>Noiz2sa — play it, or watch a bot play</title>
 <script type="importmap">{ "imports": { "@xmldom/xmldom": "./web/xmldom-shim.js" } }</script>
 <style>
   :root { color-scheme: dark; }
@@ -32,7 +32,7 @@
   #seed { width: 9em; }
   .note { color: #789; font-size: 12px; margin-top: 8px; }
   #persona { flex-basis: 100%; }
-  #persona .desc { color: #789; font-size: 12px; }
+  #persona .desc { color: #789; font-size: 12px; flex-basis: 100%; } /* always on its own row, under the slider */
   #advanced { flex-basis: 100%; }
   #advanced summary { cursor: pointer; color: #8ab; font-size: 12px; }
   #knobs { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 4px 12px; margin-top: 6px; font-size: 12px; }
@@ -46,7 +46,7 @@
 </head>
 <body>
 <main>
-  <h1>Noiz2sa 0.52 — the bulletml-dodge port, in the browser</h1>
+  <h1>Noiz2sa — play it, or watch a bot play</h1>
   <div id="wrap">
     <canvas id="screen" width="640" height="480"></canvas>
     <div id="select" hidden>
@@ -58,36 +58,35 @@
   <div id="controls">
     <fieldset><legend>Bot</legend>
       <label><input type="checkbox" id="bot"> bot plays (B)</label>
-      <select id="policy" aria-label="policy"></select>
-      <label>look-ahead <select id="horizon"></select></label>
-      <label>budget <select id="budget"></select></label>
+      <select id="policy" aria-label="which bot"></select>
+      <label title="how far ahead the bot plans">look-ahead <select id="horizon"></select></label>
+      <label title="how much the bot may think per frame; lower it if the game stutters on a slow machine">thinking time <select id="budget"></select></label>
     </fieldset>
-    <fieldset id="persona"><legend>Bot personality (bot: personality …)</legend>
+    <fieldset id="persona"><legend>Personality (for the “Personality” bots)</legend>
       <select id="personality" aria-label="personality"></select>
       <label>skill <input type="range" id="skill" min="0" max="100" step="1" aria-label="skill"> <output id="skill-out">—</output></label>
       <span id="persona-desc" class="desc"></span>
-      <details id="advanced"><summary>advanced: every knob of this setting</summary><div id="knobs"></div></details>
+      <details id="advanced"><summary>Advanced settings (hover one for what it does)</summary><div id="knobs"></div></details>
     </fieldset>
-    <fieldset><legend>Replay</legend>
-      <select id="tapes" aria-label="tape"></select>
-      <button id="play-tape">Play tape</button>
-      <input type="file" id="tape-file" accept=".json" aria-label="load a tape file">
+    <fieldset><legend>Replays</legend>
+      <select id="tapes" aria-label="recorded game"></select>
+      <button id="play-tape">Play replay</button>
+      <input type="file" id="tape-file" accept=".json" aria-label="load a recorded game">
       <label>speed <select id="speed"><option>1</option><option>2</option><option>4</option><option>8</option><option>16</option></select></label>
     </fieldset>
-    <fieldset><legend>Recording</legend>
-      <button id="download" disabled>Download last tape</button>
-      <label>seed <input id="seed" placeholder="random" inputmode="numeric"></label>
+    <fieldset><legend>Your games</legend>
+      <button id="download" disabled>Download your last game</button>
+      <label title="the same seed gives the same enemies and bullets; leave empty for a new game each time">game seed <input id="seed" placeholder="random" inputmode="numeric"></label>
     </fieldset>
     <button id="mute">Sound: on (M)</button>
   </div>
-  <p class="note">"bot: attack" and "bot: no-attack" are the G4 bot, the Ace (<code>src/game/bot.js</code>), thinking in a Web Worker
-    within a fixed budget per frame (1× fits the 16 ms frame; 4× and 16× may slow the game); "bot: expert …" plans on what it
-    sees (H1); "bot: personality …" is the humanlike bot (H2, <code>src/game/human.js</code>): pick a personality and its skill
-    (the slider: a beginner at 0 → the Expert at 100; a personality is a set of biases on it, starting at 50), the slider
-    alone (on the Ace or the Expert), or change any knob under "advanced" (hover a knob for what it does);
-    its look-ahead is its horizon knob. The others are the G2 test policies.
-    Every game you play is recorded as a tape (the format <code>bin/play-game.mjs</code> writes) when it ends or on Esc.
-    Noiz2sa © 2002 Kenta Cho (BSD); sounds and music from the 0.52 distribution.</p>
+  <p class="note">The bots: the <b>Ace</b> knows every shot before it is fired and never gets hit; the <b>Expert</b> has
+    perfect eyes and reflexes but no foresight, so it plans only from what it sees; the <b>Personality</b> bots play like
+    people, with slower reactions, limited attention and the occasional slip. Pick a personality and a skill (0 = a beginner,
+    100 = the Expert), or change anything under “Advanced settings”. Each bot can attack or only dodge. The test bots are
+    simple helpers used to check the game. Every game you play is saved when it ends (or on Esc) and can be downloaded and
+    replayed. Press F for a speed overlay.
+    Noiz2sa © 2002 Kenta Cho (BSD); its sounds and music are from the original game.</p>
 </main>
 <script type="module" src="web/play.js"></script>
 </body>

@@ -34,6 +34,21 @@ const G4 = Object.fromEntries([
     ...BOT_VARIANTS.map((v) => [`bot: personality ${v}`, { variant: v, personality: true }]),
 ]);
 const ALL_POLICIES = [...Object.keys(G4), ...POLICY_NAMES];
+/** what the bot menu and the screen show for each internal bot name */
+const VARIANT_TEXT = { attack: 'attacks', 'no-attack': 'dodges only' };
+const POLICY_LABEL = {
+    ...Object.fromEntries(BOT_VARIANTS.map((v) => [`bot: ${v}`, `Ace — ${VARIANT_TEXT[v]}`])),
+    ...Object.fromEntries(BOT_VARIANTS.map((v) => [`bot: expert ${v}`, `Expert — ${VARIANT_TEXT[v]}`])),
+    ...Object.fromEntries(BOT_VARIANTS.map((v) => [`bot: personality ${v}`, `Personality — ${VARIANT_TEXT[v]}`])),
+    lookahead: 'Test bot: simple look-ahead', chase: 'Test bot: chase enemies', random: 'Test bot: random keys', 'fire-stay': 'Test bot: stand still and fire',
+};
+/** a short name for the side panel */
+function botShortLabel() {
+    const p = G4[app.policyName];
+    if (!p) return 'test bot';
+    const who = p.personality ? personaLabel() : p.perception === 'omniscient' ? 'Ace' : 'Expert';
+    return p.variant === 'no-attack' ? `${who}, dodging` : who;
+}
 const isG4 = (name) => name in G4;
 
 const app = {
@@ -102,6 +117,25 @@ function selectKey(e) {
     else if (e.code === 'ArrowUp' || e.code === 'KeyW') app.sel = Math.max(0, app.sel - 5);
     else if (e.code === 'KeyZ' || e.code === 'Enter' || e.code === 'Space') { startStage(app.sel); return; }
     renderSelect();
+}
+
+/** 'Stage 3' for stages 1–10, the mode's name for the endless ones */
+function stageText(i) { return i < 10 ? `Stage ${STAGE_NAMES[i]}` : STAGE_NAMES[i]; }
+const TEST_BOT = { lookahead: 'Test bot (look-ahead)', chase: 'Test bot (chase)', random: 'Test bot (random keys)', 'fire-stay': 'Test bot (stand and fire)' };
+const TAPE_GROUP = { '': 'Test bots', g4: 'Ace', h1: 'Expert', h1b: 'Expert (earlier recordings)', h2: 'Personalities' };
+const titleCase = (slug) => slug.split('-').map((w, i) => (i === 0 ? w[0].toUpperCase() + w.slice(1) : w)).join(' ');
+/** a recorded game's file name → what the replay list shows */
+function describeTape(t) {
+    const m = /^(?:(\w+)\/)?(?:(.+?)-)?s\d\d-(.+?)-seed(\d+)(?:-(\w+))?\.json$/.exec(t.file);
+    if (!m) return { group: 'Other', text: `${t.file} — ${stageText(t.stage)}, ${t.frames} frames`, short: t.file };
+    const [, dir = '', who0, middle, seed, suffix] = m;
+    let who, variant = VARIANT_TEXT[middle];
+    if (dir === '') who = TEST_BOT[middle] ?? middle;
+    else if (dir === 'g4') who = suffix && suffix !== 'b1x' ? `Ace, ${suffix.slice(1).replace('x', '×')} thinking time` : 'Ace';
+    else if (dir === 'h1' || dir === 'h1b') who = 'Expert';
+    else who = who0 ? titleCase(who0) : 'Bot';
+    const what = variant ? `${who}, ${variant}` : who;
+    return { group: TAPE_GROUP[dir] ?? 'Other', text: `${stageText(t.stage)} · ${what} · seed ${seed} · ${t.frames} frames`, short: `${stageText(t.stage)} · ${who}` };
 }
 
 // ── modes ──
@@ -272,7 +306,7 @@ function tick() {
     } else if (app.mode === 'replay') {
         const r = app.replay;
         if (g.status === STATUS.TITLE || g.frame >= r.inputs.length) {
-            if (!app.endReported) { app.endReported = true; app.banner = 'end of tape — Esc for stage select'; sound.fadeMusic(); }
+            if (!app.endReported) { app.endReported = true; app.banner = 'end of replay — Esc for stage select'; sound.fadeMusic(); }
             return;
         }
         const prev = liveFoes(g);
@@ -339,8 +373,8 @@ function perfShow(now) {
     perf.el.textContent = [
         `display ${p.displayFps.toFixed(1)}/s  gaps>33ms ${p.gaps33}  >50ms ${p.gaps50}  max ${p.maxGap.toFixed(0)} ms`,
         `game ${p.gameFps.toFixed(1)} frames/s (62.5)  draw ${p.renderMs.toFixed(2)} ms/frame, max ${p.renderMaxMs.toFixed(1)}`,
-        b ? `bot waits ${b.waits} (${b.startWaits} at its start)  lead ${b.lead}/${app.workerLead} frames` : 'bot: not in the worker',
-        b ? `worker ${b.meanMs.toFixed(1)} ms/frame mean  p99 ${b.p99Ms.toFixed(0)}  max ${b.maxMs.toFixed(0)}` : '',
+        b ? `game waited for the bot ${b.waits}× (${b.startWaits} at its start)  bot ${b.lead}/${app.workerLead} frames ahead` : 'bot: off (or a test bot)',
+        b ? `bot thinking ${b.meanMs.toFixed(1)} ms/frame mean  p99 ${b.p99Ms.toFixed(0)}  max ${b.maxMs.toFixed(0)}` : '',
         `since ${p.secs.toFixed(0)} s (F hides; resets on show)`,
     ].filter(Boolean).join('\n');
 }
@@ -368,7 +402,7 @@ function loop(now) {
 // ── drawing and controls ──
 function render() {
     draw(ctx, app.g, {
-        mode: app.mode, paused: app.paused, bot: app.bot, policyName: app.policyName, muted: sound.muted,
+        mode: app.mode, paused: app.paused, bot: app.bot, policyName: botShortLabel(), muted: sound.muted,
         speed: app.speed, tapeName: app.replay?.name, effects: app.effects, banner: app.banner,
         modeLabel: app.mode === 'play' ? (app.bot ? 'PLAY (bot)' : 'PLAY') : app.mode === 'replay' ? 'REPLAY' : app.mode === 'select' ? 'STAGE SELECT' : 'LOADING…',
     });
@@ -393,7 +427,7 @@ function updateControls() {
     updatePersona();
     $('mute').textContent = sound.muted ? 'Sound: off (M)' : 'Sound: on (M)';
     $('download').disabled = !app.lastTape;
-    $('download').textContent = app.lastTape ? `Download last tape (${STAGE_NAMES[app.lastTape.stage]}, ${app.lastTape.frames} frames)` : 'Download last tape';
+    $('download').textContent = app.lastTape ? `Download your last game (${stageText(app.lastTape.stage)}, ${app.lastTape.frames} frames)` : 'Download your last game';
 }
 
 // ── the humanlike bot's setting (slice H2) ──
@@ -469,7 +503,7 @@ function initPersona() {
         const inp = document.createElement('input');
         Object.assign(inp, { type: 'number', id: `knob-${k.key}`, min: k.min, max: k.max, step: k.step });
         inp.addEventListener('change', () => setKnob(k.key, inp.value));
-        l.append(cell('knob-name', k.key), inp, cell('knob-unit', k.unit));
+        l.append(cell('knob-name', k.label ?? k.key), inp, cell('knob-unit', k.unit));
         box.appendChild(l);
     }
     const l = document.createElement('label');
@@ -477,15 +511,15 @@ function initPersona() {
     const inp = document.createElement('input');
     Object.assign(inp, { type: 'number', id: 'knob-botSeed', min: 1, step: 1, placeholder: 'random' });
     inp.addEventListener('change', () => setKnob('botSeed', inp.value));
-    l.title = 'the bot\'s own random generator is seeded from the game\'s seed and this (recorded in the tape); empty = a new random seed every game';
-    l.append(cell('knob-name', 'bot seed'), inp, cell('knob-unit', ''));
+    l.title = 'seeds the bot\'s own randomness (its mistakes); empty = a new random seed every game, so the same game plays out differently';
+    l.append(cell('knob-name', 'Random seed'), inp, cell('knob-unit', ''));
     box.appendChild(l);
 }
 
 function initControls() {
     initPersona();
     const pol = $('policy');
-    for (const n of ALL_POLICIES) { const o = document.createElement('option'); o.value = o.textContent = n; pol.appendChild(o); }
+    for (const n of ALL_POLICIES) { const o = document.createElement('option'); o.value = n; o.textContent = POLICY_LABEL[n] ?? n; pol.appendChild(o); }
     pol.addEventListener('change', () => { app.policyName = pol.value; store.set('policy', pol.value); if (app.bot) setBot(true); });
     for (const [id, key, values] of [['horizon', 'horizon', [8, 16, 32, 48, 64, 96]], ['budget', 'budgetX', [0.5, 1, 4, 16]]]) {
         const sel = $(id);
@@ -508,7 +542,7 @@ function initControls() {
     $('play-tape').addEventListener('click', async () => {
         sound.unlock();
         const f = $('tapes').value;
-        if (f) startReplay(await (await fetch(new URL(`tapes/${f}`, BASE))).json(), f);
+        if (f) startReplay(await (await fetch(new URL(`tapes/${f}`, BASE))).json(), $('tapes').selectedOptions[0]?.dataset.short ?? f);
     });
     $('tape-file').addEventListener('change', async (e) => {
         const file = e.target.files[0];
@@ -541,10 +575,13 @@ async function main() {
     app.worker.postMessage({ type: 'init', patterns: Object.fromEntries(Object.entries(patterns).map(([k, l]) => [k, l.map(packBulletML)])) });
     await ready;
     const sel = $('tapes');
+    const groups = new Map();
     for (const t of tapes) {
+        const d = describeTape(t);
+        if (!groups.has(d.group)) { const g = document.createElement('optgroup'); g.label = d.group; groups.set(d.group, g); sel.appendChild(g); }
         const o = document.createElement('option');
-        o.value = t.file; o.textContent = `${t.file.replace(/\.json$/, '')} — ${STAGE_NAMES[t.stage]}, ${t.frames} frames`;
-        sel.appendChild(o);
+        o.value = t.file; o.textContent = d.text; o.dataset.short = d.short; o.title = t.file;
+        groups.get(d.group).appendChild(o);
     }
     sel.value = 's01-lookahead-seed1.json';
     setMode('select');
