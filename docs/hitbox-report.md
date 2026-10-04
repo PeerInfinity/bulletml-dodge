@@ -9,7 +9,22 @@ default; the simple drawing kept.
 
 ## Verdict
 
-@@VERDICT@@
+- **Built:** `newGame(…, {hitbox: 'original' | 'centered'})`. **Original stays the default and is byte-identical**:
+  the native comparison (wrap build) is **137/137**, `stateLine` is unchanged, and the bot tapes tried re-record the
+  same (G4, H1b, H2). **Centered** = within 2 px of the path the bullet's *position* swept this frame (from where it
+  was the frame before), ends included; a bullet that does not move is a point test, so one resting on the ship hits.
+- **Tapes** carry `hitbox` only when it is centered; a tape without it is original. Every replay path honours it.
+- **The bots** follow the game's hitbox with no setting of their own. The Ace plays the engine. The Expert's and the
+  humanlike bots' model (`perception.js`) predicts the active test and keeps the bullet clearance from that test's
+  hit area.
+- **The page:** a "Hitbox" box with *hit area: original (behind the bullet) / centered (on the bullet)* (saved,
+  recorded in the tape, a replay uses its tape's) and *show the hit spots* (on by default). Bullets in centered are
+  drawn centred on their position. The dot is at the bullet (centered) or at the trail's tail (original).
+- **Headline measurement:** for the Expert the hitbox **makes almost no difference**. Stages 1, 6, 10 attack × seeds
+  1–2: 0 lives lost under both, mean score 3.04 M against 3.04 M. Over all stages and ENDLESS, attack and no-attack ×
+  3 seeds (66 runs each): 0 → 1 life lost (one ENDLESS death, a 15.6 px/frame bullet fired in the hit's own frame),
+  attack mean score 3.53 M → 3.47 M (−1.9%). The Expert sees the hit area exactly either way. The hitbox changes
+  what a *person* has to read on the screen, not what a perfect observer can dodge.
 
 ## The two hit tests
 
@@ -113,7 +128,46 @@ the bullet itself; "centered" moves it to the bullet (white dots show where it i
 
 ## Measurements
 
-@@MEASURE@@
+All local runs, 4 cores, the Expert at horizon 48 and budget 1×, no look-ahead ladder. `bin/h1-sweep.mjs --hitbox
+original|centered`. The rows are in `results/hb-local.json` and the tables in `results/hb-local.md`.
+
+**The asked set: stages 1, 6, 10, attack × seeds 1–2.**
+
+| stage | lives lost, original | lives lost, centered | mean score, original | mean score, centered |
+|---|---|---|---|---|
+| 1 | 0 | 0 | 1,638,955 | 1,618,965 |
+| 6 | 0 | 0 | 3,072,045 | 2,988,005 |
+| 10 | 0 | 0 | 4,423,965 | 4,514,490 |
+| all 6 runs | **0** | **0** | 3,044,988 | 3,040,487 |
+
+**Wider (cheap, so run too): stages 1–10 and ENDLESS, attack and no-attack × seeds 1–3, 66 runs per mode.**
+Attack: 0 → 1 life lost over 33 runs, all 33 reach their end both ways, mean score 3,534,575 → 3,468,683 (−1.9%;
+per stage −6% … +11%, both signs). No-attack: 0 → 0 over 33. The one centered death is ENDLESS seed 1, frame
+28,484: a 15.57 px/frame bullet from `middle/22way.xml`, fired 13 px away in the frame of the hit. Under centered,
+a new bullet's hit area is the whole first move from the spawner, here longer than the 8 px spawner clearance (see
+the open questions).
+
+**The Expert without its margin (the H1 Expert, `--expert {"margin":null,"attackY":null}`), stages 1–10 attack × 3
+seeds:** 10 → 9 lives lost, mean score 2.46 M → 2.48 M. Nearly all of these deaths, under both hitboxes, are bullets
+"fired in the hit's own frame (never seen)" by something a few px away. That is the H1 failure, and the hit test does
+not change it. Under the original, three deaths are "a dot not yet moving", whose trail tail *is* the dot. Under
+centered, fast bullets from close spawners take their place.
+
+**The Ace under centered** (stages 1, 6, 10 attack × seeds 1–2): cleared 6/6, 0 lives lost, as under the original.
+
+**The test policies** (`bin/play-game.mjs --policy … --hitbox …`, stages 1–10 × seeds 1–3, capped at 3,000 frames):
+these players do not plan, so their deaths show how the size and place of the hit area alone matter. `random`: 85
+deaths in 48,666 frames → 86 in 44,049 (1.75 → 1.95 per 1,000 frames, +11%). `fire-stay`: 90 in 54,184 → 90 in
+53,599 (+1%). So the centered hit area is about as easy to hit as the original's, slightly easier for a ship that
+moves at random. A non-moving ship is hit about equally often, because both tests have the same 2 px radius and only
+the place differs.
+
+**The margins under centered.** The bullet clearance (2 px) is now measured from the swept position, the hit area
+itself, and not from the drawn trail, which covered the original's hit area at its tail and more. The no-margin and
+margin rows above show it still does its job: 0 lives lost on all 30 stage runs. The spawner clearance (8 px) and the
+top line (136 px) are about where new bullets appear, so they keep their meaning. The single ENDLESS death is the one
+place where centered asks more of them (below). I changed none of the values; the CI comparison will show if one
+should change.
 
 ## The CI comparison (the coordinator's to dispatch, after merging)
 
@@ -135,4 +189,16 @@ gh run download <run-id> -n sweep-hb-centered     # then commit results/hb-cente
 
 ## Open questions
 
-@@OPEN@@
+1. **The spawner clearance under centered.** A bullet fired this frame is tested along its whole first move, from
+   the spawner to where it is. A fast bullet (ENDLESS: 15.6 px/frame) can reach a ship 13 px from its spawner before
+   anyone has seen it, which is more than the 8 px clearance. The original misses most of these, because its hit area
+   is at the trail's tail, the spawner itself. Keep 8 px (one ENDLESS death in 66 runs), or make it grow with the
+   observed bullet speed? Not changed. The CI run will show how often this happens.
+2. **Leaving the screen.** Bullets still leave when the trail's *tail* leaves the screen, as in the C, under both
+   hitboxes. Under centered, a bullet's head can stay drawn past the edge for a few frames, where it can no longer hit
+   anyone. That is harmless, but you can see it.
+3. **Drawing length.** Centered draws the same line length as the original (1, 2 or 4 moves by age), centred on the
+   bullet. The hit area is only the last move plus 2 px, so in centered the line is longer than the hit area. The dot
+   shows where the hit area really is. Should the line be shorter, about one move long?
+4. **The default.** Original stays the default (⚖). If centered becomes the page's default later, old tapes still
+   replay correctly (no field = original), and the bots need no change.
