@@ -81,6 +81,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: start from no committed outputs (only this run's tapes and shards may reach the artifact)
+        env:
+          SWEEP_NAME: ${{ inputs.name }}
+        run: rm -rf tapes/h2 "results/${SWEEP_NAME}-shards"
       - name: sweep shard ${{ matrix.shard }}/${{ inputs.shards }}
         # $EXTRA is split into options on purpose
         run: node bin/h2-sweep.mjs --presets "$PRESETS" --skills "$SKILLS" --variants "$VARIANTS" --stages "$STAGES" --seeds "$SEEDS" --bot-seeds "$BOT_SEEDS" --name "$NAME" $EXTRA --shard "$SHARD" --jobs "$(nproc)" --timeout-min 300
@@ -117,6 +121,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: start from no committed outputs (only this run's tapes and shards may reach the artifact)
+        env:
+          SWEEP_NAME: ${{ inputs.name }}
+        run: rm -rf tapes/h2 "results/${SWEEP_NAME}-shards"
       - uses: actions/download-artifact@v4
         with:
           pattern: shard-*
