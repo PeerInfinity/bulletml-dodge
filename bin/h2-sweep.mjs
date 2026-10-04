@@ -10,7 +10,8 @@
  *   node bin/h2-sweep.mjs --merge [--expect n] [the same run options]   (combine the shard files; fails if one is missing)
  *   node bin/h2-sweep.mjs --summary [the same run options]               (the local parts, no checks)
  *
- * A PLAYER is a preset name or "skill N"; a cell is (player, stage, variant, seed, bot seed): one run, to the end the
+ * A PLAYER is a preset name or "skill N"; a cell is (player, stage, variant, seed, bot seed — only the first for a
+ * setting with no human layer: the Ace, the Expert, skill 100, which never draw from their generator): one run, to the end the
  * rules give it (src/game/bot-run.js: a clear, a game over, 3 minutes into the boss scene for no-attack; endless modes
  * 30,000 frames). Each row: outcome, lives lost, the frames of the hits (the first one: "survived the first minute" =
  * no hit before frame 3750), score, kills, stars, and the human layer's counts (looks, lapses, the hands' changes).
@@ -86,8 +87,11 @@ const name = opt('name', 'h2-bot');
 const signature = { players, variants, stages: stageNames, seeds, botSeeds, budgetX };
 const shardsDir = path.join(root, `results/${name}-shards`);
 
+// a setting without a human layer (the Ace, the Expert, skill 100) never draws from its generator: one bot seed is enough
+const { settingByName: byName, botOptions: optsOf } = await import('../src/game/human.js');
+const usesBotSeed = (p) => !!optsOf(byName(p)).human;
 const cells = [];
-for (const player of players) for (const stage of stagesWanted) for (const variant of variants) for (const seed of seeds) for (const botSeed of botSeeds) {
+for (const player of players) for (const stage of stagesWanted) for (const variant of variants) for (const seed of seeds) for (const botSeed of usesBotSeed(player) ? botSeeds : botSeeds.slice(0, 1)) {
     cells.push({ player, stage, variant, seed, botSeed, budgetX });
 }
 // longest first (the Ace and the Expert play whole stages; endless modes; no-attack lives 3 minutes into the boss), in a
@@ -196,7 +200,8 @@ for (const variant of variants) {
     for (const player of players) {
         const rs = runs.filter((r) => r.player === player && r.variant === variant && ok(r));
         if (!rs.length) continue;
-        const per = stagesShown.map((stage) => seeds.flatMap((seed) => botSeeds.map((bs) => cell(runs.find((r) => r.player === player && r.variant === variant && r.stage === stage && r.seed === seed && r.botSeed === bs)))).join('/'));
+        const bss = usesBotSeed(player) ? botSeeds : botSeeds.slice(0, 1);
+        const per = stagesShown.map((stage) => seeds.flatMap((seed) => bss.map((bs) => cell(runs.find((r) => r.player === player && r.variant === variant && r.stage === stage && r.seed === seed && r.botSeed === bs)))).join('/'));
         md.push(`| ${player} | ${per.join(' | ')} | ${mean(rs.map((r) => r.livesLost)).toFixed(2)} | ${rs.filter((r) => r.outcome === 'game over').length}/${rs.length} | ${rs.filter((r) => r.outcome === 'cleared').length}/${rs.length} | ${rs.filter((r) => r.minute).length}/${rs.length} | ${fmt(Math.round(mean(rs.map((r) => r.score))))} |`);
     }
     md.push('');

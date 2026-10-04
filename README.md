@@ -46,6 +46,13 @@ simple reflexes and which need planning.
 - `bin/h1-sweep.mjs` (or `bin/bot-sweep.mjs --perception observed|omniscient|both`) — the Expert vs the Ace and the
   look-ahead needed, sharded (`--shard i/N`, then `--merge --expect N`) → `results/h1-bot.md`; it runs as GitHub
   Actions shards (`.github/workflows/sweep.yml`, dispatched by hand). `.github/workflows/test.yml` is the test gate.
+- `src/game/human.js` — **the humanlike bot** (slice H2, `docs/h2-report.md`): the human limits as settings
+  (reaction time, attention, misjudged bullet size, replanning, key hold, input rate, overshoot, lapses, slow-button
+  use, panic, habits), the bot's own seeded generator, 8 personality presets and a skill slider (Cautious beginner 0
+  → Expert 100). The default knobs are the Expert exactly. In the page: "bot: personality …", the personality menu,
+  the slider and an advanced panel with every knob. `bin/h2-sweep.mjs` (presets × skills × stages × seeds, sharded;
+  `.github/workflows/h2-sweep.yml`) → `results/<name>.md`; `bin/check-bot-tapes.mjs` re-records any bot tape from the
+  settings it carries.
 - `bin/build-web-index.mjs` (`npm run web-index`) — writes `web/index/` (the pattern order and the tape list the
   page needs); re-run it after adding a tape or a pattern (`npm run test:browser` refuses a stale index).
 - `patterns/noiz2sa/` — the 73 patterns from Noiz2sa 0.52 (BSD; licence text beside them).
