@@ -38,6 +38,9 @@ const MIN_TURN_SPEED = 32;
 const STRAIGHT = 0, TURN = 1, ACCEL = 2;
 // the spawner clearance under the centered hitbox: the fastest bullet's move + this (2 px hit radius + 1 px), 1/256 px
 const FAST_SLACK = 3 * 256;
+// …but at most this (16 px): the fastest bullet on screen widens the clearance around EVERY spawner, and an uncapped
+// clearance boxed the bot in on a dense stage (CI run 37239314882: stage 9 seed 2, a hit it had predicted 28 frames ahead)
+const FAST_CAP = 16 * 256;
 
 /** what the observer remembers of the previous frame: each slot's position and motion */
 export function newTracker(slots = 1024) {
@@ -248,7 +251,7 @@ export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
     // new bullet is the spawner itself, so it keeps the set clearance
     let s2 = margin ? margin.s2 : 0, box = margin ? margin.box : 0;
     if (margin && cen && s2 > 0 && m.fastest > 0) {
-        const r = m.fastest + FAST_SLACK;
+        const r = Math.min(m.fastest + FAST_SLACK, FAST_CAP);
         if (r * r > s2) { s2 = r * r; if (r > box) box = r; }
     }
     for (let i = 0; i < foes.length; i++) {
