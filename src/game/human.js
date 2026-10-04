@@ -105,52 +105,20 @@ export function humanDiff(knobs) {
     return Object.keys(out).length ? out : null;
 }
 
-// ── the presets (⚖ the plan's first proposal: the user may rename or retune) ──
+// ── the slider's path and the personalities ──
 // Literature anchors (docs/h2-report.md cites them): simple visual reaction ~200–250 ms (12–16 frames of 16 ms),
 // faster in practised gamers (~150–190 ms); choice reaction among several keys slower (Hick–Hyman: +~150 ms for 8–9
 // choices); key hold (dwell) times ~70–120 ms in keystroke studies; maximal tapping ~5–7 per second per finger;
 // multiple-object tracking ~4–8 objects; useful field of view shrinks under load; attention lapses (PVT, > 500 ms)
 // a few per 10 minutes rested, many more when tired or distracted.
 const base = (o) => ({ ...EXPERT_KNOBS, ...o });
-export const PRESETS = [
-    { name: 'Ace', perception: 'omniscient', knobs: base({}),
-        description: 'the max bot: plans on a copy of the seeded game, so it knows every future shot (not human)' },
-    { name: 'Expert', perception: 'observed', knobs: base({}),
-        description: 'perfect eyes and reflexes, no foresight: plans on what it sees, every frame (the H1b bot)' },
-    { name: 'Steady veteran', perception: 'observed',
-        knobs: base({ reaction: 10, attentionRadius: 360, attentionCount: 160, misjudge: 1, horizon: 48, replanEvery: 2, marginBullet: 4, marginSpawner: 10,
-            marginTop: 150, attackY: 180, slowUse: 1, minHold: 3, maxRate: 10, overshootP: 0.05, overshootFrames: 2, lapseRate: 0.5, lapseFrames: 12,
-            panicFrom: 150, panicTo: 400, panicReaction: 3, panicMisjudge: 0.5 }),
-        description: 'quick reactions, a generous margin, reads ahead, rarely lapses, attacks methodically' },
-    { name: 'Score chaser', perception: 'observed',
-        knobs: base({ reaction: 12, attentionRadius: 300, attentionCount: 120, misjudge: 2, horizon: 32, replanEvery: 2, marginBullet: 1, marginSpawner: 6,
-            marginTop: 100, attackY: 120, starWeight: 0.02, slowUse: 0.8, minHold: 3, maxRate: 9, overshootP: 0.12, overshootFrames: 3, lapseRate: 1, lapseFrames: 14,
-            panicFrom: 120, panicTo: 350, panicReaction: 4, panicMisjudge: 1, panicSlow: 0.1 }),
-        description: 'greedy for stars, pushes up to attack, a thin margin, takes risks' },
-    { name: 'Cautious beginner', perception: 'observed',
-        knobs: base({ reaction: 20, attentionRadius: 120, attentionCount: 24, misjudge: 4, horizon: 16, replanEvery: 4, marginBullet: 8, marginSpawner: 16,
-            marginTop: 220, attackY: 330, slowUse: 0.3, minHold: 7, maxRate: 4, overshootP: 0.3, overshootFrames: 6, lapseRate: 3, lapseFrames: 24,
-            panicFrom: 40, panicTo: 150, panicReaction: 8, panicMisjudge: 3, panicSlow: 0.3 }),
-        description: 'slow reactions, a short horizon, an over-large margin, stays low, few kills' },
-    { name: 'Panicky', perception: 'observed',
-        knobs: base({ reaction: 12, attentionRadius: 300, attentionCount: 120, misjudge: 1, horizon: 32, replanEvery: 2, marginBullet: 3, marginSpawner: 10,
-            marginTop: 160, attackY: 220, slowUse: 0.9, minHold: 3, maxRate: 8, overshootP: 0.1, overshootFrames: 3, lapseRate: 1, lapseFrames: 14,
-            panicFrom: 50, panicTo: 180, panicReaction: 14, panicMisjudge: 4, panicSlow: 0.6 }),
-        description: 'fine when the screen is calm; reaction, precision and slow-button use fall apart when it fills' },
-    { name: 'Tunnel vision', perception: 'observed',
-        knobs: base({ reaction: 12, attentionRadius: 64, attentionCount: 40, misjudge: 1, horizon: 32, replanEvery: 2, marginBullet: 3, marginSpawner: 10,
-            marginTop: 160, attackY: 200, slowUse: 0.9, minHold: 3, maxRate: 8, overshootP: 0.1, overshootFrames: 3, lapseRate: 1, lapseFrames: 14,
-            panicFrom: 120, panicTo: 350, panicReaction: 4, panicMisjudge: 1, panicSlow: 0.1 }),
-        description: 'a small attention radius: surprised by bullets from the edges' },
-    { name: 'Distracted', perception: 'observed',
-        knobs: base({ reaction: 13, attentionRadius: 300, attentionCount: 120, misjudge: 1.5, horizon: 32, replanEvery: 3, marginBullet: 3, marginSpawner: 10,
-            marginTop: 160, attackY: 200, slowUse: 0.8, minHold: 3, maxRate: 8, overshootP: 0.1, overshootFrames: 3, lapseRate: 8, lapseFrames: 30,
-            panicFrom: 120, panicTo: 350, panicReaction: 4, panicMisjudge: 1, panicSlow: 0.1 }),
-        description: 'frequent lapses: its eyes leave the screen several times a minute' },
-];
-export const PRESET = Object.fromEntries(PRESETS.map((p) => [p.name, p]));
-/** the skill slider's ends: 0 = Cautious beginner, 100 = Expert (the Ace sits above it, as a preset) */
-export const SKILL_LOW = 'Cautious beginner', SKILL_HIGH = 'Expert';
+/**
+ * The low end of the slider's path (H2's "Cautious beginner", the slider's 0): slow reactions, a short horizon, an
+ * over-large margin, stays low. The high end is the Expert (EXPERT_KNOBS).
+ */
+export const PATH_LOW_KNOBS = Object.freeze(base({ reaction: 20, attentionRadius: 120, attentionCount: 24, misjudge: 4, horizon: 16, replanEvery: 4,
+    marginBullet: 8, marginSpawner: 16, marginTop: 220, attackY: 330, slowUse: 0.3, minHold: 7, maxRate: 4, overshootP: 0.3, overshootFrames: 6,
+    lapseRate: 3, lapseFrames: 24, panicFrom: 40, panicTo: 150, panicReaction: 8, panicMisjudge: 3, panicSlow: 0.3 }));
 
 /**
  * Slice H3: the slider's curve. Skill s (0–100) → a position p (0–100) on the path from the beginner (p 0) to the Expert
@@ -171,18 +139,25 @@ export function skillPosition(s) {
 }
 
 /**
+ * Slice H3b: positions below the beginner. A personality's flaw may put one faculty below the beginner's (Tunnel
+ * vision's attention, Distracted's lapses): the knob goes on along the path's own trend past p 0, down to PATH_MIN,
+ * and is clamped to its range (KNOBS[k].min / max). Above the Expert (p 100) nothing is better: clamped.
+ */
+export const PATH_MIN = -150;
+/** one knob at path position p (PATH_MIN–100), unsnapped */
+function pathValue(k, p) {
+    const t = Math.min(100, Math.max(PATH_MIN, Number(p))) / 100;
+    const a = PATH_LOW_KNOBS[k.key], b = EXPERT_KNOBS[k.key];
+    return k.interp === 'log' && a > 0 && b > 0 ? a * Math.pow(b / a, t) : a + (b - a) * t;
+}
+
+/**
  * The knobs at path position p (0–100): each knob between the beginner's value (0) and the Expert's (100), linearly or
  * geometrically (interp 'log'), on the knob's grid. Every skill-ordered knob moves one way only.
  */
 export function pathKnobs(p) {
-    const t = Math.min(100, Math.max(0, Number(p))) / 100;
-    const lo = PRESET[SKILL_LOW].knobs, hi = PRESET[SKILL_HIGH].knobs, out = {};
-    for (const k of KNOBS) {
-        const a = lo[k.key], b = hi[k.key];
-        const v = k.interp === 'log' && a > 0 && b > 0 ? a * Math.pow(b / a, t) : a + (b - a) * t;
-        out[k.key] = snapKnob(k.key, v);
-    }
-    return out;
+    const q = Math.min(100, Math.max(0, Number(p)));
+    return Object.fromEntries(KNOBS.map((k) => [k.key, snapKnob(k.key, pathValue(k, q))]));
 }
 
 /**
@@ -194,19 +169,91 @@ export function skillKnobs(s) {
 }
 
 /**
- * A setting by name, as the sweep and the page name them: a preset name (any case, spaces or dashes), "skill N", or
- * "path N" (a point of the path without the slider's curve). → {name, perception, knobs}.
+ * Slice H3b (⚖ the user, 2026-10-04): a personality is not a fixed set of stats but a set of BIASES applied to the
+ * slider at any skill. A bias, per knob:
+ *  - shift: the knob is taken from the path that many path units away from the skill's position (−: a weaker faculty,
+ *    +: a stronger one; never above the Expert, never below PATH_MIN): for the skill-ordered knobs;
+ *  - mul: the slider's value times this: for the habits (margins, heights, panic thresholds);
+ *  - set: this value whatever the skill (star greed).
+ * Every bias applies at skill 100 too (an Expert with tunnel vision is still not the Expert), except where the
+ * personality says fade: then it shrinks with the path position and is gone at the Expert (⚖ Steady: skill 100 = the
+ * Expert). Each personality's default skill is 50 (⚖).
+ */
+export const DEFAULT_SKILL = 50;
+export function biasedKnobs(bias, s, { fade = false } = {}) {
+    const p = skillPosition(s);
+    const w = fade ? (100 - p) / 100 : 1;
+    const out = {};
+    for (const k of KNOBS) {
+        let v = pathValue(k, p + w * (bias.shift?.[k.key] ?? 0));
+        if (bias.mul?.[k.key] !== undefined) v *= 1 + w * (bias.mul[k.key] - 1);
+        if (bias.set?.[k.key] !== undefined) v = bias.set[k.key];
+        out[k.key] = snapKnob(k.key, v);
+    }
+    return out;
+}
+
+/**
+ * The menu: the Ace and the Expert (fixed settings) and six personalities (biases; their `knobs` are those at the
+ * default skill). ⚖ The user, 2026-10-04: "Cautious beginner" → "Cautious", "Steady veteran" → "Steady" (the
+ * slider says how good they are). The biases are H3b's first proposal (docs/h3b-report.md).
+ */
+const PERSONALITIES = [
+    { name: 'Steady', fade: true,
+        bias: { shift: { reaction: 30, misjudge: 30, horizon: 30, replanEvery: 30, lapseRate: 40, lapseFrames: 40, overshootP: 30, overshootFrames: 30,
+            panicReaction: 30, panicMisjudge: 30, panicSlow: 30 }, mul: { marginBullet: 1.3, marginSpawner: 1.2 } },
+        description: 'quick reactions for its skill, a generous margin, reads ahead, rarely lapses, attacks methodically; at skill 100 it is the Expert' },
+    { name: 'Score chaser',
+        bias: { mul: { marginBullet: 0.5, marginSpawner: 0.75, marginTop: 0.75, attackY: 0.65 }, set: { starWeight: 0.02 } },
+        description: 'greedy for stars, pushes up to attack, a thin margin, takes risks' },
+    { name: 'Cautious',
+        bias: { mul: { marginBullet: 1.5, marginSpawner: 1.5, marginTop: 1.2, attackY: 1.25 } },
+        description: 'an over-large margin, stays low, few kills' },
+    { name: 'Panicky',
+        bias: { shift: { panicReaction: -100, panicMisjudge: -100, panicSlow: -100 }, mul: { panicFrom: 0.6, panicTo: 0.6 } },
+        description: 'fine when the screen is calm; reaction, precision and slow-button use fall apart when it fills' },
+    { name: 'Tunnel vision',
+        bias: { shift: { attentionRadius: -80, attentionCount: -30 } },
+        description: 'a small attention radius: surprised by bullets from the edges' },
+    { name: 'Distracted',
+        bias: { shift: { lapseRate: -150, lapseFrames: -40 } },
+        description: 'frequent lapses: its eyes leave the screen several times a minute' },
+];
+export const PRESETS = [
+    { name: 'Ace', perception: 'omniscient', knobs: base({}),
+        description: 'the max bot: plans on a copy of the seeded game, so it knows every future shot (not human)' },
+    { name: 'Expert', perception: 'observed', knobs: base({}),
+        description: 'perfect eyes and reflexes, no foresight: plans on what it sees, every frame (the H1b bot)' },
+    ...PERSONALITIES.map((q) => ({ ...q, perception: 'observed', defaultSkill: DEFAULT_SKILL, knobs: biasedKnobs(q.bias, DEFAULT_SKILL, q) })),
+];
+export const PRESET = Object.fromEntries(PRESETS.map((p) => [p.name, p]));
+
+/** a preset's knobs at skill s: a personality's biases on the slider at s; the Ace's and the Expert's fixed knobs */
+export function presetKnobs(name, s = DEFAULT_SKILL) {
+    const p = PRESET[name];
+    return p.bias ? biasedKnobs(p.bias, s, p) : { ...p.knobs };
+}
+
+/**
+ * A setting by name, as the sweep and the page name them: a preset name (any case, spaces or dashes), optionally
+ * followed by a skill ("Panicky 70"; default 50), "skill N", or "path N" (a point of the path without the slider's
+ * curve). → {name, perception, knobs}.
  */
 export function settingByName(name) {
-    const m = /^skill[ _-]?(\d+(?:\.\d+)?)$/i.exec(String(name).trim());
+    const str = String(name).trim();
+    const m = /^skill[ _-]?(\d+(?:\.\d+)?)$/i.exec(str);
     if (m) return { name: `skill ${Number(m[1])}`, perception: 'observed', knobs: skillKnobs(Number(m[1])) };
     // "path N": a point of the path itself, without the slider's curve (H3's calibration tool)
-    const q = /^path[ _-]?(\d+(?:\.\d+)?)$/i.exec(String(name).trim());
+    const q = /^path[ _-]?(\d+(?:\.\d+)?)$/i.exec(str);
     if (q) return { name: `path ${Number(q[1])}`, perception: 'observed', knobs: pathKnobs(Number(q[1])) };
     const norm = (x) => x.toLowerCase().replace(/[\s_-]+/g, '');
-    const p = PRESETS.find((q) => norm(q.name) === norm(String(name)));
-    if (!p) throw new Error(`unknown bot setting "${name}" (have: ${PRESETS.map((q) => q.name).join(', ')}, skill 0–100)`);
-    return { name: p.name, perception: p.perception, knobs: { ...p.knobs } };
+    const find = (x) => PRESETS.find((r) => norm(r.name) === norm(x));
+    let p = find(str), s = null;
+    const w = /^(.*?)[ _-]+(\d+(?:\.\d+)?)$/.exec(str);
+    if (!p && w && find(w[1])?.bias) { p = find(w[1]); s = Math.min(100, Math.max(0, Number(w[2]))); }
+    if (!p) throw new Error(`unknown bot setting "${name}" (have: ${PRESETS.map((r) => r.name).join(', ')}, a personality with a skill ("Panicky 70"), skill 0–100)`);
+    return s === null ? { name: p.name, perception: p.perception, knobs: { ...p.knobs } }
+        : { name: `${p.name} ${s}`, perception: p.perception, knobs: presetKnobs(p.name, s) };
 }
 
 /**

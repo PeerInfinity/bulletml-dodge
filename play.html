@@ -82,8 +82,9 @@
   </div>
   <p class="note">"bot: attack" and "bot: no-attack" are the G4 bot, the Ace (<code>src/game/bot.js</code>), thinking in a Web Worker
     within a fixed budget per frame (1× fits the 16 ms frame; 4× and 16× may slow the game); "bot: expert …" plans on what it
-    sees (H1); "bot: personality …" is the humanlike bot (H2, <code>src/game/human.js</code>): pick a personality, or set the skill
-    slider (Cautious beginner at 0 → Expert at 100), or change any knob under "advanced" (hover a knob for what it does);
+    sees (H1); "bot: personality …" is the humanlike bot (H2, <code>src/game/human.js</code>): pick a personality and its skill
+    (the slider: a beginner at 0 → the Expert at 100; a personality is a set of biases on it, starting at 50), the slider
+    alone (on the Ace or the Expert), or change any knob under "advanced" (hover a knob for what it does);
     its look-ahead is its horizon knob. The others are the G2 test policies.
     Every game you play is recorded as a tape (the format <code>bin/play-game.mjs</code> writes) when it ends or on Esc.
     Noiz2sa © 2002 Kenta Cho (BSD); sounds and music from the 0.52 distribution.</p>

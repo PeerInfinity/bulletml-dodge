@@ -5,7 +5,7 @@ import { newGame, stepGame, stateLine, STATUS, SPC } from '../src/game/noiz2sa-g
 import { packBulletML, unpackBulletML } from '../src/bulletml.js';
 import { makeBot, BROWSER_BUDGET, EXPERT_DEFAULTS, expertSettings, botOptionsFromTape } from '../src/game/bot.js';
 import { stepModel, makeMargin, observe, newTracker, delayedModel, attendModel } from '../src/game/perception.js';
-import { KNOBS, PRESETS, EXPERT_KNOBS, HUMAN_KEYS, skillKnobs, pathKnobs, skillPosition, SKILL_CURVE, settingByName, botOptions, makeRng, makeHands, snapKnob } from '../src/game/human.js';
+import { KNOBS, PRESETS, PRESET, EXPERT_KNOBS, PATH_LOW_KNOBS, HUMAN_KEYS, skillKnobs, pathKnobs, presetKnobs, skillPosition, SKILL_CURVE, settingByName, botOptions, makeRng, makeHands, snapKnob } from '../src/game/human.js';
 import fs from 'node:fs';
 import { runBot } from '../src/game/bot-run.js';
 import { tapeInputs, replayTape } from '../src/game/tape.js';
@@ -129,7 +129,7 @@ for (const variant of ['attack', 'no-attack']) {
     };
 
     // a. every preset (and two skill levels): the same tape twice; the tape replays; its own settings re-record it
-    for (const name of [...PRESETS.map((p) => p.name), 'skill 0', 'skill 50']) {
+    for (const name of [...PRESETS.map((p) => p.name), 'Panicky 90', 'skill 0', 'skill 50']) {
         const a = runSetting(name), b = runSetting(name);
         assert.equal(JSON.stringify(a.tape), JSON.stringify(b.tape), `${name}: two runs gave different tapes`);
         assert.equal(stateLine(replayTape(P, a.tape)), stateLine(a.game), `${name}: the tape does not replay to the run's game`);
@@ -185,7 +185,7 @@ for (const variant of ['attack', 'no-attack']) {
             assert.equal(snapKnob(k.key, v), v, `${p.name}: ${k.key} = ${v} is off its grid / range`);
         }
         assert.deepEqual(skillKnobs(100), PRESETS.find((p) => p.name === 'Expert').knobs);
-        assert.deepEqual(skillKnobs(0), PRESETS.find((p) => p.name === 'Cautious beginner').knobs);
+        assert.deepEqual(skillKnobs(0), { ...PATH_LOW_KNOBS });
         let prev = skillKnobs(0);
         for (let s = 1; s <= 100; s++) {
             const cur = skillKnobs(s);
@@ -202,7 +202,31 @@ for (const variant of ['attack', 'no-attack']) {
         for (const p of PRESETS.filter((q) => q.perception === 'observed')) for (const k of KNOBS) if (k.skill) {
             assert.ok(k.skill > 0 ? p.knobs[k.key] <= k.expert : p.knobs[k.key] >= k.expert, `${p.name}: ${k.key} beyond the Expert's`);
         }
-        console.log(`ok ${PRESETS.length} presets × ${KNOBS.length} knobs on their grids; the slider runs Cautious beginner (0) → Expert (100), every skill-ordered knob one way`);
+        // H3b: the personalities are biases on the slider: at every skill on their grids, never beyond the Expert, every
+        // skill-ordered knob one way with skill; their menu knobs are those at skill 50; Steady at 100 is the Expert, the
+        // others are not; "Panicky 70" names one at a skill
+        const persons = PRESETS.filter((p) => p.bias);
+        assert.deepEqual(persons.map((p) => p.name), ['Steady', 'Score chaser', 'Cautious', 'Panicky', 'Tunnel vision', 'Distracted']);
+        for (const p of persons) {
+            assert.deepEqual(p.knobs, presetKnobs(p.name, 50), `${p.name}: its menu knobs are not those at skill 50`);
+            let before = null;
+            for (let s = 0; s <= 100; s++) {
+                const cur = presetKnobs(p.name, s);
+                for (const k of KNOBS) {
+                    assert.equal(snapKnob(k.key, cur[k.key]), cur[k.key], `${p.name} ${s}: ${k.key} off its grid`);
+                    if (!k.skill) continue;
+                    assert.ok(k.skill > 0 ? cur[k.key] <= k.expert : cur[k.key] >= k.expert, `${p.name} ${s}: ${k.key} beyond the Expert's`);
+                    if (before) assert.ok(k.skill > 0 ? cur[k.key] >= before[k.key] : cur[k.key] <= before[k.key], `${p.name} ${s}: ${k.key} ${before[k.key]} → ${cur[k.key]} goes the wrong way`);
+                }
+                before = cur;
+            }
+            if (p.name === 'Steady') assert.deepEqual(presetKnobs(p.name, 100), { ...EXPERT_KNOBS });
+            else assert.notDeepEqual(presetKnobs(p.name, 100), { ...EXPERT_KNOBS }, `${p.name}: its bias is gone at skill 100`);
+        }
+        assert.deepEqual(settingByName('panicky 70'), { name: 'Panicky 70', perception: 'observed', knobs: presetKnobs('Panicky', 70) });
+        assert.deepEqual(settingByName('Tunnel vision').knobs, presetKnobs('Tunnel vision', 50));
+        assert.throws(() => settingByName('Expert 70'), /unknown bot setting/);
+        console.log(`ok ${PRESETS.length} presets × ${KNOBS.length} knobs on their grids; the slider runs the beginner (0) → Expert (100), every skill-ordered knob one way; ${persons.length} personalities as biases at skill 0–100, one way, never beyond the Expert, Steady = the Expert at 100`);
     }
     // e. the hands: the minimum hold, the rate cap, the overshoot
     {

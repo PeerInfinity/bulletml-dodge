@@ -13,7 +13,7 @@ import { chromium } from 'playwright';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
 import { newGame, stepGame, STATUS } from '../src/game/noiz2sa-game.js';
 import { makeBot, BROWSER_BUDGET, DEFAULT_HORIZON, EXPERT_DEFAULTS, expertSettings, botOptionsFromTape } from '../src/game/bot.js';
-import { PRESET, skillKnobs, humanDiff } from '../src/game/human.js';
+import { PRESET, skillKnobs, presetKnobs, humanDiff } from '../src/game/human.js';
 import { tapeInputs } from '../src/game/tape.js';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -253,13 +253,20 @@ try {
         assert.equal(off.size, 1, `every knob row has its box and unit at the same offsets (${[...off]})`);
         console.log(`ok bot seed: random per game (${seeds.join(', ')}), fixed when set (77); ${xs.length} knob rows aligned (box at +${xs[0].box}px, unit at +${xs[0].unit}px)`);
     }
-    for (const [how, arg, stage, seed] of [['preset', 'Distracted', 2, 5], ['preset', 'Panicky', 5, 3], ['skill', 30, 0, 4]]) {
-        await page.evaluate(([how, arg]) => { if (how === 'preset') window.noiz.setPersonality(arg); else window.noiz.setSkill(arg); }, [how, arg]);
+    // H3b: a personality starts at skill 50 and keeps its biases when the slider moves; on the Expert the slider alone
+    for (const [how, arg, stage, seed] of [['preset', 'Distracted', 2, 5], ['preset', 'Panicky 80', 5, 3], ['skill', 30, 0, 4]]) {
+        const [name, sk] = how === 'preset' ? [arg.replace(/ \d+$/, ''), Number(/\d+$/.exec(arg)?.[0] ?? 50)] : [null, arg];
+        if (how === 'skill') await page.evaluate(() => window.noiz.setPersonality('Expert'));
+        await page.evaluate(([how, name, sk]) => { if (how === 'preset') { window.noiz.setPersonality(name); if (sk !== 50) window.noiz.setSkill(sk); } else window.noiz.setSkill(sk); }, [how, name, sk]);
         const set = await page.evaluate(() => window.noiz.botSetting());
         if (how === 'skill') {
-            assert.equal(set.menuText, `custom (skill ${arg})`, 'the slider puts the menu on "custom (skill N)"');
+            assert.equal(set.menuText, `custom (skill ${arg})`, 'the slider on the Expert puts the menu on "custom (skill N)"');
             assert.deepEqual(set.knobs, skillKnobs(arg));
-        } else assert.deepEqual(set.knobs, PRESET[arg].knobs);
+        } else {
+            assert.equal(set.persona, name, 'the slider keeps the personality'); assert.equal(set.skill, sk);
+            assert.deepEqual(set.knobs, presetKnobs(name, sk));
+            if (sk === 50) assert.deepEqual(set.knobs, PRESET[name].knobs);
+        }
         s = await state();
         assert.equal(s.policy, 'bot: personality attack', 'a personality plays as "bot: personality …"');
         assert.equal(await page.evaluate(() => document.getElementById('horizon').disabled), true, 'its look-ahead is its horizon knob');
@@ -270,7 +277,7 @@ try {
         await page.waitForFunction((f) => window.noiz.state().game.frame >= f || window.noiz.state().game.status !== 1, TO, { timeout: 60000 });
         await page.keyboard.press('Escape');
         const tape = await page.evaluate(() => window.noiz.lastTape());
-        const label = how === 'skill' ? `skill ${arg}` : arg;
+        const label = how === 'skill' ? `skill ${arg}` : `${name} ${sk}`;
         assert.equal(tape.bot.personality, label);
         assert.deepEqual(tape.bot.human, humanDiff(set.knobs));
         // ⚖ 2026-10-04: the bot seed is random per game unless fixed; the tape records the one this game used
@@ -289,9 +296,9 @@ try {
     }
     {
         // the advanced panel: one knob changed → "custom", recorded
-        await page.evaluate(() => { window.noiz.setPersonality('Steady veteran'); window.noiz.setKnob('reaction', 17); });
+        await page.evaluate(() => { window.noiz.setPersonality('Steady'); window.noiz.setKnob('reaction', 17); });
         const set = await page.evaluate(() => window.noiz.botSetting());
-        assert.equal(set.persona, 'custom'); assert.equal(set.knobs.reaction, 17); assert.equal(set.knobs.minHold, PRESET['Steady veteran'].knobs.minHold);
+        assert.equal(set.persona, 'custom'); assert.equal(set.knobs.reaction, 17); assert.equal(set.knobs.minHold, PRESET.Steady.knobs.minHold);
         assert.equal(await page.evaluate(() => document.getElementById('knob-reaction').value), '17');
         assert.equal(await page.evaluate(() => document.querySelectorAll('#knobs input').length), Object.keys(PRESET.Expert.knobs).length + 1, 'every knob (and the bot seed) in the advanced panel');
         await page.evaluate(() => { window.noiz.setPersonality('Expert'); window.noiz.setPolicy('bot: attack'); });

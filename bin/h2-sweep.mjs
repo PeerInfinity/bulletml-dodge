@@ -4,14 +4,15 @@
  * sweep (bin/h1-sweep.mjs: cells dealt round-robin, longest first, to n shards; one child process per run; a strict
  * merge). Run as GitHub Actions shards (.github/workflows/h2-sweep.yml) or by hand. This is slice H3's calibration tool.
  *
- *   node bin/h2-sweep.mjs [--presets "Expert,Steady veteran,…" | all | none] [--skills 0,25,50,75,100 | none]
+ *   node bin/h2-sweep.mjs [--presets "Expert,Steady,Panicky 70,…" | all | none] [--preset-skills 0,50,100] [--skills 0,25,50,75,100 | none]
  *        [--variants attack] [--stages 1,…,10] [--seeds 1,2,3] [--bot-seeds 1] [--budget 1] [--name h2-bot]
  *        [--jobs N] [--shard i/n] [--timeout-min M] [--tapes] [--list]
  *   node bin/h2-sweep.mjs --merge [--expect n] [the same run options]   (combine the shard files; fails if one is missing)
  *   node bin/h2-sweep.mjs --summary [the same run options]               (the local parts, no checks)
  *   node bin/h2-sweep.mjs --from a.json[,b.json] [the same run options]  (re-report earlier results files' runs)
  *
- * A PLAYER is a preset name, "skill N" (the slider), or "path N" (a point of the slider's path without its curve, for
+ * A PLAYER is a preset name (a personality alone plays at skill 50; "Panicky 70" at 70; --preset-skills plays every
+ * personality named alone at each of those skills), "skill N" (the slider), or "path N" (a point of the slider's path without its curve, for
  * calibration; give it with --presets); a cell is (player, stage, variant, seed, bot seed — only the first for a
  * setting with no human layer: the Ace, the Expert, skill 100, which never draw from their generator): one run, to the end the
  * rules give it (src/game/bot-run.js: a clear, a game over, 3 minutes into the boss scene for no-attack; endless modes
@@ -74,7 +75,11 @@ if (opt('one', null)) {
 // ── the run signature and the cells ──
 const { PRESETS } = await import('../src/game/human.js');
 const presetsOpt = opt('presets', 'all');
-const presets = presetsOpt === 'none' || presetsOpt === '' ? [] : presetsOpt === 'all' ? PRESETS.map((p) => p.name) : presetsOpt.split(',').map((s) => s.trim());
+const presetNames = presetsOpt === 'none' || presetsOpt === '' ? [] : presetsOpt === 'all' ? PRESETS.map((p) => p.name) : presetsOpt.split(',').map((s) => s.trim());
+// --preset-skills 0,50,100 (H3b): every personality given by name alone plays at each of these skills ("Panicky 0", …);
+// the Ace and the Expert once
+const presetSkills = opt('preset-skills', null)?.split(',').map(Number) ?? null;
+const presets = presetNames.flatMap((n) => (presetSkills && PRESETS.find((p) => p.name === n)?.bias ? presetSkills.map((s) => `${n} ${s}`) : [n]));
 const skillsOpt = opt('skills', '0,25,50,75,100');
 const skills = skillsOpt === 'none' || skillsOpt === '' ? [] : skillsOpt.split(',').map(Number);
 const players = [...presets, ...skills.map((s) => `skill ${s}`)];
@@ -291,7 +296,7 @@ for (const variant of variants) {
         }
     }
     // each preset's place on the slider: the skill levels whose survival brackets the preset's
-    const presetRows = presets.filter((p) => PRESETS.some((q) => q.name === p)).map((p) => [p, runs.filter((r) => r.player === p && r.variant === variant && ok(r))]).filter(([, rs]) => rs.length);
+    const presetRows = presets.filter((p) => !/^(skill|path) /.test(p)).map((p) => [p, runs.filter((r) => r.player === p && r.variant === variant && ok(r))]).filter(([, rs]) => rs.length);
     const skm = skills.slice().sort((a, b) => a - b).map((s) => [s, runs.filter((r) => r.player === `skill ${s}` && r.variant === variant && ok(r))]).filter(([, rs]) => rs.length).map(([s, rs]) => [s, measures(rs)]);
     if (presetRows.length && skm.length > 1) {
         // equivalent skill by a measure (a share of runs, or seconds): linear between the first two neighbouring skill

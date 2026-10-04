@@ -11,7 +11,7 @@ import { makeTape, tapeInputs, replayTape } from '../src/game/tape.js';
 import { loadNoiz2saPatternsWeb } from '../src/game/patterns-web.js';
 import { packBulletML } from '../src/bulletml.js';
 import { BOT_VARIANTS, BROWSER_BUDGET, DEFAULT_HORIZON, makeBot, tapeBotRecord } from '../src/game/bot.js';
-import { KNOBS, PRESETS, PRESET, EXPERT_KNOBS, skillKnobs, snapKnob, botOptions } from '../src/game/human.js';
+import { KNOBS, PRESETS, PRESET, EXPERT_KNOBS, DEFAULT_SKILL, skillKnobs, presetKnobs, snapKnob, botOptions } from '../src/game/human.js';
 import { Sound, CHUNK } from './sound.js';
 import { draw, FIELD_X } from './draw.js';
 
@@ -48,13 +48,17 @@ const app = {
     // (null: the budget menu × BROWSER_BUDGET) and its bank (frames of budget)
     costCap: Infinity, budgetUnits: null, bankFrames: 32,
     speed: 1, lastTape: null, effects: [], banner: '', endReported: false,
-    // slice H2: the humanlike bot's setting — a preset's name or 'custom'; the skill (when the slider set it); every knob;
-    // the bot seed (its own generator is seeded from the game's seed and this)
-    persona: store.get('persona', 'Steady veteran'), skill: store.get('skill', null), knobs: null, botSeedFixed: store.get('botSeedFixed', null), botSeed: 0, // ⚖ 2026-10-04: the bot seed is random per game unless fixed under advanced
+    // slice H2: the humanlike bot's setting — a preset's name or 'custom'; the skill (a personality's, H3b: its biases
+    // apply to the slider at this skill; or the plain slider's under 'custom'); every knob; the bot seed (its own
+    // generator is seeded from the game's seed and this)
+    persona: store.get('persona', 'Steady'), skill: store.get('skill', null), knobs: null, botSeedFixed: store.get('botSeedFixed', null), botSeed: 0, // ⚖ 2026-10-04: the bot seed is random per game unless fixed under advanced
 };
-if (app.persona !== 'custom' && !PRESET[app.persona]) app.persona = 'Steady veteran';
+// ⚖ H3b renamed two presets
+app.persona = { 'Steady veteran': 'Steady', 'Cautious beginner': 'Cautious' }[app.persona] ?? app.persona;
+if (app.persona !== 'custom' && !PRESET[app.persona]) app.persona = 'Steady';
+if (isPersonality()) app.skill ??= DEFAULT_SKILL; else if (app.persona !== 'custom') app.skill = null;
 app.knobs = { ...EXPERT_KNOBS, ...(app.persona === 'custom' ? store.get('knobs', {}) : PRESET[app.persona].knobs) };
-if (app.persona === 'custom' && app.skill != null) app.knobs = skillKnobs(app.skill);
+if (app.skill != null) app.knobs = isPersonality() ? presetKnobs(app.persona, app.skill) : skillKnobs(app.skill);
 if (!ALL_POLICIES.includes(app.policyName)) app.policyName = 'bot: attack';
 let g4Id = 0;
 const sound = new Sound(BASE);
@@ -175,7 +179,9 @@ function botOpts() {
     return { ...common, ...st, gameSeed: app.seed };
 }
 function personaPerception() { return app.persona !== 'custom' ? PRESET[app.persona].perception : 'observed'; }
-function personaLabel() { return app.persona !== 'custom' ? app.persona : app.skill != null ? `skill ${app.skill}` : 'custom'; }
+function personaLabel() { return isPersonality() ? `${app.persona} ${app.skill}` : app.persona !== 'custom' ? app.persona : app.skill != null ? `skill ${app.skill}` : 'custom'; }
+/** (H3b) a personality: biases on the slider (not the Ace, the Expert or custom knobs) */
+function isPersonality() { return !!PRESET[app.persona]?.bias; }
 /** the tape's `bot` record: the same function Node's runs use (src/game/bot.js tapeBotRecord), and the personality's name */
 function botRecord() {
     const rec = tapeBotRecord(makeBot(botOpts()).config);
@@ -397,9 +403,9 @@ function updatePersona() {
     custom.textContent = app.skill != null && app.persona === 'custom' ? `custom (skill ${app.skill})` : 'custom';
     sel.value = app.persona;
     $('skill').value = app.skill ?? '';
-    $('skill-out').textContent = app.skill != null && app.persona === 'custom' ? app.skill : '—';
+    $('skill-out').textContent = app.skill ?? '—';
     $('persona-desc').textContent = app.persona !== 'custom' ? PRESET[app.persona].description
-        : app.skill != null ? 'between Cautious beginner (0) and Expert (100)' : 'your own knobs';
+        : app.skill != null ? 'the slider alone: from a beginner (0) to the Expert (100)' : 'your own knobs';
     const omni = personaPerception() === 'omniscient';
     for (const k of KNOBS) {
         const el = $(`knob-${k.key}`);
@@ -427,8 +433,20 @@ function savePersona() {
     }
     if (app.bot) setBot(true);
 }
-function setPersona(name) { app.persona = name; app.skill = null; if (name !== 'custom') app.knobs = { ...PRESET[name].knobs }; savePersona(); }
-function setSkill(n) { app.persona = 'custom'; app.skill = Math.round(Math.min(100, Math.max(0, Number(n)))); app.knobs = skillKnobs(app.skill); savePersona(); }
+// ⚖ H3b: choosing a personality puts the slider at 50; moving the slider keeps the personality (its biases at the new
+// skill); on the Ace, the Expert or custom knobs the slider gives the plain slider ("custom (skill N)")
+function setPersona(name) {
+    app.persona = name;
+    app.skill = isPersonality() ? DEFAULT_SKILL : null;
+    if (name !== 'custom') app.knobs = isPersonality() ? presetKnobs(name, app.skill) : { ...PRESET[name].knobs };
+    savePersona();
+}
+function skillTo(n) {
+    app.skill = Math.round(Math.min(100, Math.max(0, Number(n))));
+    if (isPersonality()) app.knobs = presetKnobs(app.persona, app.skill);
+    else { app.persona = 'custom'; app.knobs = skillKnobs(app.skill); }
+}
+function setSkill(n) { skillTo(n); savePersona(); }
 function setKnob(key, v) {
     if (key === 'botSeed') { app.botSeedFixed = String(v).trim() === '' ? null : Math.max(1, Math.trunc(Number(v)) || 1) >>> 0; if (app.botSeedFixed != null) app.botSeed = app.botSeedFixed; }
     else { app.knobs = { ...app.knobs, [key]: snapKnob(key, v) }; app.persona = 'custom'; app.skill = null; } // custom is always observed
@@ -439,7 +457,7 @@ function initPersona() {
     for (const p of PRESETS) { const o = document.createElement('option'); o.value = o.textContent = p.name; o.title = p.description; sel.appendChild(o); }
     const c = document.createElement('option'); c.value = 'custom'; c.textContent = 'custom'; sel.appendChild(c);
     sel.addEventListener('change', () => setPersona(sel.value));
-    $('skill').addEventListener('input', (e) => { app.persona = 'custom'; app.skill = Number(e.target.value); app.knobs = skillKnobs(app.skill); updatePersona(); });
+    $('skill').addEventListener('input', (e) => { skillTo(e.target.value); updatePersona(); });
     $('skill').addEventListener('change', (e) => setSkill(e.target.value));
     const cell = (cls, text) => { const c = document.createElement('span'); c.className = cls; c.textContent = text; return c; };
     const box = $('knobs');
