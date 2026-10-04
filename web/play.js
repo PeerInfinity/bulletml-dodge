@@ -460,7 +460,7 @@ function initPersona() {
     Object.assign(inp, { type: 'number', id: 'knob-botSeed', min: 1, step: 1, placeholder: 'random' });
     inp.addEventListener('change', () => setKnob('botSeed', inp.value));
     l.title = 'the bot\'s own random generator is seeded from the game\'s seed and this (recorded in the tape); empty = a new random seed every game';
-    l.append(cell('knob-name', 'bot seed'), inp, cell('knob-unit', 'empty = random'));
+    l.append(cell('knob-name', 'bot seed'), inp, cell('knob-unit', ''));
     box.appendChild(l);
 }
 
