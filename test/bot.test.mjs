@@ -51,3 +51,25 @@ for (const variant of ['attack', 'no-attack']) {
     assert.equal(g.status, STATUS.IN_GAME);
     console.log('ok the bot follows a game that moved on without it');
 }
+
+// 5. slice H1: the Expert (observed perception) — the same seed + settings give the same tape twice, the tape replays,
+//    and its model never reads the game's random generator (the game's rand() state is the same with or without it)
+{
+    for (const variant of ['attack', 'no-attack']) {
+        const opts = { stage: 9, seed: 2, variant, perception: 'observed', horizon: 48, budget: BROWSER_BUDGET, hardCap: 1500 };
+        const a = runBot(P, opts), b = runBot(P, opts);
+        assert.equal(JSON.stringify(a.tape), JSON.stringify(b.tape), `observed ${variant}: two runs gave different tapes`);
+        assert.equal(a.tape.bot.perception, 'observed');
+        assert.equal(stateLine(replayTape(P, a.tape)), stateLine(a.game), `observed ${variant}: the tape does not replay to the run's game`);
+        console.log(`ok Expert ${variant}: same tape twice (stage 10 seed 2, ${a.tape.frames} frames), replays to the same state; lives lost ${a.result.livesLost}, ${a.result.bot.surprises} surprises`);
+    }
+    const g = newGame(P, 9, { seed: 1 }), bot = makeBot({ perception: 'observed', horizon: 32 });
+    for (let f = 0; f < 600; f++) {
+        const r0 = JSON.stringify(g.rand), l0 = g.rnd;
+        const b = bot(g);
+        assert.equal(JSON.stringify(g.rand), r0, 'the observed bot touched the game\'s rand()');
+        assert.equal(g.rnd, l0, 'the observed bot touched the stage LCG');
+        stepGame(g, b);
+    }
+    console.log('ok the Expert reads the screen only: the game\'s generators are untouched by its decisions');
+}

@@ -194,6 +194,40 @@ try {
         console.log(`ok the page's bot played ${inputs.length - FROM} frames, input for input what Node's bot plays`);
     }
 
+    // ── 2c. the H1 Expert (observed perception) in the same busy scene: full speed, and Node's moves input for input ──
+    {
+        const src = JSON.parse(fs.readFileSync(path.join(root, 'tapes/s10-lookahead-seed1.json'), 'utf8'));
+        const FROM = 8900;
+        const prefix = tapeInputs(src).slice(0, FROM);
+        await page.keyboard.press('KeyB');
+        await page.evaluate(([t, prefix]) => { window.noiz.setPolicy('bot: expert attack'); window.noiz.startStage(t.stage, { seed: t.seed, endlessSeed: t.endlessSeed, prefix }); }, [src, prefix]);
+        s = await state();
+        assert.equal(s.bot, true); assert.equal(s.policy, 'bot: expert attack');
+        await page.waitForFunction((f) => window.noiz.state().game.frame >= f, FROM + 60, { timeout: 30000 });
+        const s1 = await state(), f1 = s1.game.frame, t1 = Date.now();
+        await page.waitForTimeout(6000);
+        s = await state();
+        const fps = (s.game.frame - f1) / ((Date.now() - t1) / 1000);
+        const g4 = s.g4;
+        console.log(`ok Expert (attack, observed, horizon ${DEFAULT_HORIZON}, budget ${BROWSER_BUDGET}) from stage 10 frame ${FROM}: ${fps.toFixed(1)} frames/s; worker CPU ${g4.meanMs.toFixed(1)} ms/frame mean, ${g4.maxMs.toFixed(0)} ms max; ${g4.stalls - s1.g4.stalls} waits in the measured 6 s; ${s.game.left} ships left`);
+        assert.ok(fps >= 58, `the game keeps ≥ 58 frames/s with the Expert on in a busy scene (got ${fps.toFixed(1)})`);
+        await page.keyboard.press('Escape');
+        const tape = await page.evaluate(() => window.noiz.lastTape());
+        assert.deepEqual(tape.bot, { variant: 'attack', horizon: DEFAULT_HORIZON, budget: BROWSER_BUDGET, perception: 'observed' });
+        assert.equal(tape.player, 'human+bot-expert-attack');
+        const inputs = tapeInputs(tape);
+        assert.deepEqual(inputs.slice(0, FROM), prefix);
+        const g = newGame(loadNoiz2saPatterns(), tape.stage, { seed: tape.seed, endlessSeed: tape.endlessSeed });
+        for (const b of prefix) stepGame(g, b);
+        const bot = makeBot({ variant: 'attack', horizon: DEFAULT_HORIZON, budget: BROWSER_BUDGET, perception: 'observed' });
+        for (let f = FROM; f < inputs.length && g.status === STATUS.IN_GAME; f++) {
+            const b = bot(g);
+            assert.equal(b, inputs[f], `the page's Expert and Node's differ at frame ${f}`);
+            stepGame(g, b);
+        }
+        console.log(`ok the page's Expert played ${inputs.length - FROM} frames, input for input what Node's Expert plays`);
+    }
+
     // ── 3. a busy mid-stage frame, then a stage clear, from replayed tapes ──
     const busy = JSON.parse(fs.readFileSync(path.join(root, 'tapes/s05-lookahead-seed1.json'), 'utf8'));
     await page.evaluate((t) => { window.noiz.startReplay(t, 's05-lookahead-seed1.json'); window.noiz.setSpeed(16); }, busy);

@@ -3,7 +3,7 @@
  * The H1 sweep: the Expert (observed perception) on every stage, sharded so several sessions can split it.
  *
  *   node bin/h1-sweep.mjs [--jobs N] [--shard i/n] [--only main|ladder] [--stages 1,2,…,ENDLESS] [--seeds 1,2,3]
- *        [--timeout-min M] [--list] [--summary]
+ *        [--timeout-min M] [--motion straight] [--list] [--summary]
  *   (also: node bin/bot-sweep.mjs --perception observed …, which hands over to this script)
  *
  * The work comes in CELLS, one per (stage, variant, seed):
@@ -14,6 +14,8 @@
  * results/.h1-parts/<key>.json (resumable). A run that lost a life is diagnosed (src/game/h1-diagnose.js): which
  * bullet hit, how long it was on screen, its motion, its shooter, whether the bot's model saw it coming.
  *
+ * `--motion straight` (an ablation): the Expert extrapolates every object in a straight line from its last motion
+ * (no turn / speed-change fit); its runs are keyed `…-straight` and keep no tapes.
  * Sharding: the cells, sorted longest first, are dealt round-robin to n shards; `--shard i/n` runs shard i
  * (1-based) and writes its rows to results/h1-shards/shard-<i>-of-<n>.json (commit that file and tapes/h1/).
  * `--summary` merges the local parts with every results/h1-shards/*.json and writes results/h1-bot.json and
@@ -40,7 +42,7 @@ export const H_LADDER = [0, 4, 8, 16, 32, 48, 64, 96];
 const MAIN_H = 48, BUDGET_X = 1, MAX_DIAG = 12;
 
 const pad = (n) => String(n).padStart(2, '0');
-const runKey = (j) => `o-s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}-h${j.horizon}`;
+const runKey = (j) => `o-s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}-h${j.horizon}${j.motion === 'straight' ? '-straight' : ''}`;
 const cellKey = (c) => `c-s${pad(c.stage + 1)}-${c.variant}-seed${c.seed}`;
 const success = (r) => r.livesLost === 0 && (r.variant === 'attack' ? r.outcome === 'cleared' : r.outcome === 'boss-cap');
 const goal = (r) => (r.variant === 'attack' ? r.outcome === 'cleared' : r.outcome === 'boss-cap');
@@ -56,14 +58,14 @@ if (opt('one', null)) {
     const key = runKey(j), part = path.join(partsDir, `${key}.json`);
     fs.mkdirSync(partsDir, { recursive: true });
     if (!fs.existsSync(part)) {
-        const { result, tape } = runBot(P, { stage: j.stage, seed: j.seed, variant: j.variant, horizon: j.horizon, budget: BUDGET_X * BROWSER_BUDGET, perception: 'observed' });
-        if (j.horizon === MAIN_H) {
+        const { result, tape } = runBot(P, { stage: j.stage, seed: j.seed, variant: j.variant, horizon: j.horizon, budget: BUDGET_X * BROWSER_BUDGET, perception: 'observed', motion: j.motion ?? 'curve' });
+        if (j.horizon === MAIN_H && !j.motion) {
             fs.mkdirSync(tapesDir, { recursive: true });
             fs.writeFileSync(path.join(tapesDir, `${key.slice(2)}.json`), JSON.stringify(tape));
             result.tape = `h1/${key.slice(2)}.json`;
         }
         const t0 = Date.now();
-        const deaths = result.hitFrames.length ? diagnoseDeaths(P, tape, result.hitFrames.slice(0, MAX_DIAG)) : [];
+        const deaths = result.hitFrames.length ? diagnoseDeaths(P, tape, result.hitFrames.slice(0, MAX_DIAG), { motion: j.motion ?? 'curve' }) : [];
         const row = { kind: 'run', ...j, key, ...result, deaths, deathLines: deaths.map(deathLine), diagSec: +((Date.now() - t0) / 1000).toFixed(1) };
         fs.writeFileSync(part, JSON.stringify(row));
     }
@@ -74,6 +76,7 @@ if (opt('one', null)) {
 const seeds = opt('seeds', '1,2,3').split(',').map(Number);
 const stagesWanted = opt('stages', '1,2,3,4,5,6,7,8,9,10,ENDLESS').split(',').map((s) => STAGES.indexOf(s));
 const only = opt('only', null);
+const motionOpt = opt('motion', null); // null = the Expert's own (curve)
 const cells = [];
 for (const stage of stagesWanted) for (const variant of VARIANTS) for (const seed of seeds) cells.push({ stage, variant, seed });
 // longest first (endless, then no-attack: it lives 3 minutes into the boss scene), a fixed order so shards agree
@@ -116,10 +119,10 @@ if (!args.includes('--summary')) {
         fs.mkdirSync(shardsDir, { recursive: true });
         let commit = 'unknown';
         try { commit = execSync('git rev-parse --short HEAD', { cwd: root }).toString().trim(); } catch { /* no git */ }
-        fs.writeFileSync(path.join(shardsDir, `shard-${shardI}-of-${shardN}.json`), JSON.stringify({ shard: `${shardI}/${shardN}`, commit, cores: os.cpus().length, jobs: nJobs, wallMin: +((Date.now() - t0) / 60000).toFixed(1), rows: mine }, null, 0) + '\n');
+        fs.writeFileSync(path.join(shardsDir, `shard-${shardI}-of-${shardN}${motionOpt ? `-${motionOpt}` : ''}${only ? `-${only}` : ''}.json`), JSON.stringify({ shard: `${shardI}/${shardN}`, commit, cores: os.cpus().length, jobs: nJobs, wallMin: +((Date.now() - t0) / 60000).toFixed(1), rows: mine }, null, 0) + '\n');
     };
     const doCell = async (c) => {
-        const base = { stage: c.stage, variant: c.variant, seed: c.seed };
+        const base = { stage: c.stage, variant: c.variant, seed: c.seed, ...(motionOpt ? { motion: motionOpt } : {}) };
         if (only !== 'ladder') mine.push(await runOne({ ...base, horizon: MAIN_H }));
         if (only !== 'main' && c.stage < 10) {
             let streak = 0;
@@ -148,7 +151,9 @@ if (fs.existsSync(shardsDir)) for (const f of fs.readdirSync(shardsDir).filter((
     shardInfo.push({ shard: s.shard, commit: s.commit, cores: s.cores, jobs: s.jobs, wallMin: s.wallMin, rows: s.rows.length });
     for (const r of s.rows) if (!byKey.has(r.key) || byKey.get(r.key).frames == null) byKey.set(r.key, r);
 }
-const runs = [...byKey.values()].filter((r) => r.kind === 'run').sort((a, b) => a.key.localeCompare(b.key));
+const allRuns = [...byKey.values()].filter((r) => r.kind === 'run').sort((a, b) => a.key.localeCompare(b.key));
+const runs = allRuns.filter((r) => !r.motion), straightRuns = allRuns.filter((r) => r.motion === 'straight');
+const stagesShown = STAGES.map((_, i) => i).filter((i) => runs.some((r) => r.stage === i));
 // the Ace: G4's budget-1× main rows and its straight-tail ladder
 const g4 = JSON.parse(fs.readFileSync(path.join(root, 'results/g4-bot.json'), 'utf8'));
 const ace = g4.main.filter((r) => r.budgetX === 1 && r.tail === 'straight');
@@ -159,14 +164,14 @@ let commit = 'unknown';
 try { commit = execSync('git rev-parse --short HEAD', { cwd: root }).toString().trim(); } catch { /* no git */ }
 const ok = (r) => r.livesLost != null;
 const meta = { commit, date: new Date().toISOString().slice(0, 10), browserBudget: BROWSER_BUDGET, unitFoes: UNIT_FOES, modelBase: MODEL_BASE, modelFoes: MODEL_FOES, mainHorizon: MAIN_H, budgetX: BUDGET_X, hLadder: H_LADDER, bossCap: BOSS_CAP,
-    runs: runs.length, cpuSec: Math.round(runs.reduce((s, r) => s + (r.cpuSec || 0) + (r.diagSec || 0), 0)), shards: shardInfo };
-fs.writeFileSync(path.join(root, 'results/h1-bot.json'), JSON.stringify({ meta, runs }, null, 0) + '\n');
+    runs: allRuns.length, cpuSec: Math.round(allRuns.reduce((s, r) => s + (r.cpuSec || 0) + (r.diagSec || 0), 0)), shards: shardInfo };
+fs.writeFileSync(path.join(root, 'results/h1-bot.json'), JSON.stringify({ meta, runs: allRuns }, null, 0) + '\n');
 
 const fmt = (n) => (n == null ? '—' : Number(n).toLocaleString('en-US'));
 const mean = (a) => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : null);
 const md = [];
 md.push('# H1 — the Expert (observed perception) against the Ace (omniscient)', '');
-md.push(`Written by \`bin/h1-sweep.mjs --summary\` at commit \`${commit}\`, ${meta.date}, from ${runs.length} Expert runs (${(meta.cpuSec / 3600).toFixed(1)} CPU-hours, diagnosis included)${shardInfo.length ? ` in ${shardInfo.length} shard file(s)` : ''}.`);
+md.push(`Written by \`bin/h1-sweep.mjs --summary\` at commit \`${commit}\`, ${meta.date}, from ${allRuns.length} Expert runs (${(meta.cpuSec / 3600).toFixed(1)} CPU-hours, diagnosis included)${shardInfo.length ? ` in ${shardInfo.length} shard file(s)` : ''}.`);
 md.push(`Budget ${BUDGET_X}× = ${BROWSER_BUDGET} units per frame. The Ace's rows are G4's (results/g4-bot.json, budget 1×, horizon 48). Seeds s = 1–3: C rand() seed s, endlessSeed 7919 × s.`);
 md.push(`"boss 3 min" = alive ${BOSS_CAP} frames into the boss scene (no-attack's goal). ENDLESS stops at 30,000 frames.`, '');
 
@@ -182,7 +187,7 @@ for (const variant of VARIANTS) {
     md.push(`### ${variant}`, '');
     md.push('| Stage | Ace: result (seeds 1/2/3) | Ace: lives lost | Ace: score (mean) | Expert: result (seeds 1/2/3) | Expert: lives lost | Expert: score (mean) | Expert: surprises / repairs / failed (mean) |');
     md.push('|---|---|---|---:|---|---|---:|---|');
-    for (const stage of stagesWanted) {
+    for (const stage of stagesShown) {
         const A = seeds.map((s) => ace.find((r) => r.stage === stage && r.variant === variant && r.seed === s));
         const E = seeds.map((s) => runs.find((r) => r.stage === stage && r.variant === variant && r.seed === s && r.horizon === MAIN_H));
         const e = E.filter((r) => r && ok(r)), a = A.filter((r) => r && ok(r));
@@ -194,7 +199,7 @@ md.push('### Totals, stages 1–10', '');
 md.push('| Variant | Bot | Runs | Goal reached (cleared / boss 3 min) | No life lost | Lives lost (total) | Game overs | Mean score |');
 md.push('|---|---|---:|---:|---:|---:|---:|---:|');
 for (const variant of VARIANTS) for (const [name, rows] of [['Ace', ace], ['Expert', runs.filter((r) => r.horizon === MAIN_H)]]) {
-    const rs = rows.filter((r) => r.variant === variant && r.stage < 10 && ok(r) && seeds.includes(r.seed) && stagesWanted.includes(r.stage));
+    const rs = rows.filter((r) => r.variant === variant && r.stage < 10 && ok(r) && seeds.includes(r.seed) && stagesShown.includes(r.stage));
     if (!rs.length) continue;
     md.push(`| ${variant} | ${name} | ${rs.length} | ${rs.filter(goal).length} | ${rs.filter((r) => r.livesLost === 0).length} | ${rs.reduce((s, r) => s + r.livesLost, 0)} | ${rs.filter((r) => r.outcome === 'game over').length} | ${variant === 'attack' ? fmt(Math.round(mean(rs.map((r) => r.score)))) : '—'} |`);
 }
@@ -207,7 +212,7 @@ md.push('Per stage and seed (1 / 2 / 3): the smallest horizon on the ladder with
     '(no simulation). The grid: lives lost at each horizon (g = game over). The Ace (G4 ladder, straight tail): the smallest H with no life lost.', '');
 md.push(`| Stage | Variant | Ace | Expert: smallest H, no life lost | Expert: smallest H, goal | ${H_LADDER.map((h) => `H=${h}`).join(' | ')} |`);
 md.push(`|---|---|---|---|---|${H_LADDER.map(() => '---').join('|')}|`);
-for (const stage of stagesWanted.filter((s) => s < 10)) for (const variant of VARIANTS) {
+for (const stage of stagesShown.filter((s) => s < 10)) for (const variant of VARIANTS) {
     const rs = runs.filter((r) => r.stage === stage && r.variant === variant);
     if (!rs.length) continue;
     const bySeed = seeds.map((s) => rs.filter((r) => r.seed === s && ok(r)).sort((a, b) => a.horizon - b.horizon));
@@ -239,6 +244,19 @@ for (const h of H_LADDER) {
     md.push(`| ${h} | ${hs.length} | ${n('fired in the hit\'s own frame (never seen)')} | ${n('a dot not yet moving')} | ${n('motion changed after the last look')} | ${n('seen 1–2 frames ahead')} | ${n('seen ≥ 3 frames ahead (cornered)')} | ${hs.filter((b) => b.aimed).length} |`);
 }
 md.push('');
+if (straightRuns.length) {
+    md.push('## Ablation: straight-line extrapolation only (no turn / speed-change fit), horizon 48', '');
+    md.push('| Stage | Variant | Expert (curve): lives lost, seeds 1/2/3 | Straight only: lives lost | Straight only: result |');
+    md.push('|---|---|---|---|---|');
+    for (const stage of stagesShown) for (const variant of VARIANTS) {
+        const S = seeds.map((s) => straightRuns.find((r) => r.stage === stage && r.variant === variant && r.seed === s && r.horizon === MAIN_H));
+        if (!S.some(Boolean)) continue;
+        const E = seeds.map((s) => runs.find((r) => r.stage === stage && r.variant === variant && r.seed === s && r.horizon === MAIN_H));
+        md.push(`| ${STAGES[stage]} | ${variant} | ${E.map((r) => (r && ok(r) ? r.livesLost : '·')).join(' / ')} | ${S.map((r) => (r && ok(r) ? r.livesLost : '·')).join(' / ')} | ${S.map((r) => cellRes(r, variant, stage >= 10)).join(' / ')} |`);
+    }
+    const tot = (rs) => rs.filter((r) => r && ok(r) && r.horizon === MAIN_H).reduce((a, r) => a + r.livesLost, 0);
+    md.push('', `Lives lost in total: curve ${tot(runs.filter((r) => straightRuns.some((x) => x.stage === r.stage && x.variant === r.variant && x.seed === r.seed)))}, straight ${tot(straightRuns)}.`, '');
+}
 md.push('## Shards', '');
 md.push(shardInfo.length ? shardInfo.map((s) => `- shard ${s.shard}: ${s.rows} runs at \`${s.commit}\`, ${s.wallMin} min wall, ${s.jobs} jobs on ${s.cores} cores`).join('\n') : '- (local parts only)');
 fs.writeFileSync(path.join(root, 'results/h1-bot.md'), md.join('\n') + '\n');

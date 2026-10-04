@@ -4,13 +4,16 @@
  * the reflex bot survives and otherwise the smallest planner horizon that does.
  *
  *   node bin/run-pattern.mjs patterns/noiz2sa/zako/<file>.xml [--seeds 3] [--ranks 0.5,1]
- *        [--frames 1200] [--horizons 2,4,8,16,32,64] [--beam 16] [--trace out.json]
+ *        [--frames 1200] [--horizons 2,4,8,16,32,64] [--beam 16] [--trace out.json] [--perception observed]
+ *
+ * `--perception observed` (slice H1): the planners plan against what is on screen (src/game/perception.js), not
+ * against a copy of the seeded world, and replan every frame.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseBulletML } from '../src/bulletml.js';
 import { createWorld, step, bulletCount, isFinished } from '../src/noiz2sa.js';
-import { makeReflexBot, makePlanner } from '../src/bots.js';
+import { makeReflexBot, makePlanner, makeObservedPlanner } from '../src/bots.js';
 import { runnerIsEnd } from '../src/bulletml.js';
 
 const args = process.argv.slice(2);
@@ -26,6 +29,7 @@ const frames = Number(opt('frames', 1200));
 const horizons = opt('horizons', '2,4,8,16,32,64').split(',').map(Number);
 const beam = Number(opt('beam', 16));
 const tracePath = opt('trace', null);
+const observed = opt('perception', 'omniscient') === 'observed';
 const jsonPath = opt('json', null);
 const kind = path.basename(path.dirname(file)); // zako | middle | boss
 
@@ -67,7 +71,7 @@ for (const rank of ranks) {
         const tried = [`reflex:${r.survived ? 'ok' : `hit@${r.deadTick}`}`];
         if (!r.survived) {
             for (const h of horizons) {
-                const p = play(makePlanner({ horizon: h, beam }), seed, rank);
+                const p = play(observed ? makeObservedPlanner({ horizon: h, beam }) : makePlanner({ horizon: h, beam }), seed, rank);
                 tried.push(`H${h}:${p.survived ? 'ok' : `hit@${p.deadTick}`}`);
                 if (p.survived) { need = h; break; }
             }
@@ -82,7 +86,7 @@ console.log(`\n${bml.name}: ${worst === null ? 'NOT DODGED at some seed/rank' : 
 if (jsonPath) {
     fs.writeFileSync(jsonPath, JSON.stringify({
         pattern: bml.name, file, kind, verdict: worst === null ? 'not-dodged' : worst === 0 ? 'reflex' : `H${worst}`,
-        need: worst, seconds: (Date.now() - t0) / 1000, settings: { seeds, ranks, frames, horizons, beam }, rows,
+        need: worst, seconds: (Date.now() - t0) / 1000, settings: { seeds, ranks, frames, horizons, beam, ...(observed ? { perception: 'observed' } : {}) }, rows,
     }, null, 1));
 }
 

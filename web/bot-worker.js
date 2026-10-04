@@ -7,7 +7,7 @@
  * The bot's budget is the same count as in Node, so the page plays exactly the moves a headless run plays.
  *
  * Messages in:  {type: 'init', patterns}  (packed with packBulletML: a worker has no XML parser)
- *               {type: 'start', id, stage, seed, endlessSeed, inputs, variant, horizon, budget, costCap, bankFrames}
+ *               {type: 'start', id, stage, seed, endlessSeed, inputs, variant, perception, horizon, budget, costCap, bankFrames}
  *                 — `inputs` are the frames played so far (replayed here), the bot takes over after them
  *               {type: 'ack', id, frame}  the page's current frame;  {type: 'stop', id}
  *               {type: 'slow', factor}  (checks only) make each bot frame take factor× its CPU time: a slower machine
@@ -32,7 +32,7 @@ let slow = 1; // for the frame-time checks only (window.noiz.setWorkerSlowdown):
 function start(m) {
     const g = newGame(patterns, m.stage, { seed: m.seed, endlessSeed: m.endlessSeed });
     for (const b of m.inputs) stepGame(g, b);
-    run = { id: m.id, g, bot: makeBot({ variant: m.variant, horizon: m.horizon, budget: m.budget, costCap: m.costCap ?? Infinity, bankFrames: m.bankFrames ?? 32 }), pageFrame: g.frame, out: [], ms: [], units: [], from: g.frame };
+    run = { id: m.id, g, bot: makeBot({ variant: m.variant, perception: m.perception ?? 'omniscient', horizon: m.horizon, budget: m.budget, costCap: m.costCap ?? Infinity, bankFrames: m.bankFrames ?? 32 }), pageFrame: g.frame, out: [], ms: [], units: [], from: g.frame };
     pump();
 }
 

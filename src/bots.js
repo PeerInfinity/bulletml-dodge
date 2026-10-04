@@ -13,6 +13,7 @@
  */
 
 import { ACTIONS, SHIP_SPEED, SCAN_WIDTH_8, SCAN_HEIGHT_8, SPC, cloneWorld, step, stepFrame, moveShip, segmentHitsShip, actionDir, actionSlow } from './noiz2sa.js';
+import { observe, newTracker, stepModel } from './game/perception.js';
 
 const HOME_X = SCAN_WIDTH_8 / 2;
 const HOME_Y = (SCAN_HEIGHT_8 / 5) * 4;
@@ -153,4 +154,60 @@ export function makePlanner({ horizon, beam = 16, maxDepth = 8 } = {}) {
     }
     planner.stats = stats;
     return planner;
+}
+
+// ── OBSERVED PLANNER (slice H1) ──
+/**
+ * The planner's beam search, but against what is on screen instead of a copy of the world: every frame it looks
+ * (src/game/perception.js: bullets continue as seen moving, turning if seen turning; nothing new is fired) and
+ * plans `horizon` frames ahead on that prediction; it plays the first move and looks again. Since nothing new
+ * appears in the prediction, the bullets do not depend on the ship, so their segments are predicted once per frame
+ * and the 18 moves are tested against them.
+ */
+export function makeObservedPlanner({ horizon, beam = 16, maxDepth = 8, motion = 'curve' } = {}) {
+    const chunk = Math.max(1, Math.ceil(horizon / maxDepth));
+    const depth = Math.max(1, Math.ceil(horizon / chunk));
+    const cap2 = (48 * 256) ** 2;
+    const tracker = newTracker();
+    return function observedPlanner(w) {
+        // the pattern world as the game's observer reads it (no shots, no stars, no invincibility)
+        const view = { frame: w.tick, status: 1, scene: 0, endless: 1, left: 0, ship: { x: -1e9, y: -1e9, speed: w.ship.speed, shotCnt: 0, invCnt: 0 }, shots: [], bonuses: [], bonusScore: 10, foes: w.foes };
+        const m = observe(view, tracker, { motion });
+        const segs = [];
+        for (let t = 0; t < depth * chunk; t++) {
+            stepModel(m, 0);
+            const s = [];
+            for (const o of m.foes) if (o.spc !== SPC.FOE) s.push(o.px, o.py, o.x, o.y);
+            segs.push(s);
+        }
+        let frontier = [{ ship: { ...w.ship }, first: -1, score: cap2, t: 0 }];
+        let bestDead = null;
+        for (let k = 0; k < depth; k++) {
+            const next = [];
+            for (const node of frontier) {
+                for (let a = 0; a < ACTIONS; a++) {
+                    const ship = { ...node.ship };
+                    let score = node.score, dead = -1;
+                    for (let t = node.t; t < node.t + chunk && dead < 0; t++) {
+                        moveShip(ship, a);
+                        const sg = segs[t];
+                        for (let q = 0; q < sg.length; q += 4) {
+                            if (segmentHitsShip(sg[q], sg[q + 1], sg[q + 2], sg[q + 3], ship.x, ship.y)) { dead = t; break; }
+                            const dx = sg[q + 2] - ship.x, dy = sg[q + 3] - ship.y;
+                            const d2 = dx * dx + dy * dy;
+                            if (d2 < score) score = d2;
+                        }
+                    }
+                    const first = node.first === -1 ? a : node.first;
+                    if (dead >= 0) { if (!bestDead || dead > bestDead.t) bestDead = { first, t: dead }; continue; }
+                    const hx = (ship.x - HOME_X) / 256, hy = (ship.y - HOME_Y) / 256;
+                    next.push({ ship, first, score: Math.min(score, cap2), t: node.t + chunk, key: Math.sqrt(Math.min(score, cap2)) / 256 - 0.01 * Math.sqrt(hx * hx + hy * hy) });
+                }
+            }
+            if (!next.length) break;
+            next.sort((p, q) => q.key - p.key);
+            frontier = next.slice(0, beam);
+        }
+        return [frontier[0].first !== -1 ? frontier[0].first : (bestDead ? bestDead.first : 0)];
+    };
 }

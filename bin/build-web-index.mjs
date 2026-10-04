@@ -4,7 +4,7 @@
  *   web/index/patterns.json — {zako: [file…], middle: […], boss: […]} in strcmp (byte) order, the order the
  *                             engine and our native build read them in (gameplay-relevant: the stage LCG
  *                             indexes these lists);
- *   web/index/tapes.json    — the tapes in tapes/ and tapes/g4/, with stage, seed and length.
+ *   web/index/tapes.json    — the tapes in tapes/, tapes/g4/ and tapes/h1/, with stage, seed and length.
  *   node bin/build-web-index.mjs [--check]   (--check: exit 1 if the files on disk are stale)
  */
 import fs from 'node:fs';
@@ -17,12 +17,12 @@ const patterns = {};
 for (const kind of ['zako', 'middle', 'boss']) {
     patterns[kind] = fs.readdirSync(path.join(root, 'patterns/noiz2sa', kind)).filter((f) => f.endsWith('.xml')).sort(byteOrder);
 }
-// tapes/*.json, then the G4 bot's tapes/g4/*.json (as "g4/<file>")
+// tapes/*.json, then the G4 bot's tapes/g4/*.json (as "g4/<file>"), then the H1 Expert's tapes/h1/*.json
 const tapeFiles = (sub) => {
     const d = path.join(root, 'tapes', sub);
     return fs.existsSync(d) ? fs.readdirSync(d).filter((f) => f.endsWith('.json')).sort(byteOrder).map((f) => (sub ? `${sub}/${f}` : f)) : [];
 };
-const tapes = [...tapeFiles(''), ...tapeFiles('g4')].map((f) => {
+const tapes = [...tapeFiles(''), ...tapeFiles('g4'), ...tapeFiles('h1')].map((f) => {
     const t = JSON.parse(fs.readFileSync(path.join(root, 'tapes', f), 'utf8'));
     return { file: f, stage: t.stage, seed: t.seed, endlessSeed: t.endlessSeed, frames: t.frames };
 });

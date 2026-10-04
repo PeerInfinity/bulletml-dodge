@@ -23,8 +23,12 @@ const store = {
     set(k, v) { try { localStorage.setItem(`noiz2sa.${k}`, JSON.stringify(v)); } catch { /* storage unavailable */ } },
 };
 
-// the G4 bot ('bot: attack', 'bot: no-attack') runs in a Web Worker (web/bot-worker.js); the test policies run here
-const G4 = Object.fromEntries(BOT_VARIANTS.map((v) => [`bot: ${v}`, v]));
+// the G4 bot ('bot: attack', 'bot: no-attack': the Ace, which plans on a copy of the seeded game) and the H1 Expert
+// ('bot: expert attack', …: it plans on what it sees) run in a Web Worker (web/bot-worker.js); the test policies run here
+const G4 = Object.fromEntries([
+    ...BOT_VARIANTS.map((v) => [`bot: ${v}`, { variant: v, perception: 'omniscient' }]),
+    ...BOT_VARIANTS.map((v) => [`bot: expert ${v}`, { variant: v, perception: 'observed' }]),
+]);
 const ALL_POLICIES = [...Object.keys(G4), ...POLICY_NAMES];
 const isG4 = (name) => name in G4;
 
@@ -121,8 +125,8 @@ function finishRecording() {
     if (!app.played.length) return;
     app.lastTape = makeTape({
         stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, played: app.played,
-        extra: { player: app.botUsed ? `human+${app.policyName.replace('bot: ', 'bot-')}` : 'human',
-            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName], horizon: app.horizon, budget: botBudget(), ...(app.costCap !== Infinity ? { costCap: app.costCap } : {}), ...(app.bankFrames !== 32 ? { bankFrames: app.bankFrames } : {}) } } : {}) },
+        extra: { player: app.botUsed ? `human+${app.policyName.replace('bot: ', 'bot-').replace(' ', '-')}` : 'human',
+            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName].variant, horizon: app.horizon, budget: botBudget(), ...(G4[app.policyName].perception === 'observed' ? { perception: 'observed' } : {}), ...(app.costCap !== Infinity ? { costCap: app.costCap } : {}), ...(app.bankFrames !== 32 ? { bankFrames: app.bankFrames } : {}) } } : {}) },
     });
     app.played = [];
     updateControls();
@@ -149,7 +153,7 @@ function armBot() {
     const id = ++g4Id;
     app.g4 = { id, from: app.g.frame, queue: [], stalls: 0, ms: [], units: [], maxMs: 0, startedAt: app.g.frame, warmUntil: performance.now() + START_HOLD_MAX_MS };
     app.worker.postMessage({ type: 'start', id, stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed,
-        inputs: app.played.slice(), variant: G4[app.policyName], horizon: app.horizon, budget: botBudget(), costCap: app.costCap, bankFrames: app.bankFrames });
+        inputs: app.played.slice(), variant: G4[app.policyName].variant, perception: G4[app.policyName].perception, horizon: app.horizon, budget: botBudget(), costCap: app.costCap, bankFrames: app.bankFrames });
 }
 /**
  * When the bot starts, the game holds until the worker is START_LEAD frames ahead (or START_HOLD_MAX_MS has passed):
@@ -363,7 +367,7 @@ function initControls() {
     const pol = $('policy');
     for (const n of ALL_POLICIES) { const o = document.createElement('option'); o.value = o.textContent = n; pol.appendChild(o); }
     pol.addEventListener('change', () => { app.policyName = pol.value; store.set('policy', pol.value); if (app.bot) setBot(true); });
-    for (const [id, key, values] of [['horizon', 'horizon', [8, 16, 32, 48, 64]], ['budget', 'budgetX', [0.5, 1, 4, 16]]]) {
+    for (const [id, key, values] of [['horizon', 'horizon', [8, 16, 32, 48, 64, 96]], ['budget', 'budgetX', [0.5, 1, 4, 16]]]) {
         const sel = $(id);
         for (const v of values) { const o = document.createElement('option'); o.value = v; o.textContent = id === 'budget' ? (v === 0.5 ? '½× (slow machines)' : `${v}×`) : `${v} frames`; sel.appendChild(o); }
         sel.value = app[key];
