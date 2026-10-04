@@ -39,6 +39,13 @@ simple reflexes and which need planning.
   In `play.html` it thinks in a Web Worker (`web/bot-worker.js`). `src/game/bot-run.js` plays one headless run.
 - `bin/bot-sweep.mjs` — the bot on every stage × variant × seed × budget, and the look-ahead needed, in worker
   processes → `results/g4-bot.md`, `results/g4-bot.json`; tapes in `tapes/g4/` (they replay in the page).
+- `src/game/perception.js` — **the Expert's eyes** (slice H1, `docs/h1-report.md`): the observed world model.
+  Bullets and enemies continue as seen moving (turning if seen turning); nothing new appears until it is fired.
+  `makeBot({perception: 'observed'})` plans on it instead of on a copy of the seeded game (the Ace); in the page it is
+  "bot: expert …". `src/game/h1-diagnose.js` explains each lost life.
+- `bin/h1-sweep.mjs` (or `bin/bot-sweep.mjs --perception observed|omniscient|both`) — the Expert vs the Ace and the
+  look-ahead needed, sharded (`--shard i/N`, then `--merge --expect N`) → `results/h1-bot.md`; it runs as GitHub
+  Actions shards (`.github/workflows/sweep.yml`, dispatched by hand). `.github/workflows/test.yml` is the test gate.
 - `bin/build-web-index.mjs` (`npm run web-index`) — writes `web/index/` (the pattern order and the tape list the
   page needs); re-run it after adding a tape or a pattern (`npm run test:browser` refuses a stale index).
 - `patterns/noiz2sa/` — the 73 patterns from Noiz2sa 0.52 (BSD; licence text beside them).
