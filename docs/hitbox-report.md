@@ -202,3 +202,18 @@ gh run download <run-id> -n sweep-hb-centered     # then commit results/hb-cente
    shows where the hit area really is. Should the line be shorter, about one move long?
 4. **The default.** Original stays the default (⚖). If centered becomes the page's default later, old tapes still
    replay correctly (no field = original), and the bots need no change.
+
+## Follow-up: the spawner clearance grows under centered (2026-10-04)
+
+⚖ The user: *"Yes to 1"* (open question 1). Under the centered hitbox the Expert's and the humanlike bots' spawner
+clearance is now at least the fastest bullet's move on screen + 3 px, capped at 16 px (`src/game/perception.js`,
+`FAST_SLACK`, `FAST_CAP`). The original hitbox is unchanged (every original tape re-records the same).
+CI, Expert, centered, stages 1–10 + ENDLESS × attack/no-attack × seeds 1–3:
+
+| Version | Lives lost, stages 1–10 attack | ENDLESS attack | Mean score (1–10 attack) | ENDLESS score |
+|---|---:|---:|---:|---:|
+| fixed 8 px (`results/hb-centered.md`) | 0 | 1 | 3,101,725 | 7,138,263 |
+| grown, uncapped (run 37239314882) | 1 (boxed in on stage 9) | 0 | 3,079,804 | 7,989,313 |
+| **grown, capped at 16 px** (`results/hb-centered-fast16.md`) | **0** | **0** | 3,088,757 | 7,210,907 |
+
+⚖ Questions 2 (bullets drawn past the edge) and 3 (the centered line length): the user keeps them as they are.
