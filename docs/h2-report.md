@@ -191,6 +191,9 @@ panic thresholds) are not ordered by skill: a beginner's large margin is caution
 
 ## The skill slider
 
+(⚖ Slice H3 has since bent the slider along a calibrated curve: the same path, other skill positions on it —
+`docs/h3-report.md` § 4. The table below is H2's linear slider.)
+
 `skillKnobs(s)`, s in 0–100: every knob between Cautious beginner (0) and the Expert (100), each on its grid
 (`snapKnob`): linearly, except `attentionRadius`, `attentionCount` and `maxRate`, which move geometrically (their
 Expert values mean "no limit": a linear path would keep them near the limit until the very end). Below, the values at

@@ -49,9 +49,11 @@ simple reflexes and which need planning.
 - `src/game/human.js` — **the humanlike bot** (slice H2, `docs/h2-report.md`): the human limits as settings
   (reaction time, attention, misjudged bullet size, replanning, key hold, input rate, overshoot, lapses, slow-button
   use, panic, habits), the bot's own seeded generator, 8 personality presets and a skill slider (Cautious beginner 0
-  → Expert 100). The default knobs are the Expert exactly. In the page: "bot: personality …", the personality menu,
+  → Expert 100, along a curve calibrated in slice H3, `docs/h3-report.md`, so that clears, game overs and survival
+  rise steadily with skill). The default knobs are the Expert exactly. In the page: "bot: personality …", the personality menu,
   the slider and an advanced panel with every knob. `bin/h2-sweep.mjs` (presets × skills × stages × seeds, sharded;
-  `.github/workflows/h2-sweep.yml`) → `results/<name>.md`; `bin/check-bot-tapes.mjs` re-records any bot tape from the
+  `.github/workflows/h2-sweep.yml`) → `results/<name>.md` (clears, game overs, survival, the slider's monotonicity and
+  each preset's equivalent skill); `bin/check-bot-tapes.mjs` re-records any bot tape from the
   settings it carries.
 - `bin/build-web-index.mjs` (`npm run web-index`) — writes `web/index/` (the pattern order and the tape list the
   page needs); re-run it after adding a tape or a pattern (`npm run test:browser` refuses a stale index).

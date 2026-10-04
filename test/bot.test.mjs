@@ -5,7 +5,7 @@ import { newGame, stepGame, stateLine, STATUS, SPC } from '../src/game/noiz2sa-g
 import { packBulletML, unpackBulletML } from '../src/bulletml.js';
 import { makeBot, BROWSER_BUDGET, EXPERT_DEFAULTS, expertSettings, botOptionsFromTape } from '../src/game/bot.js';
 import { stepModel, makeMargin, observe, newTracker, delayedModel, attendModel } from '../src/game/perception.js';
-import { KNOBS, PRESETS, EXPERT_KNOBS, HUMAN_KEYS, skillKnobs, settingByName, botOptions, makeRng, makeHands, snapKnob } from '../src/game/human.js';
+import { KNOBS, PRESETS, EXPERT_KNOBS, HUMAN_KEYS, skillKnobs, pathKnobs, skillPosition, SKILL_CURVE, settingByName, botOptions, makeRng, makeHands, snapKnob } from '../src/game/human.js';
 import fs from 'node:fs';
 import { runBot } from '../src/game/bot-run.js';
 import { tapeInputs, replayTape } from '../src/game/tape.js';
@@ -192,6 +192,12 @@ for (const variant of ['attack', 'no-attack']) {
             for (const k of KNOBS) if (k.skill) assert.ok(k.skill > 0 ? cur[k.key] >= prev[k.key] : cur[k.key] <= prev[k.key], `skill ${s}: ${k.key} ${prev[k.key]} → ${cur[k.key]} goes the wrong way`);
             prev = cur;
         }
+        // the slider's curve (H3): from (0, 0) to (100, 100), rising in both; skill s is the path at its position
+        assert.deepEqual(SKILL_CURVE[0], [0, 0]);
+        assert.deepEqual(SKILL_CURVE[SKILL_CURVE.length - 1], [100, 100]);
+        for (let i = 1; i < SKILL_CURVE.length; i++) assert.ok(SKILL_CURVE[i][0] > SKILL_CURVE[i - 1][0] && SKILL_CURVE[i][1] > SKILL_CURVE[i - 1][1], `SKILL_CURVE point ${i} does not rise`);
+        for (const s of [0, 13, 50, 87, 100]) assert.deepEqual(skillKnobs(s), pathKnobs(skillPosition(s)));
+        assert.deepEqual(settingByName('path 100').knobs, PRESETS.find((p) => p.name === 'Expert').knobs);
         // every human preset is at most the Expert on every skill-ordered knob
         for (const p of PRESETS.filter((q) => q.perception === 'observed')) for (const k of KNOBS) if (k.skill) {
             assert.ok(k.skill > 0 ? p.knobs[k.key] <= k.expert : p.knobs[k.key] >= k.expert, `${p.name}: ${k.key} beyond the Expert's`);

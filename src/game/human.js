@@ -153,12 +153,29 @@ export const PRESET = Object.fromEntries(PRESETS.map((p) => [p.name, p]));
 export const SKILL_LOW = 'Cautious beginner', SKILL_HIGH = 'Expert';
 
 /**
- * The knobs at skill s (0–100): each knob between the beginner's value (0) and the Expert's (100), linearly or
- * geometrically (interp 'log'), on the knob's grid. Every skill-ordered knob moves one way only, so a lower skill is
- * never better on any of them (test/bot.test.mjs checks it).
+ * Slice H3: the slider's curve. Skill s (0–100) → a position p (0–100) on the path from the beginner (p 0) to the Expert
+ * (p 100), piecewise linear through these [s, p] points. The path itself is H2's (every knob between the two ends,
+ * linearly or geometrically); the curve only spreads it, so that clears, game overs and survival change steadily along
+ * the slider instead of almost all between p 10 and 60 (the H3 grid, results/h3-grid.md). Chosen by measurement on the
+ * calibration grid (docs/h3-report.md); s 0 is the beginner and s 100 the Expert exactly.
  */
-export function skillKnobs(s) {
-    const t = Math.min(100, Math.max(0, Number(s))) / 100;
+export const SKILL_CURVE = [[0, 0], [10, 8], [20, 15], [80, 45], [90, 65], [100, 100]];
+/** the path position at skill s (0–100) */
+export function skillPosition(s) {
+    const x = Math.min(100, Math.max(0, Number(s)));
+    for (let i = 1; i < SKILL_CURVE.length; i++) {
+        const [s0, p0] = SKILL_CURVE[i - 1], [s1, p1] = SKILL_CURVE[i];
+        if (x <= s1) return p0 + ((x - s0) / (s1 - s0)) * (p1 - p0);
+    }
+    return 100;
+}
+
+/**
+ * The knobs at path position p (0–100): each knob between the beginner's value (0) and the Expert's (100), linearly or
+ * geometrically (interp 'log'), on the knob's grid. Every skill-ordered knob moves one way only.
+ */
+export function pathKnobs(p) {
+    const t = Math.min(100, Math.max(0, Number(p))) / 100;
     const lo = PRESET[SKILL_LOW].knobs, hi = PRESET[SKILL_HIGH].knobs, out = {};
     for (const k of KNOBS) {
         const a = lo[k.key], b = hi[k.key];
@@ -169,12 +186,23 @@ export function skillKnobs(s) {
 }
 
 /**
- * A setting by name, as the sweep and the page name them: a preset name (any case, spaces or dashes), or
- * "skill N". → {name, perception, knobs}.
+ * The knobs at skill s (0–100): the path at skillPosition(s). The curve rises, so a lower skill is never better on any
+ * skill-ordered knob (test/bot.test.mjs checks it).
+ */
+export function skillKnobs(s) {
+    return pathKnobs(skillPosition(s));
+}
+
+/**
+ * A setting by name, as the sweep and the page name them: a preset name (any case, spaces or dashes), "skill N", or
+ * "path N" (a point of the path without the slider's curve). → {name, perception, knobs}.
  */
 export function settingByName(name) {
     const m = /^skill[ _-]?(\d+(?:\.\d+)?)$/i.exec(String(name).trim());
     if (m) return { name: `skill ${Number(m[1])}`, perception: 'observed', knobs: skillKnobs(Number(m[1])) };
+    // "path N": a point of the path itself, without the slider's curve (H3's calibration tool)
+    const q = /^path[ _-]?(\d+(?:\.\d+)?)$/i.exec(String(name).trim());
+    if (q) return { name: `path ${Number(q[1])}`, perception: 'observed', knobs: pathKnobs(Number(q[1])) };
     const norm = (x) => x.toLowerCase().replace(/[\s_-]+/g, '');
     const p = PRESETS.find((q) => norm(q.name) === norm(String(name)));
     if (!p) throw new Error(`unknown bot setting "${name}" (have: ${PRESETS.map((q) => q.name).join(', ')}, skill 0–100)`);

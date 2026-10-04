@@ -3329,42 +3329,42 @@
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9712
+  "frames": 9747
  },
  {
   "file": "h2/skill-25-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 4883
+  "frames": 1509
  },
  {
   "file": "h2/skill-50-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9726
+  "frames": 9716
  },
  {
   "file": "h2/skill-50-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9998
+  "frames": 9977
  },
  {
   "file": "h2/skill-75-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9755
+  "frames": 9767
  },
  {
   "file": "h2/skill-75-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9783
+  "frames": 9941
  },
  {
   "file": "h2/steady-veteran-s01-attack-seed1.json",
