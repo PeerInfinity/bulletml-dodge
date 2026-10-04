@@ -50,7 +50,7 @@ const app = {
     speed: 1, lastTape: null, effects: [], banner: '', endReported: false,
     // slice H2: the humanlike bot's setting — a preset's name or 'custom'; the skill (when the slider set it); every knob;
     // the bot seed (its own generator is seeded from the game's seed and this)
-    persona: store.get('persona', 'Steady veteran'), skill: store.get('skill', null), knobs: null, botSeed: store.get('botSeed', 1),
+    persona: store.get('persona', 'Steady veteran'), skill: store.get('skill', null), knobs: null, botSeedFixed: store.get('botSeedFixed', null), botSeed: 0, // ⚖ 2026-10-04: the bot seed is random per game unless fixed under advanced
 };
 if (app.persona !== 'custom' && !PRESET[app.persona]) app.persona = 'Steady veteran';
 app.knobs = { ...EXPERT_KNOBS, ...(app.persona === 'custom' ? store.get('knobs', {}) : PRESET[app.persona].knobs) };
@@ -107,8 +107,10 @@ function startStage(stage, { seed = null, endlessSeed = null, prefix = [] } = {}
     app.stage = stage;
     app.seed = seed ?? (fixed !== '' ? Number(fixed) >>> 0 : randomSeed());
     app.endlessSeed = endlessSeed ?? (fixed !== '' ? (Math.imul(7919, app.seed) >>> 0) : randomSeed());
+    app.botSeed = app.botSeedFixed ?? randomSeed();
     app.g = newGame(app.patterns, stage, { seed: app.seed, endlessSeed: app.endlessSeed });
     app.played = []; app.paused = false; app.effects = []; app.replay = null; app.banner = '';
+    if ($('knob-botSeed')) updateBotSeedField();
     for (const b of prefix) { if (app.g.status !== STATUS.IN_GAME) break; stepGame(app.g, b); app.played.push(b); }
     app.botUsed = app.bot;
     app.sel = stage; store.set('stage', stage);
@@ -405,11 +407,17 @@ function updatePersona() {
         // the Ace takes only its horizon (it plans on the game itself)
         el.disabled = omni && k.key !== 'horizon';
     }
-    $('knob-botSeed').value = app.botSeed;
+    updateBotSeedField();
     $('horizon').disabled = !!G4[app.policyName]?.personality;
 }
+/** the bot seed field: empty = random per game (the placeholder shows this game's), a number = fixed */
+function updateBotSeedField() {
+    const el = $('knob-botSeed');
+    el.value = app.botSeedFixed ?? '';
+    el.placeholder = app.botSeed ? `random: ${app.botSeed}` : 'random';
+}
 function savePersona() {
-    store.set('persona', app.persona); store.set('skill', app.skill); store.set('knobs', app.knobs); store.set('botSeed', app.botSeed);
+    store.set('persona', app.persona); store.set('skill', app.skill); store.set('knobs', app.knobs); store.set('botSeedFixed', app.botSeedFixed);
     updatePersona();
     // a personality setting plays as 'bot: personality …' (the variant kept)
     if (!G4[app.policyName]?.personality) {
@@ -422,7 +430,7 @@ function savePersona() {
 function setPersona(name) { app.persona = name; app.skill = null; if (name !== 'custom') app.knobs = { ...PRESET[name].knobs }; savePersona(); }
 function setSkill(n) { app.persona = 'custom'; app.skill = Math.round(Math.min(100, Math.max(0, Number(n)))); app.knobs = skillKnobs(app.skill); savePersona(); }
 function setKnob(key, v) {
-    if (key === 'botSeed') app.botSeed = Math.max(1, Math.trunc(Number(v)) || 1) >>> 0;
+    if (key === 'botSeed') { app.botSeedFixed = String(v).trim() === '' ? null : Math.max(1, Math.trunc(Number(v)) || 1) >>> 0; if (app.botSeedFixed != null) app.botSeed = app.botSeedFixed; }
     else { app.knobs = { ...app.knobs, [key]: snapKnob(key, v) }; app.persona = 'custom'; app.skill = null; } // custom is always observed
     savePersona();
 }
@@ -433,6 +441,7 @@ function initPersona() {
     sel.addEventListener('change', () => setPersona(sel.value));
     $('skill').addEventListener('input', (e) => { app.persona = 'custom'; app.skill = Number(e.target.value); app.knobs = skillKnobs(app.skill); updatePersona(); });
     $('skill').addEventListener('change', (e) => setSkill(e.target.value));
+    const cell = (cls, text) => { const c = document.createElement('span'); c.className = cls; c.textContent = text; return c; };
     const box = $('knobs');
     let group = null;
     for (const k of KNOBS) {
@@ -442,15 +451,16 @@ function initPersona() {
         const inp = document.createElement('input');
         Object.assign(inp, { type: 'number', id: `knob-${k.key}`, min: k.min, max: k.max, step: k.step });
         inp.addEventListener('change', () => setKnob(k.key, inp.value));
-        l.append(`${k.key} `, inp, ` ${k.unit}`);
+        l.append(cell('knob-name', k.key), inp, cell('knob-unit', k.unit));
         box.appendChild(l);
     }
     const l = document.createElement('label');
     l.title = 'the bot\'s own random generator is seeded from the game\'s seed and this (recorded in the tape)';
     const inp = document.createElement('input');
-    Object.assign(inp, { type: 'number', id: 'knob-botSeed', min: 1, step: 1 });
+    Object.assign(inp, { type: 'number', id: 'knob-botSeed', min: 1, step: 1, placeholder: 'random' });
     inp.addEventListener('change', () => setKnob('botSeed', inp.value));
-    l.append('bot seed ', inp);
+    l.title = 'the bot\'s own random generator is seeded from the game\'s seed and this (recorded in the tape); empty = a new random seed every game';
+    l.append(cell('knob-name', 'bot seed'), inp, cell('knob-unit', 'empty = random'));
     box.appendChild(l);
 }
 
@@ -553,7 +563,7 @@ window.noiz = {
     setPersonality: (name) => setPersona(name),
     setSkill: (n) => setSkill(n),
     setKnob: (key, v) => setKnob(key, v),
-    botSetting: () => ({ persona: app.persona, label: personaLabel(), skill: app.skill, knobs: { ...app.knobs }, botSeed: app.botSeed, menuText: $('personality').selectedOptions[0]?.textContent }),
+    botSetting: () => ({ persona: app.persona, label: personaLabel(), skill: app.skill, knobs: { ...app.knobs }, botSeed: app.botSeed, botSeedFixed: app.botSeedFixed, menuText: $('personality').selectedOptions[0]?.textContent }),
     startReplay: (tape, name) => startReplay(tape, name),
     setSpeed: (s) => { app.speed = s; },
     /** the overlay's numbers since the last perfReset (display gaps, game frames/s, bot waits, worker ms) */

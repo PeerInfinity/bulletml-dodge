@@ -231,6 +231,28 @@ try {
 
     // ── 2d. slice H2: the humanlike bot — two personalities and a skill level, from the menu / slider; the tape records
     //        the setting, and Node's bot built from the tape's record plays the page's moves input for input ──
+    {
+        // the bot seed: empty field = a new random seed every game; a number = that seed every game
+        await page.evaluate(() => window.noiz.setKnob('botSeed', ''));
+        const seeds = [];
+        for (let i = 0; i < 3; i++) { await page.evaluate(() => window.noiz.startStage(0, { seed: 1, endlessSeed: 7919 })); seeds.push((await page.evaluate(() => window.noiz.botSetting())).botSeed); }
+        assert.ok(new Set(seeds).size > 1, `random bot seeds differ between games (${seeds})`);
+        await page.evaluate(() => window.noiz.setKnob('botSeed', '77'));
+        await page.evaluate(() => window.noiz.startStage(0, { seed: 1, endlessSeed: 7919 }));
+        assert.equal((await page.evaluate(() => window.noiz.botSetting())).botSeed, 77, 'a fixed bot seed is used');
+        assert.equal(await page.evaluate(() => document.getElementById('knob-botSeed').value), '77');
+        await page.evaluate(() => window.noiz.setKnob('botSeed', ''));
+        // the knob rows: every box and every unit at the same x within its column
+        const xs = await page.evaluate(() => {
+            document.getElementById('advanced').open = true;
+            const rows = [...document.querySelectorAll('#knobs label')].map((l) => { const [n, i, u] = l.children; return { left: Math.round(l.getBoundingClientRect().left), box: Math.round(i.getBoundingClientRect().left - l.getBoundingClientRect().left), unit: Math.round(u.getBoundingClientRect().left - l.getBoundingClientRect().left) }; });
+            document.getElementById('advanced').open = false;
+            return rows;
+        });
+        const off = new Set(xs.map((r) => `${r.box},${r.unit}`));
+        assert.equal(off.size, 1, `every knob row has its box and unit at the same offsets (${[...off]})`);
+        console.log(`ok bot seed: random per game (${seeds.join(', ')}), fixed when set (77); ${xs.length} knob rows aligned (box at +${xs[0].box}px, unit at +${xs[0].unit}px)`);
+    }
     for (const [how, arg, stage, seed] of [['preset', 'Distracted', 2, 5], ['preset', 'Panicky', 5, 3], ['skill', 30, 0, 4]]) {
         await page.evaluate(([how, arg]) => { if (how === 'preset') window.noiz.setPersonality(arg); else window.noiz.setSkill(arg); }, [how, arg]);
         const set = await page.evaluate(() => window.noiz.botSetting());
@@ -251,7 +273,9 @@ try {
         const label = how === 'skill' ? `skill ${arg}` : arg;
         assert.equal(tape.bot.personality, label);
         assert.deepEqual(tape.bot.human, humanDiff(set.knobs));
-        assert.equal(tape.bot.botSeed, 1);
+        // ⚖ 2026-10-04: the bot seed is random per game unless fixed; the tape records the one this game used
+        assert.ok(Number.isInteger(tape.bot.botSeed) && tape.bot.botSeed >= 1, 'a bot seed was drawn');
+        assert.equal(tape.bot.botSeed, (await page.evaluate(() => window.noiz.botSetting())).botSeed, 'the tape records this game\'s bot seed');
         const inputs = tapeInputs(tape);
         const g = newGame(loadNoiz2saPatterns(), tape.stage, { seed: tape.seed, endlessSeed: tape.endlessSeed });
         const bot = makeBot(botOptionsFromTape(tape));
