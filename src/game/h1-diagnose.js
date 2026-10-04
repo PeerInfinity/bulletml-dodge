@@ -7,8 +7,9 @@
  *
  *  - warned 0: the model never predicted it: a bullet still a dot (not yet moving) or one whose motion changed
  *    after the bot's last look;
- *  - warned 1–2: seen in time to react only a frame or two;
- *  - warned more: seen coming, and the bot still found no way out (cornered — or its search missed one).
+ *  - warned 1–2: predicted in time to react only a frame or two;
+ *  - warned more: predicted well ahead, and the bot still found no way out: cornered, its search missed one, or (at
+ *    horizon 0) it does not look ahead at all.
  */
 import { newGame, stepGame, cloneGame, segmentHitsShip, getDeg, SPC, STATUS } from './noiz2sa-game.js';
 import { tapeInputs } from './tape.js';
@@ -124,7 +125,7 @@ function bulletStory(g, c, j, F, hist, inputs, motion) {
 export function deathLine(d) {
     const b = d.bullets.map((x) => {
         if (x.unseen) return `${x.aimed ? 'aimed ' : ''}bullet ${x.speedPx} px/f from ${x.shooter ?? '?'} ${x.fromPx} px away: fired in the hit's own frame (never seen)`;
-        const what = x.unseenDot ? 'a dot not yet moving' : x.warned === 0 ? (x.lastChangeFrame !== null && x.lastChangeFrame >= d.frame - 1 ? 'turned / changed speed after the last look' : 'mispredicted') : x.warned <= 2 ? `seen ${x.warned} frame${x.warned > 1 ? 's' : ''} ahead` : `seen ${x.warned} frames ahead (cornered)`;
+        const what = x.unseenDot ? 'a dot not yet moving' : x.warned === 0 ? (x.lastChangeFrame !== null && x.lastChangeFrame >= d.frame - 1 ? 'turned / changed speed after the last look' : 'mispredicted') : `predicted ${x.warned} frame${x.warned > 1 ? 's' : ''} ahead`;
         return `${x.aimed ? 'aimed ' : ''}bullet ${x.speedPx} px/f, on screen ${x.seenFrames} f, ${x.motionChanges ? `motion changed ${x.motionChanges}×` : 'straight'}, from ${x.shooter ?? '?'}: ${what}`;
     });
     return `f${d.frame}: ${b.join('; ') || 'no hitter found'}`;

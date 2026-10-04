@@ -1,0 +1,171 @@
+# The bot sweeps as sharded CI runs (slice H1). Dispatch by hand (Actions → sweep → Run workflow, or
+# `gh workflow run sweep.yml -f …`); each shard is one 4-core runner running `bin/bot-sweep.mjs … --shard i/N`;
+# the merge job FAILS, naming the shards, if any shard is missing or unfinished — a partial table is never published.
+# It never pushes: download the `sweep-<name>` artifact and commit what you want from it.
+name: sweep
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'results name: results/<name>.md, results/<name>.json'
+        default: 'h1-bot'
+      perception:
+        description: 'observed (the Expert) | omniscient (the Ace) | both'
+        default: 'both'
+      variants:
+        description: 'bot variants'
+        default: 'attack,no-attack'
+      stages:
+        description: 'stages: 1..10, ENDLESS, HARD, EXTREME, INSANE'
+        default: '1,2,3,4,5,6,7,8,9,10,ENDLESS'
+      seeds:
+        description: 'seeds'
+        default: '1,2,3'
+      horizons:
+        description: 'the look-ahead ladder (stages 1-10), or none'
+        default: '0,4,8,16,32,48,64,96'
+      budget:
+        description: 'budget, × BROWSER_BUDGET'
+        default: '1'
+      extra:
+        description: 'more bin/h1-sweep.mjs options, e.g. --motion straight or --main-horizon 32'
+        default: ''
+      shards:
+        description: 'number of shards (runners)'
+        default: '16'
+      patterns:
+        description: 'also the 73 single patterns with the observed planner (bin/sweep.mjs … --perception observed)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      list: ${{ steps.list.outputs.list }}
+    steps:
+      - id: list
+        env:
+          SHARDS: ${{ inputs.shards }}
+        run: |
+          case "$SHARDS" in ''|*[!0-9]*) echo "shards must be a number, got '$SHARDS'"; exit 1;; esac
+          if [ "$SHARDS" -lt 1 ] || [ "$SHARDS" -gt 256 ]; then echo "shards must be 1-256"; exit 1; fi
+          echo "list=[$(seq -s, 1 "$SHARDS")]" >> "$GITHUB_OUTPUT"
+
+  shard:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.plan.outputs.list) }}
+    env:
+      NAME: ${{ inputs.name }}
+      PERCEPTION: ${{ inputs.perception }}
+      VARIANTS: ${{ inputs.variants }}
+      STAGES: ${{ inputs.stages }}
+      SEEDS: ${{ inputs.seeds }}
+      HORIZONS: ${{ inputs.horizons }}
+      BUDGET: ${{ inputs.budget }}
+      EXTRA: ${{ inputs.extra }}
+      SHARD: ${{ matrix.shard }}/${{ inputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: sweep shard ${{ matrix.shard }}/${{ inputs.shards }}
+        # $EXTRA is split into options on purpose
+        run: node bin/bot-sweep.mjs --perception "$PERCEPTION" --variants "$VARIANTS" --stages "$STAGES" --seeds "$SEEDS" --horizons "$HORIZONS" --budget "$BUDGET" --name "$NAME" $EXTRA --shard "$SHARD" --jobs "$(nproc)" --timeout-min 300
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shard-${{ matrix.shard }}
+          path: |
+            results/${{ inputs.name }}-shards/
+            tapes/h1/
+          if-no-files-found: warn
+          retention-days: 30
+
+  patterns:
+    if: ${{ inputs.patterns }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node bin/sweep.mjs patterns/noiz2sa --jobs "$(nproc)" --name noiz2sa-observed -- --perception observed
+      - uses: actions/upload-artifact@v4
+        with:
+          name: patterns
+          path: |
+            results/noiz2sa-observed.md
+            results/noiz2sa-observed.json
+
+  merge:
+    needs: [plan, shard, patterns]
+    # runs when shards failed too, so that it can say which; it fails itself unless every shard finished
+    if: ${{ always() && needs.plan.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NAME: ${{ inputs.name }}
+      PERCEPTION: ${{ inputs.perception }}
+      VARIANTS: ${{ inputs.variants }}
+      STAGES: ${{ inputs.stages }}
+      SEEDS: ${{ inputs.seeds }}
+      HORIZONS: ${{ inputs.horizons }}
+      BUDGET: ${{ inputs.budget }}
+      EXTRA: ${{ inputs.extra }}
+      SHARDS: ${{ inputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: shard-*
+          merge-multiple: true
+          path: .
+      - uses: actions/download-artifact@v4
+        if: ${{ inputs.patterns && needs.patterns.result == 'success' }}
+        with:
+          name: patterns
+          path: results
+      - name: merge (fails, naming them, if a shard is missing or unfinished)
+        run: |
+          node bin/h1-sweep.mjs --merge --expect "$SHARDS" --perception "$PERCEPTION" --variants "$VARIANTS" --stages "$STAGES" --seeds "$SEEDS" --horizons "$HORIZONS" --budget "$BUDGET" --name "$NAME" $EXTRA
+          cat "results/$NAME.md" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f results/noiz2sa-observed.md ]; then cat results/noiz2sa-observed.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: the patterns job did not finish
+        if: ${{ inputs.patterns && needs.patterns.result != 'success' }}
+        run: echo "the patterns job ended '${{ needs.patterns.result }}'"; exit 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sweep-${{ inputs.name }}
+          path: |
+            results/${{ inputs.name }}.md
+            results/${{ inputs.name }}.json
+            results/${{ inputs.name }}-shards/
+            results/noiz2sa-observed.md
+            results/noiz2sa-observed.json
+            tapes/h1/
+          if-no-files-found: warn
+          retention-days: 90

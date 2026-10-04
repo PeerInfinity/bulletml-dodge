@@ -199,7 +199,7 @@ try {
         const src = JSON.parse(fs.readFileSync(path.join(root, 'tapes/s10-lookahead-seed1.json'), 'utf8'));
         const FROM = 8900;
         const prefix = tapeInputs(src).slice(0, FROM);
-        await page.keyboard.press('KeyB');
+        // the bot is still on from 2b
         await page.evaluate(([t, prefix]) => { window.noiz.setPolicy('bot: expert attack'); window.noiz.startStage(t.stage, { seed: t.seed, endlessSeed: t.endlessSeed, prefix }); }, [src, prefix]);
         s = await state();
         assert.equal(s.bot, true); assert.equal(s.policy, 'bot: expert attack');
