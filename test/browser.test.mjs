@@ -12,7 +12,8 @@ import { execFileSync } from 'node:child_process';
 import { chromium } from 'playwright';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
 import { newGame, stepGame, STATUS } from '../src/game/noiz2sa-game.js';
-import { makeBot, BROWSER_BUDGET, DEFAULT_HORIZON, EXPERT_DEFAULTS, expertSettings } from '../src/game/bot.js';
+import { makeBot, BROWSER_BUDGET, DEFAULT_HORIZON, EXPERT_DEFAULTS, expertSettings, botOptionsFromTape } from '../src/game/bot.js';
+import { PRESET, skillKnobs, humanDiff } from '../src/game/human.js';
 import { tapeInputs } from '../src/game/tape.js';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -226,6 +227,51 @@ try {
             stepGame(g, b);
         }
         console.log(`ok the page's Expert played ${inputs.length - FROM} frames, input for input what Node's Expert plays`);
+    }
+
+    // ── 2d. slice H2: the humanlike bot — two personalities and a skill level, from the menu / slider; the tape records
+    //        the setting, and Node's bot built from the tape's record plays the page's moves input for input ──
+    for (const [how, arg, stage, seed] of [['preset', 'Distracted', 2, 5], ['preset', 'Panicky', 5, 3], ['skill', 30, 0, 4]]) {
+        await page.evaluate(([how, arg]) => { if (how === 'preset') window.noiz.setPersonality(arg); else window.noiz.setSkill(arg); }, [how, arg]);
+        const set = await page.evaluate(() => window.noiz.botSetting());
+        if (how === 'skill') {
+            assert.equal(set.menuText, `custom (skill ${arg})`, 'the slider puts the menu on "custom (skill N)"');
+            assert.deepEqual(set.knobs, skillKnobs(arg));
+        } else assert.deepEqual(set.knobs, PRESET[arg].knobs);
+        s = await state();
+        assert.equal(s.policy, 'bot: personality attack', 'a personality plays as "bot: personality …"');
+        assert.equal(await page.evaluate(() => document.getElementById('horizon').disabled), true, 'its look-ahead is its horizon knob');
+        await page.evaluate(([stage, seed]) => window.noiz.startStage(stage, { seed, endlessSeed: 7919 * seed }), [stage, seed]);
+        s = await state();
+        assert.equal(s.bot, true);
+        const TO = 900;
+        await page.waitForFunction((f) => window.noiz.state().game.frame >= f || window.noiz.state().game.status !== 1, TO, { timeout: 60000 });
+        await page.keyboard.press('Escape');
+        const tape = await page.evaluate(() => window.noiz.lastTape());
+        const label = how === 'skill' ? `skill ${arg}` : arg;
+        assert.equal(tape.bot.personality, label);
+        assert.deepEqual(tape.bot.human, humanDiff(set.knobs));
+        assert.equal(tape.bot.botSeed, 1);
+        const inputs = tapeInputs(tape);
+        const g = newGame(loadNoiz2saPatterns(), tape.stage, { seed: tape.seed, endlessSeed: tape.endlessSeed });
+        const bot = makeBot(botOptionsFromTape(tape));
+        let n = 0;
+        for (let f = 0; f < inputs.length && g.status === STATUS.IN_GAME; f++, n++) {
+            const b = bot(g);
+            assert.equal(b, inputs[f], `${label}: the page's bot and Node's differ at frame ${f}`);
+            stepGame(g, b);
+        }
+        console.log(`ok ${label} (${how}): stage ${stage + 1} seed ${seed}, the page's humanlike bot played ${n} frames input for input what Node's plays from the tape's record (${bot.stats.human.lapses} lapses, ${bot.stats.human.overrides} inputs changed by its hands, ${g.left} ships left)`);
+    }
+    {
+        // the advanced panel: one knob changed → "custom", recorded
+        await page.evaluate(() => { window.noiz.setPersonality('Steady veteran'); window.noiz.setKnob('reaction', 17); });
+        const set = await page.evaluate(() => window.noiz.botSetting());
+        assert.equal(set.persona, 'custom'); assert.equal(set.knobs.reaction, 17); assert.equal(set.knobs.minHold, PRESET['Steady veteran'].knobs.minHold);
+        assert.equal(await page.evaluate(() => document.getElementById('knob-reaction').value), '17');
+        assert.equal(await page.evaluate(() => document.querySelectorAll('#knobs input').length), Object.keys(PRESET.Expert.knobs).length + 1, 'every knob (and the bot seed) in the advanced panel');
+        await page.evaluate(() => { window.noiz.setPersonality('Expert'); window.noiz.setPolicy('bot: attack'); });
+        console.log('ok the advanced panel shows every knob; changing one makes the setting "custom"');
     }
 
     // ── 3. a busy mid-stage frame, then a stage clear, from replayed tapes ──

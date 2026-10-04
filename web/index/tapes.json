@@ -3183,5 +3183,215 @@
   "seed": 3,
   "endlessSeed": 23757,
   "frames": 20260
+ },
+ {
+  "file": "h1b/s01-attack-seed1-expert.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9709
+ },
+ {
+  "file": "h1b/s01-no-attack-seed1-expert.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 20260
+ },
+ {
+  "file": "h1b/s06-attack-seed1-expert.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9911
+ },
+ {
+  "file": "h1b/s10-attack-seed1-expert.json",
+  "stage": 9,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9919
+ },
+ {
+  "file": "h2/ace-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9672
+ },
+ {
+  "file": "h2/ace-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10041
+ },
+ {
+  "file": "h2/cautious-beginner-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9589
+ },
+ {
+  "file": "h2/cautious-beginner-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 5100
+ },
+ {
+  "file": "h2/distracted-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 8029
+ },
+ {
+  "file": "h2/distracted-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 8442
+ },
+ {
+  "file": "h2/expert-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9709
+ },
+ {
+  "file": "h2/expert-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9911
+ },
+ {
+  "file": "h2/panicky-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9760
+ },
+ {
+  "file": "h2/panicky-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 5887
+ },
+ {
+  "file": "h2/score-chaser-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 4170
+ },
+ {
+  "file": "h2/score-chaser-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 4598
+ },
+ {
+  "file": "h2/skill-0-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9589
+ },
+ {
+  "file": "h2/skill-0-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 5100
+ },
+ {
+  "file": "h2/skill-100-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9709
+ },
+ {
+  "file": "h2/skill-100-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9911
+ },
+ {
+  "file": "h2/skill-25-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9712
+ },
+ {
+  "file": "h2/skill-25-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 4883
+ },
+ {
+  "file": "h2/skill-50-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9726
+ },
+ {
+  "file": "h2/skill-50-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9998
+ },
+ {
+  "file": "h2/skill-75-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9755
+ },
+ {
+  "file": "h2/skill-75-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9783
+ },
+ {
+  "file": "h2/steady-veteran-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 9750
+ },
+ {
+  "file": "h2/steady-veteran-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 10092
+ },
+ {
+  "file": "h2/tunnel-vision-s01-attack-seed1.json",
+  "stage": 0,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 3862
+ },
+ {
+  "file": "h2/tunnel-vision-s06-attack-seed1.json",
+  "stage": 5,
+  "seed": 1,
+  "endlessSeed": 7919,
+  "frames": 8494
  }
 ]

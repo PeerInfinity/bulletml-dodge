@@ -115,9 +115,13 @@ function addBonus(m, x, y, vx, vy) {
  * `makeMargin({bullet, spawner, top})` → the form stepModel takes (squared radii in 1/256 px), or null for none.
  */
 export function makeMargin(mg) {
-    if (!mg || !(mg.bullet > 0 || mg.spawner > 0 || mg.top > 0)) return null;
+    if (!mg || !(mg.bullet > 0 || mg.spawner > 0 || mg.top > 0 || mg.bullet < 0)) return null;
     const rb = Math.max(0, mg.bullet || 0) * 256, rs = Math.max(0, mg.spawner || 0) * 256;
-    return { rb, rs, b2: rb * rb, s2: rs * rs, box: Math.max(rb, rs), top: Math.max(0, mg.top || 0) * 256 };
+    const out = { rb, rs, b2: rb * rb, s2: rs * rs, box: Math.max(rb, rs), top: Math.max(0, mg.top || 0) * 256 };
+    // slice H2: a NEGATIVE bullet clearance is a misjudged bullet size — the bot thinks the hit area (2 px around the
+    // trail) is smaller than it is: hit2 = its squared radius, at least 1/4 px
+    if (mg.bullet < 0) { const r = Math.max(0.25, 2 + mg.bullet) * 256; out.hit2 = r * r; }
+    return out;
 }
 
 /** squared distance from (sx, sy) to the segment (px, py)–(x, y), ends included */
@@ -128,6 +132,69 @@ function segDist2(px, py, x, y, sx, sy) {
     if (t < 0) t = 0; else if (t > 1) t = 1;
     const dx = ox - t * bx, dy = oy - t * by;
     return dx * dx + dy * dy;
+}
+
+/** an object's motion for one frame, as seen moving (straight, turning, or accelerating), and its drawn trail */
+function moveObj(o) {
+    if (o.k === TURN) {
+        const vx = o.c * o.mx - o.s * o.my, vy = o.s * o.mx + o.c * o.my;
+        let sp = o.sp + o.ds;
+        if (sp < 0) sp = 0;
+        const r = o.sp > 0 ? sp / o.sp : 0;
+        o.mx = vx * r; o.my = vy * r; o.sp = sp;
+    } else if (o.k === ACCEL) { o.mx += o.ax; o.my += o.ay; }
+    o.x += o.mx; o.y += o.my;
+    const wl = o.cnt < 4 ? 1 : o.cnt < 8 ? 2 : 4;
+    o.px = o.x - o.mx * wl; o.py = o.y - o.my * wl;
+    o.cnt++;
+}
+
+/** the engine's hit test with a smaller (misjudged) hit area: within sqrt(hit2) of the segment's inside */
+function smallHit(px, py, x, y, sx, sy, hit2) {
+    const bx = x - px, by = y - py, l2 = bx * bx + by * by;
+    if (!(l2 > 1)) return false;
+    const ox = sx - px, oy = sy - py, t = (ox * bx + oy * by) / l2;
+    if (!(t > 0 && t < 1)) return false;
+    const dx = ox - t * bx, dy = oy - t * by;
+    return dx * dx + dy * dy < hit2;
+}
+
+/**
+ * Slice H2, reaction time: the picture `old` (observed n frames ago) carried forward n frames along what was seen
+ * then — every object moves as it was seen moving, nothing new appears, nothing is shot down — with the CURRENT
+ * frame's own state (the ship, its shots, the frame, the lives, the stars) from `now`: a player knows where they
+ * are, but sees the bullets late. A new model; neither argument is changed.
+ */
+export function delayedModel(old, now, n) {
+    const m = cloneModel(old);
+    let foes = m.foes;
+    for (let k = 0; k < n; k++) {
+        let removed = false;
+        for (const o of foes) {
+            if (o.cnt > 0) moveObj(o);
+            if (o.px < 0 || o.px >= SCAN_WIDTH_8 || o.py < 0 || o.py >= SCAN_HEIGHT_8) { o.spc = -1; removed = true; }
+        }
+        if (removed) foes = foes.filter((o) => o.spc >= 0);
+    }
+    return { ...now, foes };
+}
+
+/**
+ * Slice H2, attention: the model with only the bullets the bot attends to — within `radius` px of the ship, and of
+ * those the nearest `count` (ties by slot). Enemies are always seen. A new model sharing m's objects (not changed).
+ */
+export function attendModel(m, radius, count) {
+    const sx = m.ship.x, sy = m.ship.y, r2 = (radius * 256) ** 2;
+    const keep = [], bullets = [];
+    for (const o of m.foes) {
+        if (o.spc === SPC.FOE) { keep.push(o); continue; }
+        const dx = o.x - sx, dy = o.y - sy, d2 = dx * dx + dy * dy;
+        if (d2 <= r2) bullets.push([d2, o]);
+    }
+    if (bullets.length > count) { bullets.sort((a, b) => a[0] - b[0] || a[1].slot - b[1].slot); bullets.length = count; }
+    for (const [, o] of bullets) keep.push(o);
+    keep.sort((a, b) => a.slot - b.slot);
+    return { ...m, foes: keep };
 }
 
 /**
@@ -167,19 +234,7 @@ export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
         const o = foes[i];
         if (o.spc < 0) continue; // removed this frame (a wipe, a kill)
         const isFoe = o.spc === SPC.FOE;
-        if (o.cnt > 0) {
-            if (o.k === TURN) {
-                const vx = o.c * o.mx - o.s * o.my, vy = o.s * o.mx + o.c * o.my;
-                let sp = o.sp + o.ds;
-                if (sp < 0) sp = 0;
-                const r = o.sp > 0 ? sp / o.sp : 0;
-                o.mx = vx * r; o.my = vy * r; o.sp = sp;
-            } else if (o.k === ACCEL) { o.mx += o.ax; o.my += o.ay; }
-            o.x += o.mx; o.y += o.my;
-            const wl = o.cnt < 4 ? 1 : o.cnt < 8 ? 2 : 4;
-            o.px = o.x - o.mx * wl; o.py = o.y - o.my * wl;
-            o.cnt++;
-        }
+        if (o.cnt > 0) moveObj(o);
         if (isFoe) {
             const ss = FOE_SCAN_SIZE[o.type];
             for (let j = 0; j < m.shots.length; j++) {
@@ -218,7 +273,7 @@ export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
         if (!isFoe && o.cnt > 0) {
             // the engine's test, on the predicted segment (a dot that has not moved never hits)
             if (sx > Math.min(o.px, o.x) - 4096 && sx < Math.max(o.px, o.x) + 4096 && sy > Math.min(o.py, o.y) - 4096 && sy < Math.max(o.py, o.y) + 4096
-                && segmentHitsShip(o.px, o.py, o.x, o.y, sx, sy) && ship.invCnt <= 0) {
+                && (margin && margin.hit2 !== undefined ? smallHit(o.px, o.py, o.x, o.y, sx, sy, margin.hit2) : segmentHitsShip(o.px, o.py, o.x, o.y, sx, sy)) && ship.invCnt <= 0) {
                 hit = true;
                 m.left--;
                 if (m.left < 0) m.status = STATUS.GAMEOVER;

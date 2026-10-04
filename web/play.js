@@ -10,7 +10,8 @@ import { makePolicy, POLICY_NAMES } from '../src/game/policies.js';
 import { makeTape, tapeInputs, replayTape } from '../src/game/tape.js';
 import { loadNoiz2saPatternsWeb } from '../src/game/patterns-web.js';
 import { packBulletML } from '../src/bulletml.js';
-import { BOT_VARIANTS, BROWSER_BUDGET, DEFAULT_HORIZON, EXPERT_DEFAULTS, expertSettings } from '../src/game/bot.js';
+import { BOT_VARIANTS, BROWSER_BUDGET, DEFAULT_HORIZON, makeBot, tapeBotRecord } from '../src/game/bot.js';
+import { KNOBS, PRESETS, PRESET, EXPERT_KNOBS, skillKnobs, snapKnob, botOptions } from '../src/game/human.js';
 import { Sound, CHUNK } from './sound.js';
 import { draw, FIELD_X } from './draw.js';
 
@@ -23,11 +24,14 @@ const store = {
     set(k, v) { try { localStorage.setItem(`noiz2sa.${k}`, JSON.stringify(v)); } catch { /* storage unavailable */ } },
 };
 
-// the G4 bot ('bot: attack', 'bot: no-attack': the Ace, which plans on a copy of the seeded game) and the H1 Expert
-// ('bot: expert attack', …: it plans on what it sees) run in a Web Worker (web/bot-worker.js); the test policies run here
+// the G4 bot ('bot: attack', 'bot: no-attack': the Ace, which plans on a copy of the seeded game), the H1 Expert
+// ('bot: expert attack', …: it plans on what it sees) and the H2 humanlike bot ('bot: personality attack', …: the
+// personality menu, the skill slider and the advanced knobs below) run in a Web Worker (web/bot-worker.js); the test
+// policies run here
 const G4 = Object.fromEntries([
     ...BOT_VARIANTS.map((v) => [`bot: ${v}`, { variant: v, perception: 'omniscient' }]),
     ...BOT_VARIANTS.map((v) => [`bot: expert ${v}`, { variant: v, perception: 'observed' }]),
+    ...BOT_VARIANTS.map((v) => [`bot: personality ${v}`, { variant: v, personality: true }]),
 ]);
 const ALL_POLICIES = [...Object.keys(G4), ...POLICY_NAMES];
 const isG4 = (name) => name in G4;
@@ -44,7 +48,13 @@ const app = {
     // (null: the budget menu × BROWSER_BUDGET) and its bank (frames of budget)
     costCap: Infinity, budgetUnits: null, bankFrames: 32,
     speed: 1, lastTape: null, effects: [], banner: '', endReported: false,
+    // slice H2: the humanlike bot's setting — a preset's name or 'custom'; the skill (when the slider set it); every knob;
+    // the bot seed (its own generator is seeded from the game's seed and this)
+    persona: store.get('persona', 'Steady veteran'), skill: store.get('skill', null), knobs: null, botSeed: store.get('botSeed', 1),
 };
+if (app.persona !== 'custom' && !PRESET[app.persona]) app.persona = 'Steady veteran';
+app.knobs = { ...EXPERT_KNOBS, ...(app.persona === 'custom' ? store.get('knobs', {}) : PRESET[app.persona].knobs) };
+if (app.persona === 'custom' && app.skill != null) app.knobs = skillKnobs(app.skill);
 if (!ALL_POLICIES.includes(app.policyName)) app.policyName = 'bot: attack';
 let g4Id = 0;
 const sound = new Sound(BASE);
@@ -126,7 +136,7 @@ function finishRecording() {
     app.lastTape = makeTape({
         stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, played: app.played,
         extra: { player: app.botUsed ? `human+${app.policyName.replace('bot: ', 'bot-').replace(' ', '-')}` : 'human',
-            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName].variant, horizon: app.horizon, budget: botBudget(), ...(G4[app.policyName].perception === 'observed' ? { perception: 'observed', ...expertSettings(EXPERT_DEFAULTS) } : {}), ...(app.costCap !== Infinity ? { costCap: app.costCap } : {}), ...(app.bankFrames !== 32 ? { bankFrames: app.bankFrames } : {}) } } : {}) },
+            ...(app.botUsed && isG4(app.policyName) ? { bot: botRecord() } : {}) },
     });
     app.played = [];
     updateControls();
@@ -152,8 +162,22 @@ function armBot() {
     if (!isG4(app.policyName)) { app.pol = makePolicy(app.policyName); return; }
     const id = ++g4Id;
     app.g4 = { id, from: app.g.frame, queue: [], stalls: 0, ms: [], units: [], maxMs: 0, startedAt: app.g.frame, warmUntil: performance.now() + START_HOLD_MAX_MS };
-    app.worker.postMessage({ type: 'start', id, stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed,
-        inputs: app.played.slice(), variant: G4[app.policyName].variant, perception: G4[app.policyName].perception, horizon: app.horizon, budget: botBudget(), costCap: app.costCap, bankFrames: app.bankFrames });
+    app.worker.postMessage({ type: 'start', id, stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, inputs: app.played.slice(), bot: botOpts() });
+}
+/** the makeBot options of the chosen G4 / Expert / humanlike bot (the worker's bot, and what the tape records) */
+function botOpts() {
+    const p = G4[app.policyName];
+    const common = { variant: p.variant, budget: botBudget(), costCap: app.costCap, bankFrames: app.bankFrames };
+    if (!p.personality) return { ...common, perception: p.perception, horizon: app.horizon };
+    const st = botOptions({ perception: personaPerception(), knobs: app.knobs }, { botSeed: app.botSeed });
+    return { ...common, ...st, gameSeed: app.seed };
+}
+function personaPerception() { return app.persona !== 'custom' ? PRESET[app.persona].perception : 'observed'; }
+function personaLabel() { return app.persona !== 'custom' ? app.persona : app.skill != null ? `skill ${app.skill}` : 'custom'; }
+/** the tape's `bot` record: the same function Node's runs use (src/game/bot.js tapeBotRecord), and the personality's name */
+function botRecord() {
+    const rec = tapeBotRecord(makeBot(botOpts()).config);
+    return G4[app.policyName].personality ? { ...rec, personality: personaLabel() } : rec;
 }
 /**
  * When the bot starts, the game holds until the worker is START_LEAD frames ahead (or START_HOLD_MAX_MS has passed):
@@ -358,12 +382,80 @@ function renderSelect() {
 function updateControls() {
     $('bot').checked = app.bot;
     $('policy').value = app.policyName;
+    updatePersona();
     $('mute').textContent = sound.muted ? 'Sound: off (M)' : 'Sound: on (M)';
     $('download').disabled = !app.lastTape;
     $('download').textContent = app.lastTape ? `Download last tape (${STAGE_NAMES[app.lastTape.stage]}, ${app.lastTape.frames} frames)` : 'Download last tape';
 }
 
+// ── the humanlike bot's setting (slice H2) ──
+function updatePersona() {
+    const sel = $('personality');
+    const custom = sel.querySelector('option[value=custom]');
+    custom.textContent = app.skill != null && app.persona === 'custom' ? `custom (skill ${app.skill})` : 'custom';
+    sel.value = app.persona;
+    $('skill').value = app.skill ?? '';
+    $('skill-out').textContent = app.skill != null && app.persona === 'custom' ? app.skill : '—';
+    $('persona-desc').textContent = app.persona !== 'custom' ? PRESET[app.persona].description
+        : app.skill != null ? 'between Cautious beginner (0) and Expert (100)' : 'your own knobs';
+    const omni = personaPerception() === 'omniscient';
+    for (const k of KNOBS) {
+        const el = $(`knob-${k.key}`);
+        el.value = app.knobs[k.key];
+        // the Ace takes only its horizon (it plans on the game itself)
+        el.disabled = omni && k.key !== 'horizon';
+    }
+    $('knob-botSeed').value = app.botSeed;
+    $('horizon').disabled = !!G4[app.policyName]?.personality;
+}
+function savePersona() {
+    store.set('persona', app.persona); store.set('skill', app.skill); store.set('knobs', app.knobs); store.set('botSeed', app.botSeed);
+    updatePersona();
+    // a personality setting plays as 'bot: personality …' (the variant kept)
+    if (!G4[app.policyName]?.personality) {
+        app.policyName = `bot: personality ${G4[app.policyName]?.variant ?? 'attack'}`;
+        store.set('policy', app.policyName);
+        updateControls();
+    }
+    if (app.bot) setBot(true);
+}
+function setPersona(name) { app.persona = name; app.skill = null; if (name !== 'custom') app.knobs = { ...PRESET[name].knobs }; savePersona(); }
+function setSkill(n) { app.persona = 'custom'; app.skill = Math.round(Math.min(100, Math.max(0, Number(n)))); app.knobs = skillKnobs(app.skill); savePersona(); }
+function setKnob(key, v) {
+    if (key === 'botSeed') app.botSeed = Math.max(1, Math.trunc(Number(v)) || 1) >>> 0;
+    else { app.knobs = { ...app.knobs, [key]: snapKnob(key, v) }; app.persona = 'custom'; app.skill = null; } // custom is always observed
+    savePersona();
+}
+function initPersona() {
+    const sel = $('personality');
+    for (const p of PRESETS) { const o = document.createElement('option'); o.value = o.textContent = p.name; o.title = p.description; sel.appendChild(o); }
+    const c = document.createElement('option'); c.value = 'custom'; c.textContent = 'custom'; sel.appendChild(c);
+    sel.addEventListener('change', () => setPersona(sel.value));
+    $('skill').addEventListener('input', (e) => { app.persona = 'custom'; app.skill = Number(e.target.value); app.knobs = skillKnobs(app.skill); updatePersona(); });
+    $('skill').addEventListener('change', (e) => setSkill(e.target.value));
+    const box = $('knobs');
+    let group = null;
+    for (const k of KNOBS) {
+        if (k.group !== group) { group = k.group; const h = document.createElement('h3'); h.textContent = group; box.appendChild(h); }
+        const l = document.createElement('label');
+        l.title = k.help;
+        const inp = document.createElement('input');
+        Object.assign(inp, { type: 'number', id: `knob-${k.key}`, min: k.min, max: k.max, step: k.step });
+        inp.addEventListener('change', () => setKnob(k.key, inp.value));
+        l.append(`${k.key} `, inp, ` ${k.unit}`);
+        box.appendChild(l);
+    }
+    const l = document.createElement('label');
+    l.title = 'the bot\'s own random generator is seeded from the game\'s seed and this (recorded in the tape)';
+    const inp = document.createElement('input');
+    Object.assign(inp, { type: 'number', id: 'knob-botSeed', min: 1, step: 1 });
+    inp.addEventListener('change', () => setKnob('botSeed', inp.value));
+    l.append('bot seed ', inp);
+    box.appendChild(l);
+}
+
 function initControls() {
+    initPersona();
     const pol = $('policy');
     for (const n of ALL_POLICIES) { const o = document.createElement('option'); o.value = o.textContent = n; pol.appendChild(o); }
     pol.addEventListener('change', () => { app.policyName = pol.value; store.set('policy', pol.value); if (app.bot) setBot(true); });
@@ -457,6 +549,11 @@ window.noiz = {
         music: sound.music.src.split('/').pop(), musicPaused: sound.music.paused, muted: sound.muted }),
     startStage: (i, o) => startStage(i, o),
     setPolicy: (name) => { app.policyName = name; updateControls(); },
+    /** (H2) the humanlike bot's setting: a preset by name, a skill 0–100, one knob; and what it is now */
+    setPersonality: (name) => setPersona(name),
+    setSkill: (n) => setSkill(n),
+    setKnob: (key, v) => setKnob(key, v),
+    botSetting: () => ({ persona: app.persona, label: personaLabel(), skill: app.skill, knobs: { ...app.knobs }, botSeed: app.botSeed, menuText: $('personality').selectedOptions[0]?.textContent }),
     startReplay: (tape, name) => startReplay(tape, name),
     setSpeed: (s) => { app.speed = s; },
     /** the overlay's numbers since the last perfReset (display gaps, game frames/s, bot waits, worker ms) */

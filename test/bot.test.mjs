@@ -3,8 +3,10 @@ import assert from 'node:assert/strict';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
 import { newGame, stepGame, stateLine, STATUS, SPC } from '../src/game/noiz2sa-game.js';
 import { packBulletML, unpackBulletML } from '../src/bulletml.js';
-import { makeBot, BROWSER_BUDGET, EXPERT_DEFAULTS, expertSettings } from '../src/game/bot.js';
-import { stepModel, makeMargin } from '../src/game/perception.js';
+import { makeBot, BROWSER_BUDGET, EXPERT_DEFAULTS, expertSettings, botOptionsFromTape } from '../src/game/bot.js';
+import { stepModel, makeMargin, observe, newTracker, delayedModel, attendModel } from '../src/game/perception.js';
+import { KNOBS, PRESETS, EXPERT_KNOBS, HUMAN_KEYS, skillKnobs, settingByName, botOptions, makeRng, makeHands, snapKnob } from '../src/game/human.js';
+import fs from 'node:fs';
 import { runBot } from '../src/game/bot-run.js';
 import { tapeInputs, replayTape } from '../src/game/tape.js';
 
@@ -107,4 +109,137 @@ for (const variant of ['attack', 'no-attack']) {
     const dot = { spc: SPC.BULLET, x: 166 * 256, y: 300 * 256, mx: 0, my: 0, cnt: 0 }; // a bullet not yet moving is a spawner too
     m = model(dot); stepModel(m, 0, null, 0, makeMargin({ bullet: 2, spawner: 8 })); assert.equal(m.near, true, 'a dot not yet moving is kept at the spawner margin');
     console.log(`ok H1b: the tape records the Expert's settings ${JSON.stringify(expertSettings(EXPERT_DEFAULTS))}; the H1 Expert (none) is reproducible; the margin's geometry; the Ace takes no Expert settings`);
+}
+
+// 7. slice H2: the human limits
+{
+    // run a setting (a preset or "skill N") the way bin/h2-sweep.mjs does
+    const runSetting = (name, o = {}) => {
+        const st = settingByName(name), b = botOptions(st, { botSeed: o.botSeed ?? 1 });
+        return runBot(P, { stage: o.stage ?? 2, seed: o.seed ?? 2, variant: o.variant ?? 'attack', budget: BROWSER_BUDGET, hardCap: o.hardCap ?? 1500,
+            horizon: b.horizon, perception: b.perception, expert: b.perception === 'observed' ? { margin: b.margin, attackY: b.attackY } : {},
+            starWeight: b.starWeight ?? 0, human: b.human ?? null, botSeed: b.botSeed ?? 1, personality: st.name });
+    };
+    // replay a tape's bot from the settings the tape carries
+    const rerun = (tape, hardCap) => {
+        const o = botOptionsFromTape(tape);
+        return runBot(P, { stage: tape.stage, seed: tape.seed, endlessSeed: tape.endlessSeed, variant: o.variant, horizon: o.horizon, budget: o.budget, hardCap,
+            perception: o.perception, expert: o.perception === 'observed' ? { margin: o.margin, attackY: o.attackY } : {}, starWeight: o.starWeight, human: o.human ?? null, botSeed: o.botSeed ?? 1,
+            personality: tape.bot.personality ?? null });
+    };
+
+    // a. every preset (and two skill levels): the same tape twice; the tape replays; its own settings re-record it
+    for (const name of [...PRESETS.map((p) => p.name), 'skill 0', 'skill 50']) {
+        const a = runSetting(name), b = runSetting(name);
+        assert.equal(JSON.stringify(a.tape), JSON.stringify(b.tape), `${name}: two runs gave different tapes`);
+        assert.equal(stateLine(replayTape(P, a.tape)), stateLine(a.game), `${name}: the tape does not replay to the run's game`);
+        assert.equal(JSON.stringify(rerun(a.tape, 1500).tape), JSON.stringify(a.tape), `${name}: the tape's own settings do not re-record it`);
+        const human = a.result.bot.human;
+        console.log(`ok ${name}: same tape twice (stage 3 seed 2, ${a.tape.frames} frames), replays, re-records from its bot record ${JSON.stringify(a.tape.bot.human ?? null).slice(0, 60)}…; lives lost ${a.result.livesLost}${human ? `, ${human.lapses} lapses, ${human.overrides} inputs changed by its hands` : ''}`);
+    }
+    // b. the bot seed matters (its own generator), the game's generators are untouched by it
+    {
+        const a = runSetting('Distracted', { botSeed: 1 }), b = runSetting('Distracted', { botSeed: 2 });
+        assert.notEqual(JSON.stringify(a.tape.inputs), JSON.stringify(b.tape.inputs), 'another bot seed, other moves');
+        assert.equal(b.tape.bot.botSeed, 2);
+        const st = botOptions(settingByName('Panicky'));
+        const g = newGame(P, 5, { seed: 1 }), bot = makeBot({ ...st, gameSeed: 1 });
+        for (let f = 0; f < 900; f++) {
+            const r0 = JSON.stringify(g.rand), l0 = g.rnd;
+            const x = bot(g);
+            assert.equal(JSON.stringify(g.rand), r0, 'the humanlike bot touched the game\'s rand()');
+            assert.equal(g.rnd, l0, 'the humanlike bot touched the stage LCG');
+            stepGame(g, x);
+        }
+        // the generator: integer arithmetic, so the same numbers everywhere (pinned)
+        const rng = makeRng(1, 1), xs = [rng(), rng(), rng()];
+        assert.ok(xs.every((x) => x >= 0 && x < 1));
+        assert.deepEqual(xs, (() => { const r = makeRng(1, 1); return [r(), r(), r()]; })());
+        assert.notEqual(makeRng(1, 2)(), xs[0]); assert.notEqual(makeRng(2, 1)(), xs[0]);
+        console.log(`ok another bot seed gives other moves; the humanlike bot never touches the game's generators; makeRng(1,1) → ${xs.map((x) => x.toFixed(6)).join(', ')}`);
+    }
+    // c. the defaults are the Expert and the Ace exactly: an H1b Expert tape and a G4 Ace tape re-record (their first 3000 frames)
+    {
+        for (const [file, name] of [['tapes/h1b/s01-attack-seed1-expert.json', 'Expert'], ['tapes/g4/s01-attack-seed1-b1x.json', 'Ace']]) {
+            const want = JSON.parse(fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'));
+            const N = 3000;
+            const got = runSetting(name, { stage: want.stage, seed: want.seed, hardCap: N });
+            assert.deepEqual(tapeInputs(got.tape), tapeInputs(want).slice(0, N), `${name} with the default knobs differs from ${file}`);
+            const { personality, ...rec } = got.tape.bot;
+            assert.equal(personality, name);
+            assert.deepEqual(rec, want.bot, `${name}: the tape's bot record`);
+            assert.equal(got.tape.bot.human, undefined);
+        }
+        // the human knobs at the Expert's values are no human layer at all
+        assert.equal(makeBot({ perception: 'observed', human: Object.fromEntries(HUMAN_KEYS.map((k) => [k, EXPERT_KNOBS[k]])) }).config.human, undefined);
+        assert.throws(() => makeBot({ perception: 'omniscient', human: { reaction: 10 } }), /observed/);
+        assert.throws(() => makeBot({ perception: 'observed', human: { reactoin: 10 } }), /unknown human knob/);
+        console.log('ok the default knobs re-record the H1b Expert (tapes/h1b) and the G4 Ace (tapes/g4) input for input; human knobs need perception "observed"');
+    }
+    // d. the presets and the slider: every knob set, on its grid; the slider's ends are the beginner and the Expert, and every
+    //    skill-ordered knob moves one way only (a lower skill is never better on any of them)
+    {
+        for (const p of PRESETS) for (const k of KNOBS) {
+            const v = p.knobs[k.key];
+            assert.ok(v !== undefined, `${p.name}: no ${k.key}`);
+            assert.equal(snapKnob(k.key, v), v, `${p.name}: ${k.key} = ${v} is off its grid / range`);
+        }
+        assert.deepEqual(skillKnobs(100), PRESETS.find((p) => p.name === 'Expert').knobs);
+        assert.deepEqual(skillKnobs(0), PRESETS.find((p) => p.name === 'Cautious beginner').knobs);
+        let prev = skillKnobs(0);
+        for (let s = 1; s <= 100; s++) {
+            const cur = skillKnobs(s);
+            for (const k of KNOBS) if (k.skill) assert.ok(k.skill > 0 ? cur[k.key] >= prev[k.key] : cur[k.key] <= prev[k.key], `skill ${s}: ${k.key} ${prev[k.key]} → ${cur[k.key]} goes the wrong way`);
+            prev = cur;
+        }
+        // every human preset is at most the Expert on every skill-ordered knob
+        for (const p of PRESETS.filter((q) => q.perception === 'observed')) for (const k of KNOBS) if (k.skill) {
+            assert.ok(k.skill > 0 ? p.knobs[k.key] <= k.expert : p.knobs[k.key] >= k.expert, `${p.name}: ${k.key} beyond the Expert's`);
+        }
+        console.log(`ok ${PRESETS.length} presets × ${KNOBS.length} knobs on their grids; the slider runs Cautious beginner (0) → Expert (100), every skill-ordered knob one way`);
+    }
+    // e. the hands: the minimum hold, the rate cap, the overshoot
+    {
+        const E = 16; // fire, no direction
+        const run = (h, plan, seed = 1) => { const hands = makeHands({ ...EXPERT_KNOBS, ...h }, makeRng(seed, 1)); return plan.map((b, f) => hands(b, 0, f)); };
+        const zig = Array.from({ length: 20 }, (_, f) => E | (f % 2 ? 3 : 7)); // E, W, E, W, … every frame
+        assert.deepEqual(run({}, zig), zig, 'the Expert\'s hands press what is planned');
+        const held = run({ minHold: 4 }, zig);
+        for (let f = 0, since = 0; f < held.length; f++) { if (f && held[f] !== held[f - 1]) { assert.ok(since >= 4, `changed after ${since} frames`); since = 1; } else since++; }
+        const capped = run({ maxRate: 5 }, Array.from({ length: 125 }, (_, f) => E | (f % 2 ? 3 : 7)));
+        const changes = capped.filter((b, f) => f && b !== capped[f - 1]).length;
+        assert.ok(changes <= 10 && changes >= 8, `5 changes per second over 2 s: ${changes}`);
+        const over = run({ overshootP: 1, overshootFrames: 3 }, [E | 3, E | 3, E | 3, E, E, E, E, E]);
+        assert.equal(over[3], E | 3, 'with overshoot, a direction let go of is held on');
+        assert.equal(over[7], E, 'and let go of after at most 3 frames');
+        console.log(`ok the hands: a ${4}-frame minimum hold, ≤ 5 changes per second (${changes} in 2 s), an overshoot of up to 3 frames`);
+    }
+    // f. what it sees: the picture n frames late, carried forward, equals the fresh one for bullets that kept their motion;
+    //    attention keeps the enemies and the nearest bullets
+    {
+        const g = newGame(P, 2, { seed: 1 }), tr = newTracker(), bot = makeBot({ horizon: 8 });
+        const pics = [];
+        for (let f = 0; f < 700; f++) { pics.push(observe(g, tr)); stepGame(g, bot(g)); }
+        const n = 6, now = pics[pics.length - 1], late = delayedModel(pics[pics.length - 1 - n], now, n);
+        assert.equal(late.frame, now.frame); assert.deepEqual(late.ship, now.ship);
+        assert.equal(delayedModel(now, now, 0).foes.length, now.foes.length);
+        const bySlot = new Map(now.foes.map((o) => [o.slot, o]));
+        let same = 0, moving = 0;
+        for (const o of late.foes) {
+            const q = bySlot.get(o.slot);
+            if (!q || q.spc === SPC.FOE || o.k !== 0 || o.cnt <= n + 1) continue;
+            moving++;
+            if (Math.abs(q.x - o.x) < 1 && Math.abs(q.y - o.y) < 1) same++;
+        }
+        assert.ok(moving > 5 && same / moving > 0.8, `straight-moving bullets carried forward ${n} frames land where they are (${same}/${moving})`);
+        const a = attendModel(now, 80, 5);
+        const bullets = a.foes.filter((o) => o.spc !== SPC.FOE);
+        assert.ok(bullets.length <= 5);
+        for (const o of bullets) assert.ok(Math.hypot(o.x - now.ship.x, o.y - now.ship.y) <= 80 * 256);
+        assert.equal(a.foes.filter((o) => o.spc === SPC.FOE).length, now.foes.filter((o) => o.spc === SPC.FOE).length, 'enemies are always seen');
+        // a negative bullet clearance: the bot thinks the hit area smaller — a bullet 1.5 px away is a hit only for the engine
+        const mg = makeMargin({ bullet: -1, spawner: 0, top: 0 });
+        assert.ok(mg && mg.hit2 === 256 * 256);
+        console.log(`ok the late picture (${n} frames) puts ${same}/${moving} straight bullets where they are now; attention keeps ${bullets.length} bullets within 80 px and every enemy`);
+    }
 }

@@ -29,7 +29,8 @@
  * `$rand` draws: the horizon answers "is there a path that far ahead", not "could a player guess it".
  */
 import { stepGame, cloneGame, STATUS, SPC, input, SCAN_WIDTH_8, SCAN_HEIGHT_8, FOE_SCAN_SIZE, SHIP_SPEED, SHIP_SLOW_SPEED } from './noiz2sa-game.js';
-import { observe, newTracker, cloneModel, stepModel, makeMargin, MOTIONS } from './perception.js';
+import { observe, newTracker, cloneModel, stepModel, makeMargin, delayedModel, attendModel, MOTIONS } from './perception.js';
+import { EXPERT_KNOBS, HUMAN_KEYS, humanDiff, makeRng, makeHands, FPS, MISJUDGE_EVERY } from './human.js';
 
 export const BOT_VARIANTS = ['attack', 'no-attack'];
 /** the tail controller: `straight` (the default: heads for the target, all dodging is the exact search) or
@@ -51,6 +52,33 @@ export const LEVELS = { ace: { perception: 'omniscient' }, expert: { perception:
  *    near where enemies appear (48–128 px) its shots reach them sooner.
  *  The Ace takes neither: it knows where every bullet will be, and its plans find their own height. */
 export const EXPERT_DEFAULTS = { margin: { bullet: 2, spawner: 8, top: 136 }, attackY: 160 };
+/**
+ * What a tape records of a bot (bot.config): the settings that make its moves, so a run replays exactly
+ * (botOptionsFromTape). The Ace's and the Expert's records are as before H2; a humanlike bot adds `human` (its knobs
+ * that differ from the Expert's, src/game/human.js) and `botSeed`, and a star-greedy one `starWeight`.
+ */
+export function tapeBotRecord(c) {
+    const observed = c.perception === 'observed';
+    return {
+        variant: c.variant, horizon: c.horizon, budget: c.budget,
+        ...(observed ? { perception: 'observed', ...(c.motion !== 'curve' ? { motion: c.motion } : {}), ...expertSettings(c) } : {}),
+        ...(c.starWeight ? { starWeight: c.starWeight } : {}),
+        ...(c.human ? { human: c.human, botSeed: c.botSeed } : {}),
+        ...(c.tail !== 'straight' ? { tail: c.tail } : {}), ...(c.costCap != null && c.costCap !== Infinity ? { costCap: c.costCap } : {}),
+        ...(c.bankFrames !== 32 ? { bankFrames: c.bankFrames } : {}),
+    };
+}
+/** makeBot options that replay a tape's bot (its `bot` record, and the game seed the bot's generator is seeded from) */
+export function botOptionsFromTape(t) {
+    const b = t.bot, observed = b.perception === 'observed';
+    return {
+        variant: b.variant, horizon: b.horizon, budget: b.budget, perception: observed ? 'observed' : 'omniscient', ...(b.motion ? { motion: b.motion } : {}),
+        // an observed tape without a margin / attackY is the H1 Expert (none)
+        ...(observed ? { margin: b.margin ?? null, attackY: b.attackY ?? null } : {}),
+        starWeight: b.starWeight ?? 0, ...(b.human ? { human: b.human, botSeed: b.botSeed ?? 1 } : {}), gameSeed: t.seed,
+        tail: b.tail ?? 'straight', costCap: b.costCap ?? Infinity, bankFrames: b.bankFrames ?? 32,
+    };
+}
 /** the Expert settings in use, as bot.config and a tape record them (the ones left at "none" are left out) */
 export function expertSettings({ margin, attackY }) {
     return {
@@ -149,7 +177,7 @@ function clearance2(g) {
  * (like the test policies). `bot.stats` counts what it did. A bot follows ONE game; if it is handed a game at
  * another frame than it expects, it starts over from that game.
  */
-export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'straight', costCap = Infinity, perception = 'omniscient', motion = 'curve', margin: marginOpt, attackY: attackYOpt } = {}) {
+export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'straight', costCap = Infinity, perception = 'omniscient', motion = 'curve', margin: marginOpt, attackY: attackYOpt, human: humanOpt = null, botSeed = 1, gameSeed = 1 } = {}) {
     if (!BOT_VARIANTS.includes(variant)) throw new Error(`unknown bot variant "${variant}" (have: ${BOT_VARIANTS.join(', ')})`);
     if (!TAILS.includes(tailKind)) throw new Error(`unknown tail "${tailKind}" (have: ${TAILS.join(', ')})`);
     if (!PERCEPTIONS.includes(perception)) throw new Error(`unknown perception "${perception}" (have: ${PERCEPTIONS.join(', ')})`);
@@ -157,7 +185,12 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     const fire = variant === 'attack', observed = perception === 'observed';
     const marginPx = marginOpt !== undefined ? marginOpt : observed ? EXPERT_DEFAULTS.margin : null;
     if (marginPx && !observed) throw new Error('a margin needs perception "observed" (the Ace plans on the game itself)');
-    const margin = makeMargin(marginPx);
+    let margin = makeMargin(marginPx);
+    // slice H2: the human layer (src/game/human.js), on when any human knob differs from the Expert's
+    if (humanOpt) for (const k of Object.keys(humanOpt)) if (!HUMAN_KEYS.includes(k)) throw new Error(`unknown human knob "${k}" (have: ${HUMAN_KEYS.join(', ')})`);
+    const humanRec = humanOpt ? humanDiff({ ...EXPERT_KNOBS, ...humanOpt }) : null;
+    if (humanRec && !observed) throw new Error('the human knobs need perception "observed" (the Ace is not humanlike)');
+    const hum = humanRec ? { ...EXPERT_KNOBS, ...humanOpt } : null;
     // the attack (H1b): the height it attacks from, in px from the top (null = home, 4/5 down)
     const attackYPx = attackYOpt !== undefined ? attackYOpt : observed ? EXPERT_DEFAULTS.attackY : null;
     if (attackYPx != null && !observed) throw new Error('attackY is an Expert setting (perception "observed")');
@@ -168,7 +201,10 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         // and what the observer saw (object-frames, turning / accelerating fits, dots not yet moving)
         surprises: 0, seen: { objects: 0, turning: 0, accel: 0, unseen: 0 },
         // with a margin: repairs that could not keep the plan outside it
-        nearFails: 0 };
+        nearFails: 0,
+        // the human layer (H2): looks taken, lapses (and their frames), the mean delay of a look, the bullets left out by
+        // attention, frames in panic (> 0) and its mean, the hands' work (inputs changed, blocked, overshot, slow mashes)
+        ...(hum ? { human: { looks: 0, lapses: 0, lapseFrames: 0, delaySum: 0, unattended: 0, panicFrames: 0, panicSum: 0, overrides: 0, blocked: 0, overshoots: 0, mashes: 0 } } : {}) };
     const tracker = observed ? newTracker() : null;
 
     // the plan: plan[i] is the input for frame f0 + i; snaps.get(f) is the game at frame f (before its input);
@@ -278,13 +314,16 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
 
     const INPUTS = [];
     for (const slow of [false, true]) for (let d = 0; d <= 8; d++) INPUTS.push(input(d, fire, slow));
+    // the candidate inputs of a search: all 18, or (H2: a bot that forgot its slow button this look) the 9 at full speed
+    const INPUTS_FULL = INPUTS.slice(0, 9);
+    let cand = INPUTS;
 
     let rootState = null;
 
     /** try the 18 held inputs (whole way, and 8 frames then the tail) from state s; the best result */
     function tryFrom(s, E, best) {
         for (const hold of [E, 8]) {
-            for (const b of INPUTS) {
+            for (const b of cand) {
                 const r = rollout(s, b, hold, E);
                 if (!r) return { best, out: true };
                 if (better(r, best)) best = r;
@@ -329,7 +368,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         while (front.length && front[0].state.frame < E) {
             const next = [];
             for (const n of front) {
-                for (const b of INPUTS) {
+                for (const b of cand) {
                     if (room() < C + 1) return bestDead;
                     const c = clone(n.state); charge(1);
                     const acc = { value: n.value };
@@ -371,11 +410,11 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         let best = cur;
         // as many candidate sets as the spare budget pays for (a bigger budget looks at more plans), keeping
         // half the bank for repairs: each set is the 18 inputs held for `hold` frames, then the tail
-        const setCost = INPUTS.length * (H + 1) * unit;
+        const setCost = cand.length * (H + 1) * unit;
         const holds = [...new Set([8, H, 16, 4, 32, 2, 24].map((h) => Math.min(h, H)))];
         for (const hold of holds) {
             if (left() - cap / 2 < setCost || room() < setCost) break;
-            for (const b of INPUTS) {
+            for (const b of cand) {
                 const r = rollout(rootState, b, hold, E);
                 if (!r) break;
                 if (better(r, best)) best = r;
@@ -389,21 +428,80 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         end = clone(s); charge(1);
     }
 
+    // the human layer's state (H2): its own generator, the pictures of the last frames (for the reaction time), the
+    // hands, the frame of the last look, a lapse in progress, the misjudgement in force
+    const rng = hum ? makeRng(gameSeed, botSeed) : null;
+    const hands = hum ? makeHands(hum, rng) : null;
+    const HIST = hum ? hum.reaction + hum.panicReaction + 1 : 0;
+    const hist = [];
+    let lastLook = -1e9, lapseLeft = 0, judgeClock = -1e9, judgeErr = 0, panic = 0;
+    const attend = hum && (hum.attentionRadius < 600 || hum.attentionCount < 1024);
+
+    /** the panic level, 0–1, from the bullets on screen */
+    function panicLevel(pic) {
+        if (!(hum.panicReaction || hum.panicMisjudge || hum.panicSlow)) return 0;
+        let n = 0;
+        for (const o of pic.foes) if (o.spc !== SPC.FOE) n++;
+        if (hum.panicTo <= hum.panicFrom) return n >= hum.panicFrom ? 1 : 0;
+        return Math.min(1, Math.max(0, (n - hum.panicFrom) / (hum.panicTo - hum.panicFrom)));
+    }
+
+    /** a look (H2): the picture it plans on — late by its reaction time, cut to its attention — and this look's slips */
+    function humanLook(g, pic) {
+        lastLook = g.frame;
+        const hs = stats.human;
+        hs.looks++;
+        const want = Math.min(HIST - 1, hum.reaction + Math.round(panic * hum.panicReaction));
+        const i = Math.max(0, hist.length - 1 - want), n = hist.length - 1 - i;
+        hs.delaySum += n;
+        let m = n > 0 ? delayedModel(hist[i], pic, n) : pic;
+        if (attend) { const k = m.foes.length; m = attendModel(m, hum.attentionRadius, hum.attentionCount); hs.unattended += k - m.foes.length; }
+        // the bullet size it judges: off by up to ± amp px, a new error every MISJUDGE_EVERY frames
+        const amp = hum.misjudge + panic * hum.panicMisjudge;
+        if (amp > 0 && g.frame - judgeClock >= MISJUDGE_EVERY) {
+            judgeClock = g.frame;
+            judgeErr = amp * (2 * rng() - 1);
+            margin = makeMargin({ ...marginPx, bullet: (marginPx ? marginPx.bullet || 0 : 0) + judgeErr });
+        } else if (amp === 0 && judgeErr !== 0) { judgeErr = 0; margin = makeMargin(marginPx); }
+        if (hum.slowUse < 1) cand = rng() < hum.slowUse ? INPUTS : INPUTS_FULL;
+        return m;
+    }
+
     function bot(g) {
-        if (H === 0) { stats.frames++; return tail(g); } // no look-ahead at all: the tail controller alone
+        if (H === 0) { stats.frames++; const b = tail(g); return hands ? hands(b, 0, g.frame) : b; } // no look-ahead at all: the tail controller alone
         spent = 0; steps = 0;
         let live = 0;
         for (const f of g.foes) if (f) live++;
         unit = observed ? MODEL_BASE + live / MODEL_FOES : 1 + live / UNIT_FOES;
         bank = Math.min(bank + budget, cap);
+        let look = true;
         if (!observed) {
             if (g.frame !== f0 || !end) reset(g);
             rootState = g;
         } else {
             // the observed bot looks again every frame: what it predicted last frame may be wrong (a bullet fired since,
             // a turn), so the plan is re-checked against the fresh picture — and repaired below if it now runs into a hit
-            rootState = observe(g, tracker, { motion, stars: starWeight > 0 }, stats.seen); charge(1); // looking costs a model frame
-            if (g.frame !== f0 || !end) reset(rootState);
+            const pic = observe(g, tracker, { motion, stars: starWeight > 0 }, stats.seen); charge(1); // looking costs a model frame
+            if (!hum) rootState = pic;
+            else {
+                hist.push(pic);
+                if (hist.length > HIST) hist.shift();
+                panic = panicLevel(pic);
+                if (panic > 0) { stats.human.panicFrames++; stats.human.panicSum += panic; }
+                // a lapse: it keeps pressing what it pressed, and neither looks nor plans (it starts over after)
+                if (lapseLeft > 0 || (hum.lapseRate > 0 && hum.lapseFrames > 0 && rng() < hum.lapseRate / (60 * FPS))) {
+                    if (lapseLeft > 0) lapseLeft--;
+                    else { lapseLeft = Math.max(1, Math.round(hum.lapseFrames * (0.5 + rng()))) - 1; stats.human.lapses++; }
+                    stats.human.lapseFrames++;
+                    bank -= spent;
+                    stats.frames++; stats.cost += spent; stats.steps += steps; stats.lastSteps = steps; stats.lastLive = live; stats.lastCost = spent;
+                    return hands.keep(input(0, fire, false));
+                }
+                // between looks it plays its plan blind
+                look = g.frame !== f0 || !end || g.frame - lastLook >= hum.replanEvery;
+                if (look) rootState = humanLook(g, pic);
+            }
+            if (!look) { /* the plan stands */ } else if (g.frame !== f0 || !end) reset(rootState);
             else {
                 const wasSafe = hits.length === 0;
                 commit({ from: f0, inputs: plan.slice() });
@@ -411,12 +509,12 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
             }
         }
         while (plan.length < H) extendOne();
-        if (g.status === STATUS.IN_GAME) {
+        if (g.status === STATUS.IN_GAME && look) {
             if (hits.length ? f0 - lastFail >= K || lastFail < 0 : nears.length && (f0 - lastNearFail >= K || lastNearFail < 0)) repair();
-            else if (!hits.length && f0 % IMPROVE_EVERY === 0 && left() > cap / 2 + (INPUTS.length + 1) * (H + 1) * unit
-                && room() > (INPUTS.length + 1) * (H + 1) * unit) improve();
+            else if (!hits.length && f0 % IMPROVE_EVERY === 0 && left() > cap / 2 + (cand.length + 1) * (H + 1) * unit
+                && room() > (cand.length + 1) * (H + 1) * unit) improve();
         }
-        const b = plan.shift();
+        let b = plan.shift();
         f0++;
         snaps.delete(f0 - 1);
         if (hits.length && hits[0] < f0) { hits.shift(); stats.doomed++; }
@@ -424,9 +522,15 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         bank -= spent;
         stats.frames++; stats.cost += spent; stats.steps += steps; stats.lastSteps = steps; stats.lastLive = live; stats.lastCost = spent;
         if (spent > stats.maxFrameCost) stats.maxFrameCost = spent;
+        if (hands) b = hands(b, panic, g.frame);
         return b;
     }
     bot.stats = stats;
-    bot.config = { variant, horizon: H, budget, bankFrames, snapEvery: K, starWeight, tail: tailKind, ...(costCap !== Infinity ? { costCap } : {}), ...(observed ? { perception, motion } : {}), ...expertSettings({ margin: marginPx, attackY: attackYPx }) };
+    if (hands) {
+        // the hands' counts, live
+        Object.defineProperties(stats.human, Object.fromEntries(['overrides', 'blocked', 'overshoots', 'mashes'].map((k) => [k, { get: () => hands.stats[k], enumerable: true }])));
+    }
+    bot.config = { variant, horizon: H, budget, bankFrames, snapEvery: K, starWeight, tail: tailKind, ...(costCap !== Infinity ? { costCap } : {}), ...(observed ? { perception, motion } : {}), ...expertSettings({ margin: marginPx, attackY: attackYPx }),
+        ...(hum ? { human: humanRec, botSeed } : {}) };
     return bot;
 }

@@ -31,6 +31,14 @@
   button:disabled { opacity: .5; }
   #seed { width: 9em; }
   .note { color: #789; font-size: 12px; margin-top: 8px; }
+  #persona { flex-basis: 100%; }
+  #persona .desc { color: #789; font-size: 12px; }
+  #advanced { flex-basis: 100%; }
+  #advanced summary { cursor: pointer; color: #8ab; font-size: 12px; }
+  #knobs { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 4px 12px; margin-top: 6px; font-size: 12px; }
+  #knobs h3 { grid-column: 1 / -1; margin: 6px 0 0; font-size: 12px; color: #8ab; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+  #knobs label { display: flex; align-items: center; gap: 6px; justify-content: space-between; }
+  #knobs input { width: 6em; }
 </style>
 </head>
 <body>
@@ -51,6 +59,12 @@
       <label>look-ahead <select id="horizon"></select></label>
       <label>budget <select id="budget"></select></label>
     </fieldset>
+    <fieldset id="persona"><legend>Bot personality (bot: personality …)</legend>
+      <select id="personality" aria-label="personality"></select>
+      <label>skill <input type="range" id="skill" min="0" max="100" step="1" aria-label="skill"> <output id="skill-out">—</output></label>
+      <span id="persona-desc" class="desc"></span>
+      <details id="advanced"><summary>advanced: every knob of this setting</summary><div id="knobs"></div></details>
+    </fieldset>
     <fieldset><legend>Replay</legend>
       <select id="tapes" aria-label="tape"></select>
       <button id="play-tape">Play tape</button>
@@ -63,8 +77,11 @@
     </fieldset>
     <button id="mute">Sound: on (M)</button>
   </div>
-  <p class="note">"bot: attack" and "bot: no-attack" are the G4 bot (<code>src/game/bot.js</code>), thinking in a Web Worker
-    within a fixed budget per frame (1× fits the 16 ms frame; 4× and 16× may slow the game); the others are the G2 test policies.
+  <p class="note">"bot: attack" and "bot: no-attack" are the G4 bot, the Ace (<code>src/game/bot.js</code>), thinking in a Web Worker
+    within a fixed budget per frame (1× fits the 16 ms frame; 4× and 16× may slow the game); "bot: expert …" plans on what it
+    sees (H1); "bot: personality …" is the humanlike bot (H2, <code>src/game/human.js</code>): pick a personality, or set the skill
+    slider (Cautious beginner at 0 → Expert at 100), or change any knob under "advanced" (hover a knob for what it does);
+    its look-ahead is its horizon knob. The others are the G2 test policies.
     Every game you play is recorded as a tape (the format <code>bin/play-game.mjs</code> writes) when it ends or on Esc.
     Noiz2sa © 2002 Kenta Cho (BSD); sounds and music from the 0.52 distribution.</p>
 </main>
