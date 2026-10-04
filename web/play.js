@@ -10,7 +10,7 @@ import { makePolicy, POLICY_NAMES } from '../src/game/policies.js';
 import { makeTape, tapeInputs, replayTape } from '../src/game/tape.js';
 import { loadNoiz2saPatternsWeb } from '../src/game/patterns-web.js';
 import { packBulletML } from '../src/bulletml.js';
-import { BOT_VARIANTS, BROWSER_BUDGET, DEFAULT_HORIZON } from '../src/game/bot.js';
+import { BOT_VARIANTS, BROWSER_BUDGET, DEFAULT_HORIZON, EXPERT_DEFAULTS, expertSettings } from '../src/game/bot.js';
 import { Sound, CHUNK } from './sound.js';
 import { draw, FIELD_X } from './draw.js';
 
@@ -126,7 +126,7 @@ function finishRecording() {
     app.lastTape = makeTape({
         stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed, played: app.played,
         extra: { player: app.botUsed ? `human+${app.policyName.replace('bot: ', 'bot-').replace(' ', '-')}` : 'human',
-            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName].variant, horizon: app.horizon, budget: botBudget(), ...(G4[app.policyName].perception === 'observed' ? { perception: 'observed' } : {}), ...(app.costCap !== Infinity ? { costCap: app.costCap } : {}), ...(app.bankFrames !== 32 ? { bankFrames: app.bankFrames } : {}) } } : {}) },
+            ...(app.botUsed && isG4(app.policyName) ? { bot: { variant: G4[app.policyName].variant, horizon: app.horizon, budget: botBudget(), ...(G4[app.policyName].perception === 'observed' ? { perception: 'observed', ...expertSettings(EXPERT_DEFAULTS) } : {}), ...(app.costCap !== Infinity ? { costCap: app.costCap } : {}), ...(app.bankFrames !== 32 ? { bankFrames: app.bankFrames } : {}) } } : {}) },
     });
     app.played = [];
     updateControls();

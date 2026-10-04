@@ -67,6 +67,7 @@ The **skill slider** (0–100) interpolates the knobs from Cautious beginner (0)
 | Slice | What |
 |---|---|
 | **H1** | Built on branch `h1-perception` (`docs/h1-report.md`): `src/game/perception.js` (the observed model), `perception: 'observed'` in `src/game/bot.js`, the Expert in the page ("bot: expert attack / no-attack"), the sharded H1 sweep (`bin/h1-sweep.mjs`, as GitHub Actions shards: `.github/workflows/sweep.yml`), death diagnosis, the observed planner for single patterns, a CI test gate. Measured so far: the 73 patterns keep their verdict (62 reflex / 11 H2); no-attack stages 1–5 need 4 frames of look-ahead (8 on one seed); deaths come from bullets fired by active bullets 1–2 px from the ship. **The full sweep is the coordinator's to dispatch** (commands in the report). |
-| H2 | not started |
+| **H1b** | Built on branch `h1b-expert` (`docs/h1b-report.md`), the user's "yes to both" on H1's open decisions. A **safety margin** for the Expert: it keeps 2 px from a bullet's drawn trail and 8 px from anything that can fire one (enemies, active bullets, dots not yet moving), and stays below the band where enemies appear (136 px). The margin ranks right after survival. And an **attack height** of 160 px, near where enemies appear, instead of the home row. All chosen by measurement and recorded in the tape. The Ace is unchanged. Local, stages 1–10 attack × 3 seeds: lives lost 10 → 0, mean score 2.46 M → 3.09 M (the Ace: 3.64 M); ENDLESS 4 → 0; no-attack still 0. **The CI sweep `h1b-bot` is the coordinator's to dispatch** (command in the report). |
+| H2 | not started; the margin (`margin.bullet/spawner/top`) and `attackY` are its first knobs |
 | H3 | not started |
 

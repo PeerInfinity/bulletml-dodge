@@ -12,16 +12,16 @@
  *    the tape plays on to the title screen.
  */
 import { newGame, stepGame, STATUS, STAGE_NUM, input } from './noiz2sa-game.js';
-import { makeBot } from './bot.js';
+import { makeBot, expertSettings } from './bot.js';
 import { makeTape } from './tape.js';
 
 /** 3 minutes at the game's 62.5 frames/s (16 ms frames) */
 export const BOSS_CAP = 11250;
 const BOSS_SCENE = 9; // the scene number while the boss is up (setBarrages counts the scene up as it starts it)
 
-export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, variant = 'attack', horizon, budget, tail = 'straight', costCap = Infinity, bankFrames = 32, perception = 'omniscient', motion = 'curve', endlessCap = 30000, hardCap = 60000 } = {}) {
+export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, variant = 'attack', horizon, budget, tail = 'straight', costCap = Infinity, bankFrames = 32, perception = 'omniscient', motion = 'curve', endlessCap = 30000, hardCap = 60000, expert = {} } = {}) {
     const g = newGame(patterns, stage, { seed, endlessSeed });
-    const bot = makeBot({ variant, horizon, budget, tail, costCap, bankFrames, perception, motion });
+    const bot = makeBot({ variant, horizon, budget, tail, costCap, bankFrames, perception, motion, ...expert });
     const observed = perception === 'observed';
     const endless = stage >= STAGE_NUM;
     const played = [];
@@ -66,7 +66,7 @@ export function runBot(patterns, { stage, seed = 1, endlessSeed = 7919 * seed, v
     r.cpuSec = +((performance.now() - t0) / 1000).toFixed(2);
     const st = bot.stats;
     r.bot = { cost: Math.round(st.cost), steps: st.steps, costPerFrame: +(st.cost / Math.max(1, st.frames)).toFixed(1), maxFrameCost: Math.round(st.maxFrameCost),
-        repairs: st.repairs, repairFails: st.repairFails, beams: st.beams, improves: st.improves, ...(observed ? { surprises: st.surprises, seen: st.seen } : {}) };
-    const tape = makeTape({ stage, seed, endlessSeed, played, extra: { player: `bot-${variant}`, bot: { variant, horizon: r.horizon, budget, ...(observed ? { perception, ...(motion !== 'curve' ? { motion } : {}) } : {}), ...(tail !== 'straight' ? { tail } : {}), ...(costCap !== Infinity ? { costCap } : {}), ...(bankFrames !== 32 ? { bankFrames } : {}) } } });
+        repairs: st.repairs, repairFails: st.repairFails, beams: st.beams, improves: st.improves, ...(observed ? { surprises: st.surprises, nearFails: st.nearFails, seen: st.seen } : {}) };
+    const tape = makeTape({ stage, seed, endlessSeed, played, extra: { player: `bot-${variant}`, bot: { variant, horizon: r.horizon, budget, ...(observed ? { perception, ...(motion !== 'curve' ? { motion } : {}), ...expertSettings(bot.config) } : {}), ...(tail !== 'straight' ? { tail } : {}), ...(costCap !== Infinity ? { costCap } : {}), ...(bankFrames !== 32 ? { bankFrames } : {}) } } });
     return { result: r, tape, game: g };
 }

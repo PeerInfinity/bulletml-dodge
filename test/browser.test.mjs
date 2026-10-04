@@ -12,7 +12,7 @@ import { execFileSync } from 'node:child_process';
 import { chromium } from 'playwright';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
 import { newGame, stepGame, STATUS } from '../src/game/noiz2sa-game.js';
-import { makeBot, BROWSER_BUDGET, DEFAULT_HORIZON } from '../src/game/bot.js';
+import { makeBot, BROWSER_BUDGET, DEFAULT_HORIZON, EXPERT_DEFAULTS, expertSettings } from '../src/game/bot.js';
 import { tapeInputs } from '../src/game/tape.js';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -213,7 +213,7 @@ try {
         assert.ok(fps >= 58, `the game keeps ≥ 58 frames/s with the Expert on in a busy scene (got ${fps.toFixed(1)})`);
         await page.keyboard.press('Escape');
         const tape = await page.evaluate(() => window.noiz.lastTape());
-        assert.deepEqual(tape.bot, { variant: 'attack', horizon: DEFAULT_HORIZON, budget: BROWSER_BUDGET, perception: 'observed' });
+        assert.deepEqual(tape.bot, { variant: 'attack', horizon: DEFAULT_HORIZON, budget: BROWSER_BUDGET, perception: 'observed', ...expertSettings(EXPERT_DEFAULTS) });
         assert.equal(tape.player, 'human+bot-expert-attack');
         const inputs = tapeInputs(tape);
         assert.deepEqual(inputs.slice(0, FROM), prefix);

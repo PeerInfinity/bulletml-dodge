@@ -29,7 +29,7 @@
  * `$rand` draws: the horizon answers "is there a path that far ahead", not "could a player guess it".
  */
 import { stepGame, cloneGame, STATUS, SPC, input, SCAN_WIDTH_8, SCAN_HEIGHT_8, FOE_SCAN_SIZE, SHIP_SPEED, SHIP_SLOW_SPEED } from './noiz2sa-game.js';
-import { observe, newTracker, cloneModel, stepModel, MOTIONS } from './perception.js';
+import { observe, newTracker, cloneModel, stepModel, makeMargin, MOTIONS } from './perception.js';
 
 export const BOT_VARIANTS = ['attack', 'no-attack'];
 /** the tail controller: `straight` (the default: heads for the target, all dodging is the exact search) or
@@ -43,6 +43,21 @@ export const DEFAULT_HORIZON = 48;
 export const PERCEPTIONS = ['omniscient', 'observed'];
 /** the levels in the page and the sweep: a level is a perception with otherwise the max settings */
 export const LEVELS = { ace: { perception: 'omniscient' }, expert: { perception: 'observed' } };
+/** the Expert's own defaults (slice H1b, chosen by measurement: docs/h1b-report.md), used when makeBot is not given them:
+ *  - margin: the clearance it keeps, in px, from a bullet's drawn trail and from anything that can fire a bullet
+ *    (an enemy, an active bullet, a dot not yet moving), and the line it stays below (top: under the band where
+ *    enemies appear, 48–128 px down, plus the spawner clearance); perception.js makeMargin;
+ *  - attackY: the height it attacks from, in px from the top (the Ace's and no-attack's home is 384, 4/5 down):
+ *    near where enemies appear (48–128 px) its shots reach them sooner.
+ *  The Ace takes neither: it knows where every bullet will be, and its plans find their own height. */
+export const EXPERT_DEFAULTS = { margin: { bullet: 2, spawner: 8, top: 136 }, attackY: 160 };
+/** the Expert settings in use, as bot.config and a tape record them (the ones left at "none" are left out) */
+export function expertSettings({ margin, attackY }) {
+    return {
+        ...(makeMargin(margin) ? { margin: { bullet: margin.bullet || 0, spawner: margin.spawner || 0, top: margin.top || 0 } } : {}),
+        ...(attackY != null ? { attackY } : {}),
+    };
+}
 
 const HOME_X = SCAN_WIDTH_8 / 2;
 const HOME_Y = Math.trunc((SCAN_HEIGHT_8 / 5) * 4);
@@ -114,6 +129,7 @@ function straightInput(g, tx, ty, fire) {
     return input(DIR[v + 1][h + 1], fire, false);
 }
 const DIR = [[8, 1, 2], [7, 0, 3], [6, 5, 4]]; // dir by [dy+1][dx+1]
+const HIT = 1, MARGIN = 2; // what a simulated frame ran into
 
 /** squared distance from the ship to the nearest bullet, capped */
 function clearance2(g) {
@@ -133,22 +149,32 @@ function clearance2(g) {
  * (like the test policies). `bot.stats` counts what it did. A bot follows ONE game; if it is handed a game at
  * another frame than it expects, it starts over from that game.
  */
-export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'straight', costCap = Infinity, perception = 'omniscient', motion = 'curve' } = {}) {
+export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget = BROWSER_BUDGET, bankFrames = 32, snapEvery = 4, starWeight = 0, tail: tailKind = 'straight', costCap = Infinity, perception = 'omniscient', motion = 'curve', margin: marginOpt, attackY: attackYOpt } = {}) {
     if (!BOT_VARIANTS.includes(variant)) throw new Error(`unknown bot variant "${variant}" (have: ${BOT_VARIANTS.join(', ')})`);
     if (!TAILS.includes(tailKind)) throw new Error(`unknown tail "${tailKind}" (have: ${TAILS.join(', ')})`);
     if (!PERCEPTIONS.includes(perception)) throw new Error(`unknown perception "${perception}" (have: ${PERCEPTIONS.join(', ')})`);
     if (!MOTIONS.includes(motion)) throw new Error(`unknown motion "${motion}" (have: ${MOTIONS.join(', ')})`);
     const fire = variant === 'attack', observed = perception === 'observed';
+    const marginPx = marginOpt !== undefined ? marginOpt : observed ? EXPERT_DEFAULTS.margin : null;
+    if (marginPx && !observed) throw new Error('a margin needs perception "observed" (the Ace plans on the game itself)');
+    const margin = makeMargin(marginPx);
+    // the attack (H1b): the height it attacks from, in px from the top (null = home, 4/5 down)
+    const attackYPx = attackYOpt !== undefined ? attackYOpt : observed ? EXPERT_DEFAULTS.attackY : null;
+    if (attackYPx != null && !observed) throw new Error('attackY is an Expert setting (perception "observed")');
+    const AY = fire && attackYPx != null ? Math.trunc(attackYPx * 256) : HOME_Y;
     const H = Math.max(0, horizon | 0), K = snapEvery, cap = budget * bankFrames;
     const stats = { frames: 0, cost: 0, steps: 0, clones: 0, lastSteps: 0, lastLive: 0, lastCost: 0, maxFrameCost: 0, repairs: 0, repairFails: 0, beams: 0, improves: 0, improveTries: 0, doomed: 0,
         // observed only: frames whose fresh picture put a hit into a plan that was safe the frame before (a surprise),
         // and what the observer saw (object-frames, turning / accelerating fits, dots not yet moving)
-        surprises: 0, seen: { objects: 0, turning: 0, accel: 0, unseen: 0 } };
+        surprises: 0, seen: { objects: 0, turning: 0, accel: 0, unseen: 0 },
+        // with a margin: repairs that could not keep the plan outside it
+        nearFails: 0 };
     const tracker = observed ? newTracker() : null;
 
     // the plan: plan[i] is the input for frame f0 + i; snaps.get(f) is the game at frame f (before its input);
-    // end is the game after the whole plan; hits are the frames whose input runs into a hit
-    let f0 = -1, plan = [], snaps = new Map(), end = null, hits = [], bank = cap, spent = 0, lastFail = -1e9;
+    // end is the game after the whole plan; hits are the frames whose input runs into a hit, nears (with a margin)
+    // the frames whose input brings the ship inside the margin
+    let f0 = -1, plan = [], snaps = new Map(), end = null, hits = [], nears = [], bank = cap, spent = 0, lastFail = -1e9, lastNearFail = -1e9;
 
     // a simulated frame (or a game copy) costs more with more objects alive: `unit` is set per game frame
     // from the live foe slots then (enemies + bullets), so that a unit of budget is about the same CPU time
@@ -163,16 +189,16 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     function target(c) {
         if (!fire) return [HOME_X, HOME_Y];
         const t = attackTarget(c);
-        return t ? [t.x, HOME_Y] : [HOME_X, HOME_Y];
+        return t ? [t.x, AY] : [HOME_X, AY];
     }
     const tail = tailKind === 'reflex'
         ? (c) => { const [tx, ty] = target(c); return reflexInput(c, tx, ty, fire); }
         : (c) => { const [tx, ty] = target(c); return straightInput(c, tx, ty, fire); };
 
-    /** step c with input b; true if the ship was hit */
+    /** step c with input b: HIT if the ship was hit, MARGIN if it came inside the margin, else 0 */
     function step(c, b, acc) {
         charge(1);
-        if (observed) return stepModel(c, b, acc, starWeight);
+        if (observed) return stepModel(c, b, acc, starWeight, margin) ? HIT : c.near ? MARGIN : 0;
         let hit = false;
         for (const e of stepGame(c, b)) {
             if (e[0] === 'hit') hit = true;
@@ -182,7 +208,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
                 else if (e[0] === 'star') acc.value += starWeight * e[1];
             }
         }
-        return hit;
+        return hit ? HIT : 0;
     }
 
     /** extend the plan by one frame at its far end (with the tail controller) */
@@ -191,36 +217,41 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         if (end.frame % K === 0) { snaps.set(end.frame, clone(end)); charge(1); }
         const b = tail(end);
         const f = end.frame;
-        if (step(end, b, null)) hits.push(f);
+        const r = step(end, b, null);
+        if (r === HIT) hits.push(f); else if (r === MARGIN) nears.push(f);
         plan.push(b);
     }
 
     /**
      * Roll out from state s (at frame s.frame) to frame E: the `fixed` inputs if given, else `first` held for
-     * `hold` frames; then the tail. Returns {inputs, firstHit (frame or Infinity), value, pos, room, from}, or
-     * null when the bank cannot pay for it.
+     * `hold` frames; then the tail. Returns {inputs, firstHit (frame or Infinity), firstNear (the first frame inside
+     * the margin, or Infinity), value, pos, room, from}, or null when the bank cannot pay for it.
      */
     function rollout(s, first, hold, E, fixed = null) {
         if (room() < E - s.frame + 1) return null;
         const c = clone(s); charge(1);
         const inputs = [], acc = { value: 0 };
-        let firstHit = Infinity;
+        let firstHit = Infinity, firstNear = Infinity;
         while (c.frame < E && c.status === STATUS.IN_GAME) {
             const i = c.frame - s.frame;
             const b = fixed ? (i < fixed.length ? fixed[i] : tail(c)) : i < hold ? first : tail(c);
             const f = c.frame;
             inputs.push(b);
-            if (step(c, b, acc)) { firstHit = f; break; }
+            const r = step(c, b, acc);
+            if (r === HIT) { firstHit = f; if (firstNear > f) firstNear = f; break; }
+            if (r === MARGIN && firstNear === Infinity) firstNear = f;
         }
-        const [tx] = target(c);
-        const pos = -Math.abs(c.ship.x - tx) / 256 - Math.abs(c.ship.y - HOME_Y) / 512;
-        return { inputs, firstHit, value: acc.value, pos, room: Math.sqrt(clearance2(c)) / 256, from: s.frame };
+        const [tx, ty] = target(c);
+        const pos = -Math.abs(c.ship.x - tx) / 256 - Math.abs(c.ship.y - ty) / 512;
+        return { inputs, firstHit, firstNear, value: acc.value, pos, room: Math.sqrt(clearance2(c)) / 256, from: s.frame };
     }
 
     const better = (a, b) => {
-        // lexicographic: survival (later first hit), then attack value, then position + room
+        // lexicographic: survival (later first hit), then the margin (later first breach), then attack value, then
+        // position + room
         if (!b) return true;
         if (a.firstHit !== b.firstHit) return a.firstHit > b.firstHit;
+        if (a.firstNear !== b.firstNear) return a.firstNear > b.firstNear;
         if (a.value !== b.value) return a.value > b.value;
         return a.pos + a.room > b.pos + b.room;
     };
@@ -230,6 +261,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         const i0 = r.from - f0;
         plan.length = i0;
         hits = hits.filter((f) => f < r.from);
+        nears = nears.filter((f) => f < r.from);
         for (const f of [...snaps.keys()]) if (f > r.from) snaps.delete(f);
         const s = r.from === f0 ? rootState : snaps.get(r.from);
         end = clone(s); charge(1);
@@ -237,7 +269,8 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
             if (end.status !== STATUS.IN_GAME) { plan.push(b); continue; }
             if (end.frame % K === 0 && end.frame !== r.from) { snaps.set(end.frame, clone(end)); charge(1); }
             const f = end.frame;
-            if (step(end, b, null)) hits.push(f);
+            const res = step(end, b, null);
+            if (res === HIT) hits.push(f); else if (res === MARGIN) nears.push(f);
             plan.push(b);
         }
         while (plan.length < H && left() > 0) extendOne();
@@ -263,32 +296,35 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     function repair() {
         stats.repairs++;
         const E = f0 + plan.length;
-        const firstHit = hits[0];
-        const current = { firstHit, value: -Infinity, pos: -Infinity, room: 0 };
-        // branch points: snapshots before the hit, latest first, then the present
-        const points = [...snaps.keys()].filter((f) => f <= firstHit && f > f0).sort((a, b) => b - a);
+        const firstHit = hits.length ? hits[0] : Infinity, firstNear = nears.length ? Math.min(nears[0], firstHit) : firstHit;
+        const current = { firstHit, firstNear, value: -Infinity, pos: -Infinity, room: 0 };
+        const clean = (r) => r.firstHit === Infinity && r.firstNear === Infinity;
+        // branch points: snapshots before the trouble (a hit, or the margin), latest first, then the present
+        const points = [...snaps.keys()].filter((f) => f <= firstNear && f > f0).sort((a, b) => b - a);
         points.push(f0);
         let best = null;
         for (const p of points) {
             const s = p === f0 ? rootState : snaps.get(p);
             const res = tryFrom(s, E, best);
             best = res.best;
-            if (best && best.firstHit === Infinity) break;
+            if (best && clean(best)) break;
             if (res.out) break;
         }
-        if ((!best || best.firstHit !== Infinity) && room() > 0) {
+        if ((!best || !clean(best)) && room() > 0) {
             const b = beam(E);
             if (b && better(b, best)) best = b;
         }
-        if (best && best.firstHit > current.firstHit) { commit(best); }
-        if (hits.length) { stats.repairFails++; lastFail = f0; }
+        if (best && (best.firstHit > current.firstHit || (best.firstHit === current.firstHit && best.firstNear > current.firstNear))) { commit(best); }
+        // a repair that failed is not retried for K frames; the margin has its own clock, so that a margin it could
+        // not keep never holds up the repair of a hit
+        if (hits.length) { stats.repairFails++; lastFail = f0; } else if (nears.length) { stats.nearFails++; lastNearFail = f0; }
     }
 
     /** beam search from the present over 8-frame chunks (18 inputs each), keeping the 6 best; null if out of bank */
     function beam(E) {
         stats.beams++;
         const C = 8, W = 6;
-        let front = [{ state: rootState, inputs: [], value: 0 }];
+        let front = [{ state: rootState, inputs: [], value: 0, firstNear: Infinity }];
         let bestDead = null;
         while (front.length && front[0].state.frame < E) {
             const next = [];
@@ -298,25 +334,28 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
                     const c = clone(n.state); charge(1);
                     const acc = { value: n.value };
                     const inputs = n.inputs.slice();
-                    let hitAt = Infinity;
+                    let hitAt = Infinity, firstNear = n.firstNear;
                     for (let k = 0; k < C && c.frame < E && c.status === STATUS.IN_GAME; k++) {
                         const f = c.frame;
                         inputs.push(b);
-                        if (step(c, b, acc)) { hitAt = f; break; }
+                        const r = step(c, b, acc);
+                        if (r === HIT) { hitAt = f; if (firstNear > f) firstNear = f; break; }
+                        if (r === MARGIN && firstNear === Infinity) firstNear = f;
                     }
-                    const node = { state: c, inputs, value: acc.value, room: Math.sqrt(clearance2(c)) / 256 };
+                    const node = { state: c, inputs, value: acc.value, room: Math.sqrt(clearance2(c)) / 256, firstNear };
                     if (hitAt !== Infinity) {
-                        const r = { inputs, firstHit: hitAt, value: acc.value, pos: 0, room: 0, from: f0 };
+                        const r = { inputs, firstHit: hitAt, firstNear, value: acc.value, pos: 0, room: 0, from: f0 };
                         if (better(r, bestDead)) bestDead = r;
                     } else next.push(node);
                 }
             }
-            next.sort((a, b) => (b.room + b.value) - (a.room + a.value));
+            // outside the margin longest first (without a margin all are Infinity), then room + value
+            next.sort((a, b) => (a.firstNear !== b.firstNear ? (a.firstNear > b.firstNear ? -1 : 1) : (b.room + b.value) - (a.room + a.value)));
             front = next.slice(0, W);
             if (front.length && (front[0].state.frame >= E || front[0].state.status !== STATUS.IN_GAME)) {
                 const n = front[0];
                 const [tx] = target(n.state);
-                return { inputs: n.inputs, firstHit: Infinity, value: n.value, pos: -Math.abs(n.state.ship.x - tx) / 256, room: n.room, from: f0 };
+                return { inputs: n.inputs, firstHit: Infinity, firstNear: n.firstNear, value: n.value, pos: -Math.abs(n.state.ship.x - tx) / 256, room: n.room, from: f0 };
             }
         }
         return bestDead;
@@ -346,7 +385,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
     }
 
     function reset(s) {
-        f0 = s.frame; plan = []; snaps = new Map(); hits = []; lastFail = -1e9;
+        f0 = s.frame; plan = []; snaps = new Map(); hits = []; nears = []; lastFail = -1e9; lastNearFail = -1e9;
         end = clone(s); charge(1);
     }
 
@@ -373,7 +412,7 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         }
         while (plan.length < H) extendOne();
         if (g.status === STATUS.IN_GAME) {
-            if (hits.length && (f0 - lastFail >= K || lastFail < 0)) repair();
+            if (hits.length ? f0 - lastFail >= K || lastFail < 0 : nears.length && (f0 - lastNearFail >= K || lastNearFail < 0)) repair();
             else if (!hits.length && f0 % IMPROVE_EVERY === 0 && left() > cap / 2 + (INPUTS.length + 1) * (H + 1) * unit
                 && room() > (INPUTS.length + 1) * (H + 1) * unit) improve();
         }
@@ -381,12 +420,13 @@ export function makeBot({ variant = 'attack', horizon = DEFAULT_HORIZON, budget 
         f0++;
         snaps.delete(f0 - 1);
         if (hits.length && hits[0] < f0) { hits.shift(); stats.doomed++; }
+        if (nears.length && nears[0] < f0) nears.shift();
         bank -= spent;
         stats.frames++; stats.cost += spent; stats.steps += steps; stats.lastSteps = steps; stats.lastLive = live; stats.lastCost = spent;
         if (spent > stats.maxFrameCost) stats.maxFrameCost = spent;
         return b;
     }
     bot.stats = stats;
-    bot.config = { variant, horizon: H, budget, bankFrames, snapEvery: K, starWeight, tail: tailKind, ...(costCap !== Infinity ? { costCap } : {}), ...(observed ? { perception, motion } : {}) };
+    bot.config = { variant, horizon: H, budget, bankFrames, snapEvery: K, starWeight, tail: tailKind, ...(costCap !== Infinity ? { costCap } : {}), ...(observed ? { perception, motion } : {}), ...expertSettings({ margin: marginPx, attackY: attackYPx }) };
     return bot;
 }

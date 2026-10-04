@@ -1,9 +1,10 @@
 // node test/bot.test.mjs — the G4 bot: determinism, the worker's pattern hand-over, and a short survival check
 import assert from 'node:assert/strict';
 import { loadNoiz2saPatterns } from '../src/game/patterns-node.js';
-import { newGame, stepGame, stateLine, STATUS } from '../src/game/noiz2sa-game.js';
+import { newGame, stepGame, stateLine, STATUS, SPC } from '../src/game/noiz2sa-game.js';
 import { packBulletML, unpackBulletML } from '../src/bulletml.js';
-import { makeBot, BROWSER_BUDGET } from '../src/game/bot.js';
+import { makeBot, BROWSER_BUDGET, EXPERT_DEFAULTS, expertSettings } from '../src/game/bot.js';
+import { stepModel, makeMargin } from '../src/game/perception.js';
 import { runBot } from '../src/game/bot-run.js';
 import { tapeInputs, replayTape } from '../src/game/tape.js';
 
@@ -72,4 +73,38 @@ for (const variant of ['attack', 'no-attack']) {
         stepGame(g, b);
     }
     console.log('ok the Expert reads the screen only: the game\'s generators are untouched by its decisions');
+}
+
+// 6. slice H1b: the Expert's margin and attack settings — recorded in the tape; the margin's geometry; the Ace takes none
+{
+    const a = runBot(P, { stage: 9, seed: 2, variant: 'attack', perception: 'observed', horizon: 48, budget: BROWSER_BUDGET, hardCap: 600 });
+    assert.deepEqual(a.tape.bot, { variant: 'attack', horizon: 48, budget: BROWSER_BUDGET, perception: 'observed', ...expertSettings(EXPERT_DEFAULTS) });
+    // no settings at all (the H1 Expert) is a different player, and still reproducible
+    const off = { stage: 9, seed: 2, variant: 'attack', perception: 'observed', horizon: 48, budget: BROWSER_BUDGET, hardCap: 600, expert: { margin: null, attackY: null } };
+    const h1 = runBot(P, off), h1again = runBot(P, off);
+    assert.equal(JSON.stringify(h1.tape), JSON.stringify(h1again.tape));
+    assert.equal(h1.tape.bot.margin, undefined);
+    assert.throws(() => makeBot({ perception: 'omniscient', margin: { bullet: 2, spawner: 8 } }));
+    assert.throws(() => makeBot({ perception: 'omniscient', attackY: 200 }));
+    assert.deepEqual(makeBot({}).config.margin, undefined, 'the Ace keeps no margin');
+    // the geometry: a bullet passing 3 px to the side is not a hit but is inside a 4 px margin, outside a 2 px one;
+    // an enemy 6 px away is inside an 8 px spawner margin; nothing counts while the ship is invincible
+    const model = (o, invCnt = 0) => ({ model: true, frame: 0, status: STATUS.IN_GAME, scene: 1, endless: 0, left: 2, ship: { x: 160 * 256, y: 300 * 256, speed: 0, shotCnt: 0, invCnt },
+        shots: [], foes: [{ slot: 0, spc: SPC.BULLET, type: 0, shield: 0, px: 0, py: 0, cnt: 5, k: 0, sp: 0, c: 1, s: 0, ds: 0, ax: 0, ay: 0, ...o }], bonuses: null, bonusScore: 10 });
+    const passing = { x: 163 * 256, y: 290 * 256, mx: 0, my: 4 * 256 }; // moves down past the ship, 3 px to its side
+    for (const [mg, near] of [[{ bullet: 4, spawner: 0 }, true], [{ bullet: 2, spawner: 0 }, false]]) {
+        const m = model(passing);
+        const hits = [];
+        let wasNear = false;
+        for (let f = 0; f < 8; f++) { hits.push(stepModel(m, 0, null, 0, makeMargin(mg))); wasNear ||= m.near; }
+        assert.ok(!hits.some(Boolean), 'a bullet 3 px away does not hit');
+        assert.equal(wasNear, near, `bullet margin ${mg.bullet} px`);
+    }
+    const enemy = { spc: SPC.FOE, type: 0, shield: 3, x: 166 * 256, y: 300 * 256, mx: 0, my: 0, cnt: 5 };
+    let m = model(enemy); stepModel(m, 0, null, 0, makeMargin({ bullet: 0, spawner: 8 })); assert.equal(m.near, true, 'an enemy 6 px away is inside an 8 px spawner margin');
+    m = model(enemy); stepModel(m, 0, null, 0, makeMargin({ bullet: 0, spawner: 5 })); assert.equal(m.near, false);
+    m = model(enemy, 30); stepModel(m, 0, null, 0, makeMargin({ bullet: 0, spawner: 8 })); assert.equal(m.near, false, 'no margin while invincible');
+    const dot = { spc: SPC.BULLET, x: 166 * 256, y: 300 * 256, mx: 0, my: 0, cnt: 0 }; // a bullet not yet moving is a spawner too
+    m = model(dot); stepModel(m, 0, null, 0, makeMargin({ bullet: 2, spawner: 8 })); assert.equal(m.near, true, 'a dot not yet moving is kept at the spawner margin');
+    console.log(`ok H1b: the tape records the Expert's settings ${JSON.stringify(expertSettings(EXPERT_DEFAULTS))}; the H1 Expert (none) is reproducible; the margin's geometry; the Ace takes no Expert settings`);
 }

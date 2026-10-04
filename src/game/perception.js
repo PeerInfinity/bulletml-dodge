@@ -104,11 +104,40 @@ function addBonus(m, x, y, vx, vy) {
 }
 
 /**
+ * The safety margin (slice H1b; the H2 "perceived bullet size" knob reuses it), in px:
+ *  - `bullet`: the clearance kept from a bullet's DRAWN trail (the segment from its trail end to its head, ends
+ *    included), where the engine only hits within 2 px of the segment's inside;
+ *  - `spawner`: the clearance kept from whatever can fire a bullet next frame — an enemy, an active (bullet-firing)
+ *    bullet, and a dot not yet moving (where it goes is not on screen yet). A new bullet appears at its spawner and
+ *    moves in that same frame, so it cannot be seen before it hits: only distance protects from it;
+ *  - `top`: the line (px from the top) the ship stays below. Enemies appear at random in a band near the top of the
+ *    screen (48–128 px down) and may fire at once: a ship inside that band can have one appear on top of it.
+ * `makeMargin({bullet, spawner, top})` → the form stepModel takes (squared radii in 1/256 px), or null for none.
+ */
+export function makeMargin(mg) {
+    if (!mg || !(mg.bullet > 0 || mg.spawner > 0 || mg.top > 0)) return null;
+    const rb = Math.max(0, mg.bullet || 0) * 256, rs = Math.max(0, mg.spawner || 0) * 256;
+    return { rb, rs, b2: rb * rb, s2: rs * rs, box: Math.max(rb, rs), top: Math.max(0, mg.top || 0) * 256 };
+}
+
+/** squared distance from (sx, sy) to the segment (px, py)–(x, y), ends included */
+function segDist2(px, py, x, y, sx, sy) {
+    const bx = x - px, by = y - py, ox = sx - px, oy = sy - py;
+    const l2 = bx * bx + by * by;
+    let t = l2 > 0 ? (ox * bx + oy * by) / l2 : 0;
+    if (t < 0) t = 0; else if (t > 1) t = 1;
+    const dx = ox - t * bx, dy = oy - t * by;
+    return dx * dx + dy * dy;
+}
+
+/**
  * One predicted frame with the ship's input `b`. Returns true when the ship is hit (an effective hit: not while
  * invincible). acc.value gains what the bot values (as the engine's events would give it): a kill 4 + 4 × type,
- * a damaging hit 1, a star starWeight × its score.
+ * a damaging hit 1, a star starWeight × its score. With a `margin` (makeMargin), m.near tells whether the ship
+ * came inside it this frame (not while invincible); without one m.near stays false.
  */
-export function stepModel(m, b, acc = null, starWeight = 0) {
+export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
+    m.near = false;
     if (m.status !== STATUS.IN_GAME) { m.frame++; return false; }
     const ship = m.ship;
     // shots (moveShots), then the ship (moveShip)
@@ -132,11 +161,12 @@ export function stepModel(m, b, acc = null, starWeight = 0) {
     }
     if (ship.invCnt > 0) ship.invCnt--;
     // the objects (moveFoes), as seen moving
-    let hit = false, removed = false;
+    let hit = false, removed = false, near = !!margin && ship.y < margin.top && ship.invCnt <= 0;
     const sx = ship.x, sy = ship.y, foes = m.foes;
     for (let i = 0; i < foes.length; i++) {
         const o = foes[i];
         if (o.spc < 0) continue; // removed this frame (a wipe, a kill)
+        const isFoe = o.spc === SPC.FOE;
         if (o.cnt > 0) {
             if (o.k === TURN) {
                 const vx = o.c * o.mx - o.s * o.my, vy = o.s * o.mx + o.c * o.my;
@@ -150,7 +180,7 @@ export function stepModel(m, b, acc = null, starWeight = 0) {
             o.px = o.x - o.mx * wl; o.py = o.y - o.my * wl;
             o.cnt++;
         }
-        if (o.spc === SPC.FOE) {
+        if (isFoe) {
             const ss = FOE_SCAN_SIZE[o.type];
             for (let j = 0; j < m.shots.length; j++) {
                 const st = m.shots[j];
@@ -172,7 +202,20 @@ export function stepModel(m, b, acc = null, starWeight = 0) {
                     break;
                 } else if (acc) acc.value += 1;
             }
-        } else if (o.cnt > 0) {
+        }
+        if (margin && !near && ship.invCnt <= 0 && o.spc >= 0) {
+            // the margin: the drawn trail of a moving bullet; the position of a spawner (an enemy, an active bullet,
+            // a dot not yet moving)
+            const bx = margin.box;
+            if (sx > Math.min(o.px, o.x) - bx && sx < Math.max(o.px, o.x) + bx && sy > Math.min(o.py, o.y) - bx && sy < Math.max(o.py, o.y) + bx) {
+                if (!isFoe && o.cnt > 0 && margin.b2 > 0 && segDist2(o.px, o.py, o.x, o.y, sx, sy) < margin.b2) near = true;
+                else if ((o.spc !== SPC.BULLET || o.cnt === 0) && margin.s2 > 0) {
+                    const dx = o.x - sx, dy = o.y - sy;
+                    if (dx * dx + dy * dy < margin.s2) near = true;
+                }
+            }
+        }
+        if (!isFoe && o.cnt > 0) {
             // the engine's test, on the predicted segment (a dot that has not moved never hits)
             if (sx > Math.min(o.px, o.x) - 4096 && sx < Math.max(o.px, o.x) + 4096 && sy > Math.min(o.py, o.y) - 4096 && sy < Math.max(o.py, o.y) + 4096
                 && segmentHitsShip(o.px, o.py, o.x, o.y, sx, sy) && ship.invCnt <= 0) {
@@ -193,6 +236,7 @@ export function stepModel(m, b, acc = null, starWeight = 0) {
         m.shots = m.shots.filter((s) => s);
     }
     if (m.bonuses && m.bonuses.length) moveBonuses(m, acc, starWeight);
+    m.near = near && !hit;
     m.frame++;
     return hit;
 }

@@ -43,7 +43,9 @@ const MAX_DIAG = 12;
 
 const pad = (n) => String(n).padStart(2, '0');
 // keys: o- = observed (the Expert), a- = omniscient (the Ace)
-const runKey = (j) => `${j.perception === 'omniscient' ? 'a' : 'o'}-s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}-h${j.horizon}${j.budgetX !== 1 ? `-b${j.budgetX}x` : ''}${j.motion === 'straight' ? '-straight' : ''}`;
+const runKey = (j) => `${j.perception === 'omniscient' ? 'a' : 'o'}-s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}-h${j.horizon}${j.budgetX !== 1 ? `-b${j.budgetX}x` : ''}${j.motion === 'straight' ? '-straight' : ''}${j.expert ? `-x${expertTag(j.expert)}` : ''}`;
+// an --expert override in a part's name: its settings, made file-name safe
+function expertTag(x) { return JSON.stringify(x).replace(/[^A-Za-z0-9.]+/g, '_').replace(/^_|_$/g, ''); }
 const cellKey = (c) => `${c.perception === 'omniscient' ? 'a' : 'o'}-s${pad(c.stage + 1)}-${c.variant}-seed${c.seed}`;
 const success = (r) => r.livesLost === 0 && (r.variant === 'attack' ? r.outcome === 'cleared' : r.outcome === 'boss-cap');
 const goal = (r) => (r.variant === 'attack' ? r.outcome === 'cleared' : r.outcome === 'boss-cap');
@@ -59,8 +61,8 @@ if (opt('one', null)) {
     const key = runKey(j), part = path.join(partsDir, `${key}.json`);
     fs.mkdirSync(partsDir, { recursive: true });
     if (!fs.existsSync(part)) {
-        const { result, tape } = runBot(P, { stage: j.stage, seed: j.seed, variant: j.variant, horizon: j.horizon, budget: j.budgetX * BROWSER_BUDGET, perception: j.perception, motion: j.motion ?? 'curve' });
-        if (j.main && j.perception === 'observed' && !j.motion) {
+        const { result, tape } = runBot(P, { stage: j.stage, seed: j.seed, variant: j.variant, horizon: j.horizon, budget: j.budgetX * BROWSER_BUDGET, perception: j.perception, motion: j.motion ?? 'curve', expert: j.perception === 'observed' ? j.expert ?? {} : {} });
+        if (j.main && j.perception === 'observed' && !j.motion && !j.expert) {
             const file = `s${pad(j.stage + 1)}-${j.variant}-seed${j.seed}-expert${j.budgetX !== 1 ? `-b${j.budgetX}x` : ''}${j.horizon !== 48 ? `-h${j.horizon}` : ''}.json`;
             fs.mkdirSync(tapesDir, { recursive: true });
             fs.writeFileSync(path.join(tapesDir, file), JSON.stringify(tape));
@@ -89,8 +91,10 @@ const ladder = hOpt === 'none' || hOpt === '' ? [] : hOpt.split(',').map(Number)
 const mainH = Number(opt('main-horizon', 48));
 const budgetX = Number(opt('budget', 1));
 const motionOpt = opt('motion', null); // null = the Expert's own (curve)
+// --expert '{"margin":null}': the Expert's settings changed from its defaults (EXPERT_DEFAULTS in src/game/bot.js), for ablations
+const expertOpt = opt('expert', null) ? JSON.parse(opt('expert')) : null;
 const name = opt('name', 'h1-bot');
-const signature = { perception: perceptionOpt, variants, stages: stageNames, seeds, horizons: ladder, mainHorizon: mainH, budgetX, motion: motionOpt };
+const signature = { perception: perceptionOpt, variants, stages: stageNames, seeds, horizons: ladder, mainHorizon: mainH, budgetX, motion: motionOpt, ...(expertOpt ? { expert: expertOpt } : {}) };
 const shardsDir = path.join(root, `results/${name}-shards`);
 
 const cells = [];
@@ -142,7 +146,7 @@ if (!args.includes('--summary') && !args.includes('--merge')) {
         fs.writeFileSync(path.join(shardsDir, `shard-${shardI}-of-${shardN}.json`), JSON.stringify({ shard: shardI, of: shardN, signature, done, cells: myCells.length, cellsDone, commit, cores: os.cpus().length, jobs: nJobs, wallMin: +((Date.now() - t0) / 60000).toFixed(1), rows: [...mine.values()] }) + '\n');
     };
     const doCell = async (c) => {
-        const base = { perception: c.perception, stage: c.stage, variant: c.variant, seed: c.seed, budgetX, ...(motionOpt ? { motion: motionOpt } : {}) };
+        const base = { perception: c.perception, stage: c.stage, variant: c.variant, seed: c.seed, budgetX, ...(motionOpt ? { motion: motionOpt } : {}), ...(expertOpt && c.perception === 'observed' ? { expert: expertOpt } : {}) };
         const add = (r) => mine.set(r.key, r);
         add(await runOne({ ...base, horizon: mainH, main: true }));
         if (ladder.length && c.stage < 10) {
@@ -194,7 +198,7 @@ if (args.includes('--merge')) {
 }
 // rows from before the perception / budget fields (early H1 parts) are the Expert at budget 1×
 const allRuns = [...byKey.values()].map((r) => ({ perception: r.key.startsWith('a-') ? 'omniscient' : 'observed', budgetX: 1, ...r })).sort((a, b) => a.key.localeCompare(b.key));
-const sel = (r) => r.budgetX === budgetX;
+const sel = (r) => r.budgetX === budgetX && (r.perception === 'omniscient' || JSON.stringify(r.expert ?? null) === JSON.stringify(expertOpt));
 const runs = allRuns.filter((r) => r.perception === 'observed' && !r.motion && sel(r));
 const straightRuns = allRuns.filter((r) => r.perception === 'observed' && r.motion === 'straight' && sel(r));
 const aceOwn = allRuns.filter((r) => r.perception === 'omniscient' && sel(r));
@@ -205,10 +209,11 @@ const aceLadder = aceFromG4 ? g4.horizons.filter((r) => r.tail === 'straight') :
 const stagesShown = STAGES.map((_, i) => i).filter((i) => allRuns.some((r) => r.stage === i));
 const variantsShown = ['attack', 'no-attack'].filter((v) => allRuns.some((r) => r.variant === v));
 const seedsShown = [...new Set(allRuns.map((r) => r.seed))].sort((a, b) => a - b);
-const { BROWSER_BUDGET, MODEL_BASE, MODEL_FOES, UNIT_FOES } = await import('../src/game/bot.js');
+const { BROWSER_BUDGET, MODEL_BASE, MODEL_FOES, UNIT_FOES, EXPERT_DEFAULTS, expertSettings } = await import('../src/game/bot.js');
+const expertUsed = expertSettings({ ...EXPERT_DEFAULTS, ...(expertOpt ?? {}) });
 const { BOSS_CAP } = await import('../src/game/bot-run.js');
 const ok = (r) => r.livesLost != null;
-const meta = { commit, date: new Date().toISOString().slice(0, 10), signature, browserBudget: BROWSER_BUDGET, unitFoes: UNIT_FOES, modelBase: MODEL_BASE, modelFoes: MODEL_FOES, bossCap: BOSS_CAP, aceFromG4,
+const meta = { commit, date: new Date().toISOString().slice(0, 10), signature, browserBudget: BROWSER_BUDGET, unitFoes: UNIT_FOES, modelBase: MODEL_BASE, modelFoes: MODEL_FOES, bossCap: BOSS_CAP, aceFromG4, expert: expertUsed,
     runs: allRuns.length, cpuSec: Math.round(allRuns.reduce((s, r) => s + (r.cpuSec || 0) + (r.diagSec || 0), 0)), shards: shardInfo };
 fs.writeFileSync(path.join(root, `results/${name}.json`), JSON.stringify({ meta, runs: allRuns }) + '\n');
 
@@ -218,6 +223,7 @@ const md = [];
 md.push('# H1 — the Expert (observed perception) against the Ace (omniscient)', '');
 md.push(`Written by \`bin/h1-sweep.mjs ${args.includes('--merge') ? '--merge' : '--summary'}\` at commit \`${commit}\`, ${meta.date}, from ${allRuns.length} runs (${(meta.cpuSec / 3600).toFixed(1)} CPU-hours, diagnosis included)${shardInfo.length ? ` in ${shardInfo.length} shards` : ' (local parts)'}.`);
 md.push(`Budget ${budgetX}× = ${budgetX * BROWSER_BUDGET} units per frame; main horizon ${mainH}. ${aceFromG4 ? 'The Ace\'s rows are G4\'s (results/g4-bot.json, budget 1×, horizon 48, its own ladder 0, 1, 2, 4, …).' : 'The Ace ran in this sweep.'}`);
+md.push(`The Expert's settings: ${Object.keys(expertUsed).length ? `\`${JSON.stringify(expertUsed)}\`` : 'none (the H1 Expert)'}${expertOpt ? ` (changed by --expert \`${JSON.stringify(expertOpt)}\`)` : ' (its defaults, EXPERT_DEFAULTS in src/game/bot.js)'}: margin = the clearance in px it keeps from a bullet's drawn trail and from a spawner (an enemy, an active bullet, a dot not yet moving); attackY = the height it attacks from, px from the top.`);
 md.push(`Seeds: C rand() seed s, endlessSeed 7919 × s. "boss 3 min" = alive ${BOSS_CAP} frames into the boss scene (no-attack's goal). Endless modes stop at 30,000 frames.`, '');
 
 const cellRes = (r, variant, endless) => {
