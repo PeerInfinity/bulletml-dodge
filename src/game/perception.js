@@ -36,6 +36,8 @@ const SHIP_MV = [[0, -256], [181, -181], [256, 0], [181, 181], [0, 256], [-181, 
 // a turn is fitted only between two motions at least this fast (1/256 px per frame); slower ones: a constant change
 const MIN_TURN_SPEED = 32;
 const STRAIGHT = 0, TURN = 1, ACCEL = 2;
+// the spawner clearance under the centered hitbox: the fastest bullet's move + this (2 px hit radius + 1 px), 1/256 px
+const FAST_SLACK = 3 * 256;
 
 /** what the observer remembers of the previous frame: each slot's position and motion */
 export function newTracker(slots = 1024) {
@@ -79,9 +81,17 @@ export function observe(g, tracker, { motion = 'curve', stars = false } = {}, st
     }
     tr.frame = g.frame;
     if (stats) stats.objects += foes.length;
+    // the fastest bullet now on screen: under the centered hitbox a bullet fired next frame can reach this far from its
+    // spawner in its first move, before anyone sees it (⚖ the user, 2026-10-04: the spawner clearance grows with it)
+    let fastest = 0;
+    for (const o of foes) {
+        if (o.spc === SPC.FOE || o.cnt <= 0) continue;
+        const v = Math.sqrt(o.mx * o.mx + o.my * o.my);
+        if (v > fastest) fastest = v;
+    }
     const s = g.ship;
     const m = {
-        model: true, frame: g.frame, status: g.status, scene: g.scene, endless: g.endless, left: g.left, centered: g.hitbox === 'centered',
+        model: true, frame: g.frame, status: g.status, scene: g.scene, endless: g.endless, left: g.left, centered: g.hitbox === 'centered', fastest,
         ship: { x: s.x, y: s.y, speed: s.speed, shotCnt: s.shotCnt, invCnt: s.invCnt },
         shots: [], foes, bonuses: null, bonusScore: g.bonusScore,
     };
@@ -95,7 +105,7 @@ export function cloneModel(m) {
     const foes = new Array(m.foes.length);
     for (let i = 0; i < foes.length; i++) foes[i] = cloneObj(m.foes[i]);
     return {
-        model: true, frame: m.frame, status: m.status, scene: m.scene, endless: m.endless, left: m.left, centered: m.centered,
+        model: true, frame: m.frame, status: m.status, scene: m.scene, endless: m.endless, left: m.left, centered: m.centered, fastest: m.fastest,
         ship: { ...m.ship }, shots: m.shots.map((s) => ({ x: s.x, y: s.y })), foes,
         bonuses: m.bonuses && m.bonuses.map((b) => ({ ...b })), bonusScore: m.bonusScore,
     };
@@ -233,6 +243,14 @@ export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
     // the objects (moveFoes), as seen moving
     let hit = false, removed = false, near = !!margin && ship.y < margin.top && ship.invCnt <= 0;
     const sx = ship.x, sy = ship.y, foes = m.foes, cen = m.centered;
+    // the spawner clearance: under the centered hitbox at least one first move of the fastest bullet on screen, plus
+    // the 2 px hit radius and 1 px to spare (FAST_SLACK); the original hitbox hits at the trail's tail, which for a
+    // new bullet is the spawner itself, so it keeps the set clearance
+    let s2 = margin ? margin.s2 : 0, box = margin ? margin.box : 0;
+    if (margin && cen && s2 > 0 && m.fastest > 0) {
+        const r = m.fastest + FAST_SLACK;
+        if (r * r > s2) { s2 = r * r; if (r > box) box = r; }
+    }
     for (let i = 0; i < foes.length; i++) {
         const o = foes[i];
         if (o.spc < 0) continue; // removed this frame (a wipe, a kill)
@@ -267,12 +285,12 @@ export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
         if (margin && !near && ship.invCnt <= 0 && o.spc >= 0) {
             // the margin: the drawn trail of a moving bullet; the position of a spawner (an enemy, an active bullet,
             // a dot not yet moving)
-            const bx = margin.box;
+            const bx = box;
             if (sx > Math.min(ax, o.x) - bx && sx < Math.max(ax, o.x) + bx && sy > Math.min(ay, o.y) - bx && sy < Math.max(ay, o.y) + bx) {
                 if (!isFoe && o.cnt > 0 && margin.b2 > 0 && segDist2(ax, ay, o.x, o.y, sx, sy) < margin.b2) near = true;
-                else if ((o.spc !== SPC.BULLET || o.cnt === 0) && margin.s2 > 0) {
+                else if ((o.spc !== SPC.BULLET || o.cnt === 0) && s2 > 0) {
                     const dx = o.x - sx, dy = o.y - sy;
-                    if (dx * dx + dy * dy < margin.s2) near = true;
+                    if (dx * dx + dy * dy < s2) near = true;
                 }
             }
         }
