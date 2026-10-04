@@ -147,12 +147,26 @@ function armBot() {
     if (!app.bot || app.mode !== 'play' || !app.g) return;
     if (!isG4(app.policyName)) { app.pol = makePolicy(app.policyName); return; }
     const id = ++g4Id;
-    app.g4 = { id, from: app.g.frame, queue: [], stalls: 0, ms: [], units: [], maxMs: 0, startedAt: app.g.frame };
+    app.g4 = { id, from: app.g.frame, queue: [], stalls: 0, ms: [], units: [], maxMs: 0, startedAt: app.g.frame, warmUntil: performance.now() + START_HOLD_MAX_MS };
     app.worker.postMessage({ type: 'start', id, stage: app.stage, seed: app.seed, endlessSeed: app.endlessSeed,
         inputs: app.played.slice(), variant: G4[app.policyName], horizon: app.horizon, budget: botBudget(), costCap: app.costCap, bankFrames: app.bankFrames });
 }
+/**
+ * When the bot starts, the game holds until the worker is START_LEAD frames ahead (or START_HOLD_MAX_MS has passed):
+ * one short "ready" pause instead of a stutter while its first, costliest decisions run. The moves are the same —
+ * the worker plays its own copy of the game; the page only waits longer before the first frame.
+ */
+const START_LEAD = 60, START_HOLD_MAX_MS = 3000;
+function botWarming() {
+    const r = app.g4;
+    if (!r || r.warmUntil === 0) return false;
+    if (r.queue.length >= START_LEAD || performance.now() >= r.warmUntil) { r.warmUntil = 0; app.banner = ''; return false; }
+    app.banner = 'bot getting ready…';
+    return true;
+}
 function botBudget() { return app.budgetUnits ?? app.budgetX * BROWSER_BUDGET; }
 function stopG4() {
+    if (app.banner === 'bot getting ready…') app.banner = '';
     if (app.g4 && app.worker) app.worker.postMessage({ type: 'stop', id: app.g4.id });
     app.g4 = null;
 }
@@ -210,6 +224,7 @@ function tick() {
         // the bot plays the game; the end screens (stage clear, game over) always take the keyboard
         let b;
         if (app.bot && g.status === STATUS.IN_GAME && (app.pol || app.g4)) {
+            if (!app.pol && botWarming()) return; // the start-up hold: not a wait
             b = app.pol ? app.pol(g) : g4Input(g.frame);
             if (b === null) { app.g4.stalls++; perfWait(g.frame); return; } // the worker is late: wait for it, never guess
         } else b = keyboardInput();
@@ -348,9 +363,9 @@ function initControls() {
     const pol = $('policy');
     for (const n of ALL_POLICIES) { const o = document.createElement('option'); o.value = o.textContent = n; pol.appendChild(o); }
     pol.addEventListener('change', () => { app.policyName = pol.value; store.set('policy', pol.value); if (app.bot) setBot(true); });
-    for (const [id, key, values] of [['horizon', 'horizon', [8, 16, 32, 48, 64]], ['budget', 'budgetX', [1, 4, 16]]]) {
+    for (const [id, key, values] of [['horizon', 'horizon', [8, 16, 32, 48, 64]], ['budget', 'budgetX', [0.5, 1, 4, 16]]]) {
         const sel = $(id);
-        for (const v of values) { const o = document.createElement('option'); o.value = v; o.textContent = id === 'budget' ? `${v}×` : `${v} frames`; sel.appendChild(o); }
+        for (const v of values) { const o = document.createElement('option'); o.value = v; o.textContent = id === 'budget' ? (v === 0.5 ? '½× (slow machines)' : `${v}×`) : `${v} frames`; sel.appendChild(o); }
         sel.value = app[key];
         sel.addEventListener('change', () => { app[key] = Number(sel.value); store.set(key, app[key]); if (app.bot) setBot(true); });
     }

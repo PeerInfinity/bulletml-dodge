@@ -165,6 +165,8 @@ try {
         assert.equal(s.bot, true); assert.ok(s.game.frame >= FROM);
         await page.waitForFunction((f) => window.noiz.state().game.frame >= f, FROM + 60, { timeout: 30000 }); // warm-up
         const s1 = await state(), f1 = s1.game.frame, t1 = Date.now();
+        assert.equal(s1.g4.stalls, 0, 'the start-up hold leaves no wait at the bot\'s start');
+        assert.ok(await page.evaluate(() => [...document.querySelectorAll('#budget option')].some((o) => o.value === '0.5')), 'a ½× budget option');
         await page.waitForTimeout(6000);
         s = await state();
         const fps = (s.game.frame - f1) / ((Date.now() - t1) / 1000);
@@ -173,7 +175,7 @@ try {
         await page.locator('#wrap').screenshot({ path: path.join(root, 'docs/g4-screens/bot-busy.png') });
         s = await state();
         const g4 = s.g4;
-        console.log(`ok G4 bot (attack, horizon ${DEFAULT_HORIZON}, budget ${BROWSER_BUDGET}) from stage 10 frame ${FROM}: ${fps.toFixed(1)} frames/s (the game's rate is 62.5); worker CPU ${g4.meanMs.toFixed(1)} ms/frame mean (last 600 frames), ${g4.maxMs.toFixed(0)} ms max, ${(g4.msPerUnit * 1000).toFixed(1)} µs per budget unit; ${g4.stalls - s1.g4.stalls} waits in the measured 6 s (${s1.g4.stalls} while the worker caught up at the start); ${s.game.left} ships left`);
+        console.log(`ok G4 bot (attack, horizon ${DEFAULT_HORIZON}, budget ${BROWSER_BUDGET}) from stage 10 frame ${FROM}: ${fps.toFixed(1)} frames/s (the game's rate is 62.5); worker CPU ${g4.meanMs.toFixed(1)} ms/frame mean (last 600 frames), ${g4.maxMs.toFixed(0)} ms max, ${(g4.msPerUnit * 1000).toFixed(1)} µs per budget unit; ${g4.stalls - s1.g4.stalls} waits in the measured 6 s (${s1.g4.stalls} at the start: the game holds until the worker is 60 frames ahead); ${s.game.left} ships left`);
         assert.ok(fps >= 58, `the game keeps ≥ 58 frames/s with the bot on in a busy scene (got ${fps.toFixed(1)})`);
         await page.keyboard.press('Escape');
         const tape = await page.evaluate(() => window.noiz.lastTape());

@@ -120,3 +120,7 @@ stays reproducible.
 - ⚖ **The user, 2026-10-03:** *"I want a pages deploy when this is finished. I don't think we need to rerun the
   sweep."* The first pattern sweep stays as it is (its harness keeps the pre-G2 semantics). G3 is deployed to
   GitHub Pages from `main` (root): https://peerinfinity.github.io/bulletml-dodge/play.html
+- **P1 follow-ups, 2026-10-03** (⚖ the user: *"Yes please"* to both): when the bot starts, the game holds until the
+  worker is 60 frames ahead (at most 3 s) — the start-up waits become one "bot getting ready…" pause, moves unchanged;
+  and the page's budget menu gains **½× (slow machines)** (300 units), with the default left at 1× so G4's results stand.
+  The budget-300 default was NOT adopted (it changes moves and would need the 1× sweep rows re-run).
