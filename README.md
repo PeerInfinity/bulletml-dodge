@@ -69,6 +69,11 @@ simple reflexes and which need planning.
   `bin/segment-run.mjs --start 2:5 --end 3:boss --player "skill 50"` play a span of scenes with a bot, restarting on
   every hit (the time spent stays spent), across a boss into the next stage (a kill or 3 minutes without a hit), on
   the centered hitbox by default; it reports the attempts, whether the first was deathless, and the seconds spent.
+- **Tracks and training** (slice N2): `trackKnobs({seeing, thinking, hands, panic})` in `src/game/human.js` — each
+  group of knobs at its own position on the slider (equal tracks = the slider, all 100 = the Expert; a sweep player
+  "tracks 30/60/20/45"); `src/game/tracks.js` — training points from seconds and score, spent by a strategy (Even, one
+  track first, or by hand), a free respec, surplus at the ceiling. Every rate and price is a setting (placeholders
+  until the segment sweep prices them).
 - `bin/build-web-index.mjs` (`npm run web-index`) — writes `web/index/` (the pattern order and the tape list the
   page needs); re-run it after adding a tape or a pattern (`npm run test:browser` refuses a stale index).
 - `patterns/noiz2sa/` — the 73 patterns from Noiz2sa 0.52 (BSD; licence text beside them).

@@ -139,6 +139,25 @@ export function skillPosition(s) {
 }
 
 /**
+ * Slice N2 (the incremental Loops substrate, ⚖ the user 2026-10-04: "four group tracks first"): the knobs at four
+ * TRACK positions, one per group of KNOBS (seeing, thinking, hands, panic), each in the slider's units 0–100: every
+ * knob takes the value the slider gives it at its own group's track. Equal tracks s = the slider at s exactly; all 100 =
+ * the Expert. `tactics` (optional) sets habit knobs (the skill: 0 ones) outright.
+ */
+export const TRACKS = ['seeing', 'thinking', 'hands', 'panic'];
+export function trackKnobs(tracks, tactics = {}) {
+    const bySkill = new Map();
+    const at = (s) => { const x = Math.min(100, Math.max(0, Number(s ?? 0))); if (!bySkill.has(x)) bySkill.set(x, skillKnobs(x)); return bySkill.get(x); };
+    const out = Object.fromEntries(KNOBS.map((k) => [k.key, at(tracks[k.group])[k.key]]));
+    for (const [key, v] of Object.entries(tactics)) {
+        if (!KNOB[key]) throw new Error(`unknown knob "${key}"`);
+        if (KNOB[key].skill !== 0) throw new Error(`"${key}" is a skill, not a tactic: it comes from its track`);
+        out[key] = snapKnob(key, v);
+    }
+    return out;
+}
+
+/**
  * Slice H3b: positions below the beginner. A personality's flaw may put one faculty below the beginner's (Tunnel
  * vision's attention, Distracted's lapses): the knob goes on along the path's own trend past p 0, down to PATH_MIN,
  * and is clamped to its range (KNOBS[k].min / max). Above the Expert (p 100) nothing is better: clamped.
@@ -242,6 +261,9 @@ export function presetKnobs(name, s = DEFAULT_SKILL) {
 export function settingByName(name) {
     const str = String(name).trim();
     const m = /^skill[ _-]?(\d+(?:\.\d+)?)$/i.exec(str);
+    // "tracks 30/60/20/45": the four track positions in TRACKS order (slice N2)
+    const t = /^tracks[ _-]?(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/i.exec(str);
+    if (t) { const v = t.slice(1, 5).map(Number); return { name: `tracks ${v.join('/')}`, perception: 'observed', knobs: trackKnobs(Object.fromEntries(TRACKS.map((k, i) => [k, v[i]]))) }; }
     if (m) return { name: `skill ${Number(m[1])}`, perception: 'observed', knobs: skillKnobs(Number(m[1])) };
     // "path N": a point of the path itself, without the slider's curve (H3's calibration tool)
     const q = /^path[ _-]?(\d+(?:\.\d+)?)$/i.exec(str);
