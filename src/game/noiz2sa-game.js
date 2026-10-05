@@ -128,7 +128,12 @@ export const inputSlow = (b) => (b & 32) !== 0;
  * file name, and so does our native build). `seed` seeds C's rand() (the game uses SDL_GetTicks);
  * `endlessSeed` seeds the endless modes' stage LCG (the game uses SDL_GetTicks there too).
  */
-export function newGame(patterns, stage, { seed = 1, endlessSeed = 1, hitbox = 'original' } = {}) {
+/**
+ * A new game of `stage` (0–9 the stages 1–10, 10–13 the endless modes). `startScene` (slice N0): start in the middle
+ * of the stage, at the scene numbered `startScene` (g.scene's value while it plays: 0–8 the ordinary scenes, 9 the
+ * boss). Not in the original game: see skipToScene. 0 (the default) is the game exactly as the C plays it.
+ */
+export function newGame(patterns, stage, { seed = 1, endlessSeed = 1, hitbox = 'original', startScene = 0 } = {}) {
     if (!HITBOXES.includes(hitbox)) throw new Error(`unknown hitbox "${hitbox}" (have: ${HITBOXES.join(', ')})`);
     const lists = [patterns.zako, patterns.middle, patterns.boss];
     const g = {
@@ -139,7 +144,7 @@ export function newGame(patterns, stage, { seed = 1, endlessSeed = 1, hitbox = '
         bp: lists.map((l, type) => l.map((bml, i) => ({ type, i, maxRank: 0, rank: 0, frq: 0 }))),
         bq: lists.map((l) => l.map((_, i) => i)),
         barrage: [], barrageNum: 0, bossMode: 0, pax: 0, pay: 0, quickAppType: 0,
-        scene: 0, sceneCnt: 0, level: 0, levelInc: 0, endless: 0, insane: 0, zakoAppCnt: 0,
+        scene: 0, sceneCnt: 0, startScene: 0, level: 0, levelInc: 0, endless: 0, insane: 0, zakoAppCnt: 0,
         foes: new Array(FOE_MAX).fill(null), enNum: [0, 0, 0, 0],
         shots: new Array(SHOT_MAX).fill(null),
         bonuses: new Array(BONUS_MAX).fill(null), bonusScore: 10,
@@ -157,7 +162,32 @@ export function newGame(patterns, stage, { seed = 1, endlessSeed = 1, hitbox = '
     g.ship.invCnt = Math.max(0, idiv(SHIP_INVINCIBLE_CNT_BASE * (100 - g.scene), 100));
     const [s, startLevel, li] = STAGE_PRM[stage];
     initBarrages(g, s, startLevel, li, endlessSeed);
+    if (startScene) skipToScene(g, startScene);
     return g;
+}
+
+/** the last scene a game may start at: the boss scene (setBarrages counts the scene up as it starts one) */
+export const LAST_START_SCENE = 9;
+let skippingScenes = false; // set only inside skipToScene: addFoe places nothing
+/**
+ * Slice N0: start a game at scene k without playing the scenes before it. Which patterns a scene gets (setBarrages)
+ * and when and where its foes appear (addBullets) come only from the stage LCG g.rnd, and play never touches it: its
+ * draws in a frame depend only on the frame and the scene's barrages. And every scene starts on an empty field
+ * (addBullets' clearFoes at the boundary). So running addBullets for the skipped scenes with no foe placed leaves the
+ * stage LCG, the barrage queues and ranks, the level and the scene counter exactly as a played game has them on the
+ * frame before scene k starts (test/game.test.mjs checks it on every stage). What a played game would also carry
+ * into scene k is NOT reproduced, because it depends on how the scenes were played: C rand() (the game's seed, as at a
+ * stage start), the ship (where a new game puts it, with a new game's invincibility), score, lives and stars (none).
+ * A boss scene cannot be skipped: when it ends depends on the kill.
+ */
+function skipToScene(g, k) {
+    if (!Number.isInteger(k) || k < 0 || k > LAST_START_SCENE) throw new Error(`startScene must be an integer 0–${LAST_START_SCENE} (got ${k})`);
+    skippingScenes = true;
+    try {
+        while (!(g.scene === k - 1 && g.sceneCnt === 0)) addBullets(g);
+    } finally { skippingScenes = false; }
+    g.sceneScores = []; g.ssSc = 0;
+    g.startScene = k;
 }
 
 function initBarrages(g, seed, startLevel, li, endlessSeed) {
@@ -298,6 +328,7 @@ function freeFoeSlot(g) {
     return -1;
 }
 function addFoe(g, x, y, rank, d, spd, type, shield, bml) {
+    if (skippingScenes) return -1;
     const i = freeFoeSlot(g);
     if (i < 0) return -1;
     placeFoe(g, i, newFoe(x, y, rank, d, spd, SPC.FOE, type, shield, makeRunner(bml), bml));

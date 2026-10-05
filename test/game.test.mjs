@@ -94,3 +94,42 @@ function chase(g) {
     assert.equal(stateLine(replayTape(P, to)), o1.lines[o1.lines.length - 1]);
     console.log(`ok hitbox: centered geometry (2 px swept, fast bullets, a resting bullet hits), the default original, deterministic in both modes (stage 6: original ${o1.g.left} left at frame ${o1.g.frame}, centered ${c1.g.left} at ${c1.g.frame}), tapes record and replay it`);
 }
+
+// 5. slice N0: a game started mid-stage (startScene k) has the stage's own schedule exactly as a game played from
+// scene 0 has it on the frame before scene k starts — the stage LCG, the barrage queues and ranks, the level, the
+// barrages — and keeps it: every frame of the next 300 draws the same, so the same patterns appear at the same times
+{
+    const { LAST_START_SCENE, STAGE_NUM, ENDLESS_STAGE_NUM } = await import('../src/game/noiz2sa-game.js');
+    const sig = (g) => JSON.stringify({
+        rnd: g.rnd, scene: g.scene, sceneCnt: g.sceneCnt, level: g.level, levelInc: g.levelInc, endless: g.endless, insane: g.insane,
+        bq: g.bq, bp: g.bp.map((l) => l.map((b) => [b.maxRank, b.rank, b.frq])), barrage: g.barrage.slice(0, g.barrageNum).map((b) => [b.type, b.i]),
+        barrageNum: g.barrageNum, bossMode: g.bossMode, quickAppType: g.quickAppType, pax: g.pax, pay: g.pay,
+    });
+    const step = (g, b) => { if (g.status === STATUS.IN_GAME) g.ship.invCnt = 2; stepGame(g, b); }; // test-only invincibility
+    let checked = 0;
+    for (let stage = 0; stage < STAGE_NUM + ENDLESS_STAGE_NUM; stage++) {
+        const g = newGame(P, stage, { seed: 5, endlessSeed: 7919 * 5 });
+        for (let k = 1; k <= LAST_START_SCENE; k++) {
+            while (!(g.scene === k - 1 && g.sceneCnt === 0)) {
+                assert.equal(g.status, STATUS.IN_GAME, `stage ${stage + 1}: the played game left the game before scene ${k}`);
+                step(g, chase(g));
+            }
+            const s = newGame(P, stage, { seed: 5, endlessSeed: 7919 * 5, startScene: k });
+            assert.equal(s.startScene, k);
+            assert.equal(sig(s), sig(g), `stage ${stage + 1} scene ${k}: the start differs from the played game's`);
+            assert.equal(s.foes.filter(Boolean).length, 0, 'an empty field');
+            const c = cloneGame(g);
+            for (let f = 0; f < 300; f++) {
+                step(c, 0); step(s, 0);
+                assert.equal(s.rnd, c.rnd, `stage ${stage + 1} scene ${k}: the stage LCG diverged ${f + 1} frames in`);
+            }
+            assert.equal(sig(s), sig(c), `stage ${stage + 1} scene ${k}: the schedule diverged`);
+            assert.equal(s.scene, k, 'it plays scene k');
+            checked++;
+        }
+    }
+    assert.throws(() => newGame(P, 0, { startScene: LAST_START_SCENE + 1 }), /startScene/);
+    assert.throws(() => newGame(P, 0, { startScene: 1.5 }), /startScene/);
+    assert.equal(newGame(P, 0, { seed: 1 }).startScene, 0);
+    console.log(`ok startScene: ${checked} mid-stage starts (every stage and endless mode, scenes 1–${LAST_START_SCENE}) match a played game's schedule and keep it for 300 frames`);
+}

@@ -62,6 +62,13 @@ simple reflexes and which need planning.
   before (PARSEC47-style; a bullet resting on the ship hits). Tapes record it (none = original); the bots follow the
   game's. The page: a "Hitbox" box (the hit area, and white dots where each bullet can hit, on by default);
   `bin/play-game.mjs --hitbox`, `bin/h1-sweep.mjs --hitbox`, `bin/h2-sweep.mjs --hitbox`.
+- **Segments** (slice N0, for the planned Archipelago Loops substrate): `newGame(…, {startScene: k})` starts a stage at
+  scene k (0–8 the ordinary scenes, 9 the boss) without playing the scenes before it — the stage's own schedule (the
+  stage LCG, which play never touches) is run forward and the field is empty, as at every scene start; `npm test`
+  checks it against played games on every stage. Tapes record `startScene`. `src/game/segment-run.js` /
+  `bin/segment-run.mjs --start 2:5 --end 3:boss --player "skill 50"` play a span of scenes with a bot, restarting on
+  every hit (the time spent stays spent), across a boss into the next stage (a kill or 3 minutes without a hit), on
+  the centered hitbox by default; it reports the attempts, whether the first was deathless, and the seconds spent.
 - `bin/build-web-index.mjs` (`npm run web-index`) — writes `web/index/` (the pattern order and the tape list the
   page needs); re-run it after adding a tape or a pattern (`npm run test:browser` refuses a stale index).
 - `patterns/noiz2sa/` — the 73 patterns from Noiz2sa 0.52 (BSD; licence text beside them).

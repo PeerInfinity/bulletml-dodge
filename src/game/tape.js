@@ -2,6 +2,7 @@
  * Tapes: {game, stage, seed, endlessSeed, [hitbox], frames, inputs: [[byte, count], …]} — one input byte per frame
  * (dir | fire<<4 | slow<<5), run-length encoded. Shared by `bin/play-game.mjs` and the browser page.
  * `hitbox` (slice HB) is there only when it is not 'original': a tape without it is an original-hitbox game.
+ * `startScene` (slice N0) is there only when the game started mid-stage (newGame's startScene); none = scene 0.
  */
 import { newGame, stepGame, STATUS } from './noiz2sa-game.js';
 
@@ -15,14 +16,14 @@ export function tapeInputs(tape) {
 }
 
 /** a tape from the bytes played; `extra` fields (e.g. who played) go after the standard ones */
-export function makeTape({ stage, seed, endlessSeed, hitbox = 'original', played, extra = {} }) {
+export function makeTape({ stage, seed, endlessSeed, hitbox = 'original', startScene = 0, played, extra = {} }) {
     const rle = [];
     for (const b of played) { if (rle.length && rle[rle.length - 1][0] === b) rle[rle.length - 1][1]++; else rle.push([b, 1]); }
-    return { game: TAPE_GAME, stage, seed, endlessSeed, ...(hitbox !== 'original' ? { hitbox } : {}), frames: played.length, inputs: rle, ...extra };
+    return { game: TAPE_GAME, stage, seed, endlessSeed, ...(hitbox !== 'original' ? { hitbox } : {}), ...(startScene ? { startScene } : {}), frames: played.length, inputs: rle, ...extra };
 }
 
 /** newGame's options for a tape's game */
-export const tapeGameOptions = (tape) => ({ seed: tape.seed, endlessSeed: tape.endlessSeed, hitbox: tape.hitbox || 'original' });
+export const tapeGameOptions = (tape) => ({ seed: tape.seed, endlessSeed: tape.endlessSeed, hitbox: tape.hitbox || 'original', startScene: tape.startScene || 0 });
 
 /**
  * Play a tape to its end as `bin/play-game.mjs --tape` does: until the game returns to the title, the
