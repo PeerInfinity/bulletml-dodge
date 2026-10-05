@@ -1,7 +1,7 @@
 /**
  * Slice N2: the bot's training, for the planned Archipelago Loops substrate (⚖ the user, 2026-10-04).
  *
- *  - Four TRACKS (human.js TRACKS: seeing, thinking, hands, panic), each a position 0–100 in the slider's units; the
+ *  - Five TRACKS (human.js TRACKS: seeing, thinking, hands, focus, panic; focus = the lapses, ⚖ 2026-10-05), each a position 0–100 in the slider's units; the
  *    bot plays with trackKnobs(tracks): equal tracks = the slider, all 100 = the Expert.
  *  - TRAINING POINTS come from the seconds spent in a Noiz2sa region (live, by the bot, or by an instant playback, ⚖)
  *    and from the score made from the region's start (⚖). Only Noiz2sa regions train the bot (⚖).
@@ -20,7 +20,7 @@ import { TRACKS, trackKnobs } from './human.js';
 
 export const TRACK_MAX = 100;
 export const STRATEGIES = ['even', ...TRACKS.map((t) => `${t}-first`), 'manual'];
-export const STRATEGY_LABEL = { even: 'Even', 'seeing-first': 'Seeing first', 'thinking-first': 'Thinking first', 'hands-first': 'Hands first', 'panic-first': 'Panic first', manual: 'By hand' };
+export const STRATEGY_LABEL = { even: 'Even', 'seeing-first': 'Seeing first', 'thinking-first': 'Thinking first', 'hands-first': 'Hands first', 'focus-first': 'Focus first', 'panic-first': 'Panic first', manual: 'By hand' };
 
 /** ⚠ placeholders, to be priced from the N1 measurement; every one is a user setting */
 export const DEFAULT_TRAINING = Object.freeze({

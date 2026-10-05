@@ -62,9 +62,10 @@ export const KNOBS = [
         help: 'overshoot: the chance that, when it lets go of a direction, it holds it a little too long.' },
     { key: 'overshootFrames', label: 'Overshoot length', group: 'hands', unit: 'frames', min: 0, max: 12, step: 1, expert: 0, skill: -1,
         help: 'overshoot length: up to this many frames too long (1 to this, evenly).' },
-    { key: 'lapseRate', label: 'Lapses', group: 'hands', unit: 'per min', min: 0, max: 30, step: 0.1, expert: 0, skill: -1,
+    // ── focus (slice N2b, ⚖ the user 2026-10-05: "Lapses get their own track" — the lapses were the hands' knobs) ──
+    { key: 'lapseRate', label: 'Lapses', group: 'focus', unit: 'per min', min: 0, max: 30, step: 0.1, expert: 0, skill: -1,
         help: 'lapses: moments of inattention per minute of play; during one it keeps pressing what it pressed and does not look.' },
-    { key: 'lapseFrames', label: 'Lapse length', group: 'hands', unit: 'frames', min: 0, max: 90, step: 1, expert: 0, skill: -1,
+    { key: 'lapseFrames', label: 'Lapse length', group: 'focus', unit: 'frames', min: 0, max: 90, step: 1, expert: 0, skill: -1,
         help: 'lapse length: on average (½× to 1½×, evenly).' },
     // ── panic ──
     { key: 'panicFrom', label: 'Panic starts at', group: 'panic', unit: 'bullets', min: 0, max: 600, step: 1, expert: 150, skill: 0,
@@ -139,12 +140,12 @@ export function skillPosition(s) {
 }
 
 /**
- * Slice N2 (the incremental Loops substrate, ⚖ the user 2026-10-04: "four group tracks first"): the knobs at four
- * TRACK positions, one per group of KNOBS (seeing, thinking, hands, panic), each in the slider's units 0–100: every
+ * Slice N2 (the incremental Loops substrate, ⚖ the user 2026-10-04: "four group tracks first"): the knobs at the
+ * TRACK positions, one per group of KNOBS (seeing, thinking, hands, focus, panic; focus = the lapses, ⚖ 2026-10-05), each in the slider's units 0–100: every
  * knob takes the value the slider gives it at its own group's track. Equal tracks s = the slider at s exactly; all 100 =
  * the Expert. `tactics` (optional) sets habit knobs (the skill: 0 ones) outright.
  */
-export const TRACKS = ['seeing', 'thinking', 'hands', 'panic'];
+export const TRACKS = ['seeing', 'thinking', 'hands', 'focus', 'panic'];
 export function trackKnobs(tracks, tactics = {}) {
     const bySkill = new Map();
     const at = (s) => { const x = Math.min(100, Math.max(0, Number(s ?? 0))); if (!bySkill.has(x)) bySkill.set(x, skillKnobs(x)); return bySkill.get(x); };
@@ -261,9 +262,10 @@ export function presetKnobs(name, s = DEFAULT_SKILL) {
 export function settingByName(name) {
     const str = String(name).trim();
     const m = /^skill[ _-]?(\d+(?:\.\d+)?)$/i.exec(str);
-    // "tracks 30/60/20/45": the four track positions in TRACKS order (slice N2)
-    const t = /^tracks[ _-]?(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/i.exec(str);
-    if (t) { const v = t.slice(1, 5).map(Number); return { name: `tracks ${v.join('/')}`, perception: 'observed', knobs: trackKnobs(Object.fromEntries(TRACKS.map((k, i) => [k, v[i]]))) }; }
+    // "tracks 30/60/20/80/45": the track positions in TRACKS order (slice N2)
+    const t = /^tracks[ _-]?(\d+(?:\.\d+)?(?:\/\d+(?:\.\d+)?)*)$/i.exec(str);
+    if (t && t[1].split('/').length !== TRACKS.length) throw new Error(`"${name}": give ${TRACKS.length} track positions (${TRACKS.join('/')})`);
+    if (t) { const v = t[1].split('/').map(Number); return { name: `tracks ${v.join('/')}`, perception: 'observed', knobs: trackKnobs(Object.fromEntries(TRACKS.map((k, i) => [k, v[i]]))) }; }
     if (m) return { name: `skill ${Number(m[1])}`, perception: 'observed', knobs: skillKnobs(Number(m[1])) };
     // "path N": a point of the path itself, without the slider's curve (H3's calibration tool)
     const q = /^path[ _-]?(\d+(?:\.\d+)?)$/i.exec(str);
