@@ -1,0 +1,144 @@
+# The N1 segment sweep (slice N1, the planned Archipelago Loops substrate): the humanlike bot's chance of a DEATHLESS
+# clear and the seconds a clear costs, per segment × skill, as sharded CI runs. Dispatch by hand (`gh workflow run
+# segment-sweep.yml -f …`); each shard is one 4-core runner running `bin/segment-sweep.mjs … --shard i/N`; the merge job
+# FAILS, naming the shards, if any shard is missing or unfinished. It never pushes: download the
+# `segment-sweep-<name>` artifact and commit what you want from it.
+name: segment-sweep
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'results name: results/<name>.md, results/<name>.json'
+        default: 'segments'
+      spans:
+        description: 'scenes (every scene of the stages), stages (each stage whole), or a list like 1:1-1:3,2:9-3:1'
+        default: 'scenes'
+      stages:
+        description: 'stages for scenes/stages: 1..10, ENDLESS, HARD, EXTREME, INSANE'
+        default: '1,2,3,4,5,6,7,8,9,10'
+      skills:
+        description: 'skill levels 0-100 (comma-separated), or none'
+        default: '0,10,20,30,40,50,60,70,80,90,100'
+      players:
+        description: 'more players (setting names, comma-separated), e.g. Expert'
+        default: ''
+      seeds:
+        description: 'game seeds (the region seed)'
+        default: '1'
+      bot_seeds:
+        description: "the bots' own seeds (the sample: one attempt each)"
+        default: '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16'
+      extra:
+        description: 'more bin/segment-sweep.mjs options, e.g. --hitbox original'
+        default: ''
+      shards:
+        description: 'number of shards (runners)'
+        default: '16'
+
+permissions:
+  contents: read
+
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      list: ${{ steps.list.outputs.list }}
+    steps:
+      - id: list
+        env:
+          SHARDS: ${{ inputs.shards }}
+        run: |
+          case "$SHARDS" in ''|*[!0-9]*) echo "shards must be a number, got '$SHARDS'"; exit 1;; esac
+          if [ "$SHARDS" -lt 1 ] || [ "$SHARDS" -gt 256 ]; then echo "shards must be 1-256"; exit 1; fi
+          echo "list=[$(seq -s, 1 "$SHARDS")]" >> "$GITHUB_OUTPUT"
+
+  shard:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.plan.outputs.list) }}
+    env:
+      NAME: ${{ inputs.name }}
+      SPANS: ${{ inputs.spans }}
+      PLAYERS: ${{ inputs.players }}
+      SKILLS: ${{ inputs.skills }}
+      STAGES: ${{ inputs.stages }}
+      SEEDS: ${{ inputs.seeds }}
+      BOT_SEEDS: ${{ inputs.bot_seeds }}
+      EXTRA: ${{ inputs.extra }}
+      SHARD: ${{ matrix.shard }}/${{ inputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: start from no committed outputs (only this run's tapes and shards may reach the artifact)
+        env:
+          SWEEP_NAME: ${{ inputs.name }}
+        run: rm -rf "results/${SWEEP_NAME}-shards"
+      - name: sweep shard ${{ matrix.shard }}/${{ inputs.shards }}
+        # $EXTRA is split into options on purpose
+        run: node bin/segment-sweep.mjs --spans "$SPANS" --players "$PLAYERS" --skills "$SKILLS" --stages "$STAGES" --seeds "$SEEDS" --bot-seeds "$BOT_SEEDS" --name "$NAME" $EXTRA --shard "$SHARD" --jobs "$(nproc)" --timeout-min 60
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shard-${{ matrix.shard }}
+          path: |
+            results/${{ inputs.name }}-shards/
+          if-no-files-found: warn
+          retention-days: 30
+
+  merge:
+    needs: [plan, shard]
+    # runs when shards failed too, so that it can say which; it fails itself unless every shard finished
+    if: ${{ always() && needs.plan.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NAME: ${{ inputs.name }}
+      SPANS: ${{ inputs.spans }}
+      PLAYERS: ${{ inputs.players }}
+      SKILLS: ${{ inputs.skills }}
+      STAGES: ${{ inputs.stages }}
+      SEEDS: ${{ inputs.seeds }}
+      BOT_SEEDS: ${{ inputs.bot_seeds }}
+      EXTRA: ${{ inputs.extra }}
+      SHARDS: ${{ inputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: start from no committed outputs (only this run's tapes and shards may reach the artifact)
+        env:
+          SWEEP_NAME: ${{ inputs.name }}
+        run: rm -rf "results/${SWEEP_NAME}-shards"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: shard-*
+          merge-multiple: true
+          path: .
+      - name: merge (fails, naming them, if a shard is missing or unfinished)
+        run: |
+          node bin/segment-sweep.mjs --merge --expect "$SHARDS" --spans "$SPANS" --players "$PLAYERS" --skills "$SKILLS" --stages "$STAGES" --seeds "$SEEDS" --bot-seeds "$BOT_SEEDS" --name "$NAME" $EXTRA
+          cat "results/$NAME.md" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: segment-sweep-${{ inputs.name }}
+          path: |
+            results/${{ inputs.name }}.md
+            results/${{ inputs.name }}.json
+            results/${{ inputs.name }}-shards/
+          if-no-files-found: warn
+          retention-days: 90
