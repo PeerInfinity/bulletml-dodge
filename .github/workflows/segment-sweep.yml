@@ -124,11 +124,13 @@ jobs:
         env:
           SWEEP_NAME: ${{ inputs.name }}
         run: rm -rf "results/${SWEEP_NAME}-shards"
+      # each shard artifact holds ONLY its results/<name>-shards/ directory, and upload-artifact drops a lone path's
+      # prefix (the files are at the artifact's root), so they are unpacked back into that directory
       - uses: actions/download-artifact@v4
         with:
           pattern: shard-*
           merge-multiple: true
-          path: .
+          path: results/${{ inputs.name }}-shards
       - name: merge (fails, naming them, if a shard is missing or unfinished)
         run: |
           node bin/segment-sweep.mjs --merge --expect "$SHARDS" --spans "$SPANS" --players "$PLAYERS" --skills "$SKILLS" --stages "$STAGES" --seeds "$SEEDS" --bot-seeds "$BOT_SEEDS" --name "$NAME" $EXTRA
