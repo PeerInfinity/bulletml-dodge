@@ -118,6 +118,9 @@ function addBonus(m, x, y, vx, vy) {
     if (m.bonuses && m.bonuses.length < BONUS_MAX) m.bonuses.push({ x, y, vx, vy, down: 1 });
 }
 
+/** the model trusts a predicted kill's bullet wipe only this far inside its radius (1/256 px): 2 px */
+export const WIPE_EDGE = 2 * 256;
+
 /**
  * The safety margin (slice H1b; the H2 "perceived bullet size" knob reuses it), in px:
  *  - `bullet`: the clearance kept from a bullet's DRAWN trail (the segment from its trail end to its head, ends
@@ -271,7 +274,11 @@ export function stepModel(m, b, acc = null, starWeight = 0, margin = null) {
                 o.shield--;
                 if (o.shield <= 0) {
                     if (acc) acc.value += 4 + o.type * 4;
-                    const w = BULLET_WIPE_WIDTH * (o.type + 1);
+                    // the kill's bullet wipe — but only of bullets well INSIDE it (WIPE_EDGE): the enemy's position here is a
+                    // prediction (it moves as it was seen moving), and a bullet at the wipe's edge may survive the real kill
+                    // and hit. Treating it as still there is the safe side (the one Expert failure, segment 5:5–5:9, was a
+                    // plan that counted on wiping a bullet 7,142 of 7,200 units from the enemy; the engine had it at 7,203).
+                    const w = BULLET_WIPE_WIDTH * (o.type + 1) - WIPE_EDGE;
                     for (const q of foes) {
                         if (q.spc !== SPC.ACTIVE_BULLET && q.spc !== SPC.BULLET) continue;
                         if (vctDist(o.x, o.y, q.x, q.y) < w) { addBonus(m, q.x, q.y, q.mx, q.my); q.spc = -1; }
