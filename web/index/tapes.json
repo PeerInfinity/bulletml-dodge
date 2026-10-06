@@ -2727,21 +2727,21 @@
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9727
+  "frames": 9725
  },
  {
   "file": "h1/s01-attack-seed2-expert.json",
   "stage": 0,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9701
+  "frames": 9705
  },
  {
   "file": "h1/s01-attack-seed3-expert.json",
   "stage": 0,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 9713
+  "frames": 9767
  },
  {
   "file": "h1/s01-no-attack-seed1-expert.json",
@@ -2769,21 +2769,21 @@
   "stage": 1,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9793
+  "frames": 9713
  },
  {
   "file": "h1/s02-attack-seed2-expert.json",
   "stage": 1,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9683
+  "frames": 9646
  },
  {
   "file": "h1/s02-attack-seed3-expert.json",
   "stage": 1,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 9741
+  "frames": 9709
  },
  {
   "file": "h1/s02-no-attack-seed1-expert.json",
@@ -2811,21 +2811,21 @@
   "stage": 2,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9901
+  "frames": 9893
  },
  {
   "file": "h1/s03-attack-seed2-expert.json",
   "stage": 2,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9813
+  "frames": 9905
  },
  {
   "file": "h1/s03-attack-seed3-expert.json",
   "stage": 2,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 9871
+  "frames": 9858
  },
  {
   "file": "h1/s03-no-attack-seed1-expert.json",
@@ -2853,21 +2853,21 @@
   "stage": 3,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9846
+  "frames": 9765
  },
  {
   "file": "h1/s04-attack-seed2-expert.json",
   "stage": 3,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9913
+  "frames": 9976
  },
  {
   "file": "h1/s04-attack-seed3-expert.json",
   "stage": 3,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 9977
+  "frames": 10056
  },
  {
   "file": "h1/s04-no-attack-seed1-expert.json",
@@ -2895,21 +2895,21 @@
   "stage": 4,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9843
+  "frames": 9929
  },
  {
   "file": "h1/s05-attack-seed2-expert.json",
   "stage": 4,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9825
+  "frames": 9873
  },
  {
   "file": "h1/s05-attack-seed3-expert.json",
   "stage": 4,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 9881
+  "frames": 9817
  },
  {
   "file": "h1/s05-no-attack-seed1-expert.json",
@@ -2937,21 +2937,21 @@
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9849
+  "frames": 9877
  },
  {
   "file": "h1/s06-attack-seed2-expert.json",
   "stage": 5,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9839
+  "frames": 9889
  },
  {
   "file": "h1/s06-attack-seed3-expert.json",
   "stage": 5,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 9850
+  "frames": 9845
  },
  {
   "file": "h1/s06-no-attack-seed1-expert.json",
@@ -2979,21 +2979,21 @@
   "stage": 6,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 10031
+  "frames": 9764
  },
  {
   "file": "h1/s07-attack-seed2-expert.json",
   "stage": 6,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9886
+  "frames": 9782
  },
  {
   "file": "h1/s07-attack-seed3-expert.json",
   "stage": 6,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 9817
+  "frames": 9733
  },
  {
   "file": "h1/s07-no-attack-seed1-expert.json",
@@ -3021,21 +3021,21 @@
   "stage": 7,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9789
+  "frames": 9805
  },
  {
   "file": "h1/s08-attack-seed2-expert.json",
   "stage": 7,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9783
+  "frames": 9863
  },
  {
   "file": "h1/s08-attack-seed3-expert.json",
   "stage": 7,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 9978
+  "frames": 9842
  },
  {
   "file": "h1/s08-no-attack-seed1-expert.json",
@@ -3063,21 +3063,21 @@
   "stage": 8,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9731
+  "frames": 9945
  },
  {
   "file": "h1/s09-attack-seed2-expert.json",
   "stage": 8,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 9920
+  "frames": 9823
  },
  {
   "file": "h1/s09-attack-seed3-expert.json",
   "stage": 8,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 9921
+  "frames": 9740
  },
  {
   "file": "h1/s09-no-attack-seed1-expert.json",
@@ -3105,21 +3105,21 @@
   "stage": 9,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 10049
+  "frames": 9745
  },
  {
   "file": "h1/s10-attack-seed2-expert.json",
   "stage": 9,
   "seed": 2,
   "endlessSeed": 15838,
-  "frames": 10157
+  "frames": 9761
  },
  {
   "file": "h1/s10-attack-seed3-expert.json",
   "stage": 9,
   "seed": 3,
   "endlessSeed": 23757,
-  "frames": 10684
+  "frames": 9730
  },
  {
   "file": "h1/s10-no-attack-seed1-expert.json",
@@ -3189,7 +3189,7 @@
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9727
+  "frames": 9725
  },
  {
   "file": "h1b/s01-no-attack-seed1-expert.json",
@@ -3203,14 +3203,14 @@
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9849
+  "frames": 9877
  },
  {
   "file": "h1b/s10-attack-seed1-expert.json",
   "stage": 9,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 10049
+  "frames": 9745
  },
  {
   "file": "h2/ace-s01-attack-seed1.json",
@@ -3238,147 +3238,147 @@
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9941
+  "frames": 5967
  },
  {
   "file": "h2/distracted-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9692
+  "frames": 9803
  },
  {
   "file": "h2/distracted-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9592
+  "frames": 6030
  },
  {
   "file": "h2/expert-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9727
+  "frames": 9725
  },
  {
   "file": "h2/expert-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9849
+  "frames": 9877
  },
  {
   "file": "h2/panicky-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9677
+  "frames": 9737
  },
  {
   "file": "h2/panicky-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 5821
+  "frames": 9752
  },
  {
   "file": "h2/score-chaser-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 5611
+  "frames": 9714
  },
  {
   "file": "h2/score-chaser-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 1435
+  "frames": 1704
  },
  {
   "file": "h2/skill-0-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9589
+  "frames": 9801
  },
  {
   "file": "h2/skill-0-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 5100
+  "frames": 3684
  },
  {
   "file": "h2/skill-100-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9727
+  "frames": 9725
  },
  {
   "file": "h2/skill-100-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9849
+  "frames": 9877
  },
  {
   "file": "h2/skill-25-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9747
+  "frames": 9760
  },
  {
   "file": "h2/skill-25-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 1509
+  "frames": 3995
  },
  {
   "file": "h2/skill-50-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9716
+  "frames": 9749
  },
  {
   "file": "h2/skill-50-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9783
+  "frames": 9867
  },
  {
   "file": "h2/skill-75-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9765
+  "frames": 9745
  },
  {
   "file": "h2/skill-75-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9901
+  "frames": 9873
  },
  {
   "file": "h2/steady-s01-attack-seed1.json",
   "stage": 0,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9786
+  "frames": 9782
  },
  {
   "file": "h2/steady-s06-attack-seed1.json",
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 10378
+  "frames": 10023
  },
  {
   "file": "h2/tunnel-vision-s01-attack-seed1.json",
@@ -3392,6 +3392,6 @@
   "stage": 5,
   "seed": 1,
   "endlessSeed": 7919,
-  "frames": 9768
+  "frames": 9845
  }
 ]
